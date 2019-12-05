@@ -8,7 +8,9 @@ public:
 	{
 	}
 
-	double Calc(MarketParam& para, long numMc = 2);
+	double Calc(MarketParam& para, long numMc = 10);
+	double Calc2(MarketParameters& paras, long numMc = 10);
+
 	~EuropeanOptionMC();
 private:
 	//vector<signed int> obsDays;

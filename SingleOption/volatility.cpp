@@ -191,7 +191,7 @@ double Vol::lvol_up(double tau, double s) const
 
 	return Lvol_up[i_t][i_s];
 }
-double Vol::lvol(double tau, double s)
+double Vol::lvol(double tau, double s) const
 {
 //(flat) interpolate local vol from Lvol surface
 	int i_t=find_index_term(tau);

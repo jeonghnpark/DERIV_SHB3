@@ -21,7 +21,7 @@ public:
 
 	Vol(){}
 	Vol(int nb_vol_term, int nb_vol_strike);
-	double lvol(double t_axis, double s_axis);
+	double lvol(double t_axis, double s_axis) const;
 	double lvol2(double t, double s);
 	double lvol_up(double t_axis, double s_axis) const;
 	double lvol_down(double t_axis, double s_axis) const;

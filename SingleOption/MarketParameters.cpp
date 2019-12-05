@@ -34,7 +34,7 @@ void MarketParameters::calcLV()
 	vol.calcLv(spot, r, q);
 }
 
-double MarketParameters::lvol(double t_axis, double s_axis)
+double MarketParameters::lvol(double t_axis, double s_axis) const
 {
 	return vol.lvol(t_axis, s_axis);
 }
@@ -48,6 +48,22 @@ double MarketParameters::lvol_down(double t_axis, double s_axis) const
 {
 	return vol.lvol_down(t_axis, s_axis);
 }
+
+double MarketParameters::lvol(int i_t, int i_k) const
+{
+	return vol.get_Lvol(i_t, i_k);
+}
+
+double MarketParameters::lvol_up(int i_t, int i_k) const
+{
+	return vol.get_Lvol(i_t, i_k);
+}
+
+double MarketParameters::lvol_down(int i_t, int i_k) const
+{
+	return vol.get_Lvol(i_t, i_k);
+}
+
 
 int MarketParameters::find_index_spot(double target) const
 {

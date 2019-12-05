@@ -474,10 +474,13 @@ double AutocallOption::Calc(MarketParam & para)
 
 double AutocallOption::Calc(MarketParameters & paras)
 {
-	signed int vd = paras.get_vdate();
 	double s0 = paras.get_spot();
-	paras.calcLV();
+	signed int vd = paras.get_vdate();
+	
 	int nb_autocall = ThePayoffPtr->GetNbAutocall();
+
+	paras.calcLV();
+
 	std::vector<signed int> autocall_date;
 	autocall_date = ThePayoffPtr->GetAutocall_date();
 
@@ -546,25 +549,27 @@ double AutocallOption::Calc(MarketParameters & paras)
 	double* r_dc_p = new double[autocall_date[nb_autocall] - vd + 1];
 	double* q_forward_p = new double[autocall_date[nb_autocall] - vd + 1];
 
-	double dt = 1 / 365.0; 
+	
 	for (signed int i = 0; i <= autocall_date[nb_autocall] - vd; i++) {
 		tau_p[i] = (i) / 365.0;
-		//r_forward_p[i] = R.getForward(tau_p[i]);
 		r_forward_p[i] = paras.getForward(tau_p[i]);
-		//r_dc_p[i] = R.getIntpRate(tau_p[i]);
-		//q_forward_p[i] = Q.getForward(tau_p[i]);
-		q_forward_p[i] = paras.getTodayDivAmount(i+vd) / s0 / dt;  //t==i+vd
+		r_dc_p[i] = paras.getIntpRate(tau_p[i]);
+		q_forward_p[i] = paras.getDivForward(tau_p[i]);
+		//temp test
+		//r_forward_p[i] = 0.0;
+		//r_dc_p[i] = 0.0;
+		//q_forward_p[i] = 0.0;
+
 	}
 
+	double dt = 1 / 365.0; 
 	int *idxS = new int[maxassetnodeindex + 1];
 	int *idxT = new signed int[autocall_date[nb_autocall] - vd + 1];
 	for (int i = 0; i <= maxassetnodeindex; i++) {
-		//idxS[i] = vol.find_index_spot(px[i]);
 		idxS[i] = paras.find_index_spot(px[i]);
 	}
 
 	for (int tfv = 0; tfv <= autocall_date[nb_autocall] - vd; tfv++) {
-		//idxT[tfv] = vol.find_index_term(tfv / 365.0);
 		idxT[tfv] = paras.find_index_term(tfv / 365.0);
 	}
 
@@ -633,7 +638,7 @@ double AutocallOption::Calc(MarketParameters & paras)
 
 	double pv, pv_next, pv_up, pv_down;
 
-	if (hitflag) { //hitted -> vold 
+	if (0) { //hitted -> vold 
 		pv = intp1d(s0, px, vold, 1, maxassetnodeindex - 1);
 		pv_next = intp1d(s0, px, vold_next, 1, maxassetnodeindex - 1);
 		pv_up = intp1d(s0*1.01, px, vold_up, 1, maxassetnodeindex - 1);
