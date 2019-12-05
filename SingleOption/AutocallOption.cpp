@@ -638,7 +638,7 @@ double AutocallOption::Calc(MarketParameters & paras)
 
 	double pv, pv_next, pv_up, pv_down;
 
-	if (0) { //hitted -> vold 
+	if (hitflag) { //hitted -> vold 
 		pv = intp1d(s0, px, vold, 1, maxassetnodeindex - 1);
 		pv_next = intp1d(s0, px, vold_next, 1, maxassetnodeindex - 1);
 		pv_up = intp1d(s0*1.01, px, vold_up, 1, maxassetnodeindex - 1);

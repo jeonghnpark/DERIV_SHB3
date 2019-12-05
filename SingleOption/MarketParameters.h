@@ -16,14 +16,15 @@ protected:
 	Rate q;
 	Dividend div;
 public:
+	MarketParameters() {
+	}
+
 	MarketParameters(signed int _vdate, double _spot, Vol _vol, Rate _r, Dividend _div)
-		:vdate(_vdate), spot(_spot), vol(_vol), r(_r), div(_div)
-	{
+		:vdate(_vdate), spot(_spot), vol(_vol), r(_r), div(_div){
 	}
 
 	MarketParameters(signed int _vdate, double _spot, Vol _vol, Rate _r, Rate _q)
-		:vdate(_vdate), spot(_spot), vol(_vol), r(_r), q(_q)
-	{
+		:vdate(_vdate), spot(_spot), vol(_vol), r(_r), q(_q){
 	}
 	
 	double get_spot() const { return spot; }
