@@ -1672,16 +1672,14 @@ void test_Cal1_vs_Calc2()
 
 void test_calc2_mc_for_vanilla(long n)
 {
-
-
 	double arr_rts[] = { 0.002739726,0.25,0.5,0.75,1,1.5,2,2.5,3,4,5,7,10,15,20 };
 	double arr_r[] = { 1.79000,1.81000,1.74000,1.69000,1.65000,1.59000,1.55000,1.52000,1.50000,1.50000,1.50000,1.50000,1.50000,1.50000 ,1.50000 };
 
 	for (int i = 0; i<15; i++)
 		arr_r[i] /= 100.0;
 
-	double arr_qts[] = { 0.01918000,0.03836000,0.05753000,0.08493000,0.10411000,0.12329000,0.14247000,0.16712000,0.25205000,0.33425000,0.41918000,0.50411000,0.58082000,0.66575000,0.74795000,0.83288000,0.91507000,1.00000000,1.08493000,1.16712000,1.25205000,1.33425000,1.41918000,1.50411000,1.58356000,1.66849000,1.75068000,1.83562000,1.91781000,2.00274000,2.08767000,2.16986000,2.25479000,2.33699000,2.42192000,2.50685000,2.58356000,2.66849000,2.75068000,2.83562000,2.91781000,3.00274000 };
-	double arr_q[] = { 0.00000,0.00000,0.00000,2.63440,2.14907,1.81475,1.570440,1.338800,0.887680,5.313760,4.237140,3.523290,3.057960,2.997860,2.668400,2.396300,2.486970,2.275760,2.303830,2.141590,1.996320,1.886950,2.912220,2.747780,2.609920,2.609350,2.486850,2.371770,2.421350,2.318670,2.224340,2.243670,2.159160,2.090990,2.701420,2.609900,2.532410,2.534520,2.458790,2.385140,2.417350,2.348970 };
+	double arr_qts[] = { 0.01918000 ,	0.03836000 ,	0.05753000 ,	0.07671000 	,0.09589000 ,	0.11507000 	,0.13425000 ,	0.16438000 ,	0.24658000, 	0.32877000 ,	0.41096000 	,0.49315000 	,0.57534000 ,	0.65753000 ,	0.73973000 ,	0.82192000 ,	0.90411000 ,	0.98630000 ,	1.06849000 ,	1.15068000 	,1.23288000 ,	1.31507000 ,	1.39726000 ,	1.47945000 	,1.56164000 	,1.64384000 ,	1.72603000 ,	1.80822000 ,	1.89041000 ,	1.97260000 ,	2.05479000 ,2.13699000 	,2.21918000, 	2.30137000 ,	2.38356000 	,2.46575000 ,	2.54795000 ,	2.63014000 ,	2.71233000 ,	2.79452000 ,	2.87671000, 	2.95890000 };
+	double arr_q[] = { 0.00000,0.00000,0.00000,0.00000,2.33330,1.94438,1.666590,1.361110,0.907370,0.680540,4.321890,3.601590,3.087090,3.035340,2.698050,2.428250,2.517120,2.307370,2.129880,2.172190,2.027360,1.900660,2.957910,2.793580,2.646550,2.648480,2.522360,2.407710,2.456450,2.354100,2.259940,2.278180,2.193800,2.115460,2.744900,2.653400,2.567800,2.571480,2.493550,2.420220,2.451880,2.383780 };
 	for (int i = 0; i<42; i++)
 		arr_q[i] /= 100.0;
 
@@ -1733,9 +1731,12 @@ void test_calc2_mc_for_vanilla(long n)
 	//***상품타입변경
 	double spot = 297.22;
 	signed int vd = 43340;
-	signed int exd = 43705;
 	double refprice = 297.22;
 	double putstrike = spot;
+
+
+	//exd var is for instrument not market para
+	signed int exd = 43705;
 
 	double rf_for_bs = r.getIntpRate((exd - vd) / 365.0);
 	cout << "rf_for_bs " << rf_for_bs << "\n";
@@ -1756,31 +1757,31 @@ void test_calc2_mc_for_vanilla(long n)
 	EuropeanOptionMC EurPutMC_paras(refprice, exd, putpay);
 
 
-	EurPut.Calc(para);
-	EurPut2.Calc2(para);
-	EurPutMC.Calc(para,n);
+	//EurPut.Calc(para);
+	EurPut2.Calc2(paras);
+	//EurPutMC.Calc(para,n);
 	EurPutMC_paras.Calc2(paras, n);
 
 	std::cout.precision(8);
 	std::cout << std::fixed;
 
-	std::vector<double> rs = EurPut.GetResult();
-	std::vector<double> rs2 = EurPut2.GetResult();
-	vector<double> rs3 = EurPutMC.GetResult();
-	vector<double> rs4 = EurPutMC_paras.GetResult();
+	//std::vector<double> rs = EurPut.GetResult();
+	vector<double> rs_fdm_paras_calc2 = EurPut2.GetResult();
+	//vector<double> rs3 = EurPutMC.GetResult();
+	vector<double> rs_mc_paras_calc2_module= EurPutMC_paras.GetResult();
 
 	double bs_put_value = k_fmla_BSPut(spot, putstrike, rf_for_bs, div_for_bs, vol_bs, (exd - vd) / 365.0);
 	double bs_put_vega = k_fmla_BSVega(spot, putstrike, rf_for_bs, div_for_bs, vol_bs, (exd - vd) / 365.0);
 
-	cout << "result : test_calc2_mc_for_vanilla ";
-	std::cout << "pv by calc1 localvol r,q term " << rs[0] << "=%price " << rs[0] / spot * 100 << "%" << std::endl;
-	std::cout << "pv by calc2 localvol r,q term " << rs2[0] << "=%price " << rs2[0] / spot * 100 << "%" << std::endl;
-	cout << "pv by mc numMC="  <<n << "  "  << rs3[0] << "=%price " << rs3[0] / spot * 100 << "%" << std::endl;
-	cout << "pv by mc numMC(paras)=" << n << "  " << rs4[0] << "=%price " << rs4[0] / spot * 100 << "%" << std::endl;
+	cout << "result : test_calc2_mc_for_vanilla - no module \n ";
+	//std::cout << "pv by calc1 localvol r,q term " << rs[0] << "=%price " << rs[0] / spot * 100 << "%" << std::endl;
+	std::cout << "pv by calc2 localvol r,q term " << rs_fdm_paras_calc2[0] << "=%price " << rs_fdm_paras_calc2[0] / refprice * 100 << "%" << std::endl;
+	//cout << "pv by mc numMC="  <<n << "  "  << rs3[0] << "=%price " << rs3[0] / spot * 100 << "%" << std::endl;
+	cout << "pv by mc numMC(paras)=" << n << "  " << rs_mc_paras_calc2_module[0] << "=%price " << rs_mc_paras_calc2_module[0] / refprice * 100 << "%" << std::endl;
 
 	std::cout << "BS vol=" << vol_bs << "=" << vol_bs * 100 << "%" << std::endl;
-	cout << "BS put value(closed) " << bs_put_value << " error/spot " << (rs3[0] - bs_put_value) / spot << "=" << (rs[0] - bs_put_value) / spot * 10000 << " bp" << endl;
-	cout << "BS put vega(%)/spot " << bs_put_vega / 100.0 / spot << "=" << bs_put_vega * 100.0 / spot << " bp" << endl;
+	//cout << "BS put value(closed) " << bs_put_value << " error/spot " << (rs3[0] - bs_put_value) / spot << "=" << (rs[0] - bs_put_value) / spot * 10000 << " bp" << endl;
+	//cout << "BS put vega(%)/spot " << bs_put_vega / 100.0 / spot << "=" << bs_put_vega * 100.0 / spot << " bp" << endl;
 	cout << "mc vs calc2 for vanilla : price diff 2bp, 1/10 vega\n";
 }
 
@@ -2077,68 +2078,62 @@ void test_calc2_for_vanilla_param_params()
 
 void test_calc2_for_vanilla_param_params_module(MarketParameters& paras)
 {
-
-
 	//paras input
 	double refprice = paras.get_spot();
-	//double auto_ki_barrier = refprice*0.6;
 	double put_strike = refprice;
 	signed int vd = paras.get_vdate();
-	signed int exd = 44436;
-	
+	signed int exd = 43705; //1year vanilla
+	double spot = refprice;
 
-	
 	PayoffPut putpay(put_strike);
 
-	EuropeanOption EurPut_para(refprice, exd, putpay);
-	EuropeanOption EurPut_params(refprice, exd, putpay);
+
+	EuropeanOption EurPut_paras_module(refprice, exd, putpay);
 
 	//EuropeanOptionMC EurPutMC(refprice, exd, putpay);
 
-	EurPut_para.Calc2(paras);
-	EurPut_params.Calc2(paras);
+	EurPut_paras_module.Calc2(paras);
 
 	std::cout.precision(8);
 	std::cout << std::fixed;
 
-	//std::cout <<"eput:  s=" <<spot<<" "<< eput.pv(para)<<" vol " << volat.getInpVol(365/365,putstrike)<< "r " << r.getIntpRate(1.0) << " q " << q.getIntpRate(1.0) <<  std::endl;
-	//std::cout <<"ecall: "<< ecall.pv(para)<< "s= " <<spot<<" "<<" vol " <<volat.getInpVol(365/365,callstrike)<< " r " << r.getIntpRate(1.0) << " q " << q.getIntpRate(1.0) << std::endl;
-	std::vector<double> rs = EurPut_para.GetResult();
-	std::vector<double> rs2 = EurPut_params.GetResult();
-	/*double bs_put_value = k_fmla_BSPut(paras.get_spot(), put_strike , rf_for_bs, div_for_bs, vol_bs, (exd - vd) / 365.0);
-	double bs_put_vega = k_fmla_BSVega(spot, putstrike, rf_for_bs, div_for_bs, vol_bs, (exd - vd) / 365.0);*/
-	double spot = paras.get_spot();
-	cout << "\nresult : test_calc2_for_vanilla_param_params\n";
-	std::cout << "pv by calc2 para " << rs[0] << "=%price " << rs[0] / spot * 100 << "%" << std::endl;
-	std::cout << "pv by calc2 paras " << rs2[0] << "=%price " << rs2[0] / spot * 100 << "%" << std::endl;
-	//std::cout << "BS vol=" << vol_bs << "=" << vol_bs * 100 << "%" << std::endl;
-	///*cout << "BS put value(closed) " << bs_put_value << " error/spot " << (rs[0] - bs_put_value) / spot << "=" << (rs[0] - bs_put_value) / spot * 10000 << " bp" << endl;
-	//cout << "BS put vega(%)/spot " << bs_put_vega / 100.0 / spot << "=" << bs_put_vega * 100.0 / spot << " bp" << endl;*/
+	std::vector<double> rs = EurPut_paras_module.GetResult();
 
+	cout << "\nresult : test_calc2_for_vanilla_paras_module\n";
+	std::cout << "pv by calc2 para " << rs[0] << "=%price " << rs[0] / spot * 100 << "%" << std::endl;
 }
 
+void test_calc2_for_vanilla_param_params_module_inst(MarketParameters& paras, EuropeanOption& eop)
+{
+	eop.Calc2(paras);
+
+	std::cout.precision(8);
+	std::cout << std::fixed;
+
+	std::vector<double> rs = eop.GetResult();
+
+	double refprice = eop.GetRefPrice();
+	cout << "\nresult : test_calc2_for_vanilla_paras_module_instrument\n";
+	std::cout << "pv by calc2 para fdm" << rs[0] << "=%price " << rs[0] / refprice * 100 << "%" << std::endl;
+}
 
 MarketParameters set_paras()
 {
-	
-	double spot = 297.22;
-	signed int vd = 43340;
-	Vol volat(10, 17);
-
 	double arr_rts[] = { 0.002739726,0.25,0.5,0.75,1,1.5,2,2.5,3,4,5,7,10,15,20 };
 	double arr_r[] = { 1.79000,1.81000,1.74000,1.69000,1.65000,1.59000,1.55000,1.52000,1.50000,1.50000,1.50000,1.50000,1.50000,1.50000 ,1.50000 };
 
 	for (int i = 0; i<15; i++)
 		arr_r[i] /= 100.0;
 
-	double arr_qts[] = { 0.01918000,0.03836000,0.05753000,0.08493000,0.10411000,0.12329000,0.14247000,0.16712000,0.25205000,0.33425000,0.41918000,0.50411000,0.58082000,0.66575000,0.74795000,0.83288000,0.91507000,1.00000000,1.08493000,1.16712000,1.25205000,1.33425000,1.41918000,1.50411000,1.58356000,1.66849000,1.75068000,1.83562000,1.91781000,2.00274000,2.08767000,2.16986000,2.25479000,2.33699000,2.42192000,2.50685000,2.58356000,2.66849000,2.75068000,2.83562000,2.91781000,3.00274000 };
-	double arr_q[] = { 0.00000,0.00000,0.00000,2.63440,2.14907,1.81475,1.570440,1.338800,0.887680,5.313760,4.237140,3.523290,3.057960,2.997860,2.668400,2.396300,2.486970,2.275760,2.303830,2.141590,1.996320,1.886950,2.912220,2.747780,2.609920,2.609350,2.486850,2.371770,2.421350,2.318670,2.224340,2.243670,2.159160,2.090990,2.701420,2.609900,2.532410,2.534520,2.458790,2.385140,2.417350,2.348970 };
+	double arr_qts[] = { 0.01918000 ,	0.03836000 ,	0.05753000 ,	0.07671000 	,0.09589000 ,	0.11507000 	,0.13425000 ,	0.16438000 ,	0.24658000, 	0.32877000 ,	0.41096000 	,0.49315000 	,0.57534000 ,	0.65753000 ,	0.73973000 ,	0.82192000 ,	0.90411000 ,	0.98630000 ,	1.06849000 ,	1.15068000 	,1.23288000 ,	1.31507000 ,	1.39726000 ,	1.47945000 	,1.56164000 	,1.64384000 ,	1.72603000 ,	1.80822000 ,	1.89041000 ,	1.97260000 ,	2.05479000 ,2.13699000 	,2.21918000, 	2.30137000 ,	2.38356000 	,2.46575000 ,	2.54795000 ,	2.63014000 ,	2.71233000 ,	2.79452000 ,	2.87671000, 	2.95890000 };
+	double arr_q[] = { 0.00000,0.00000,0.00000,0.00000,2.33330,1.94438,1.666590,1.361110,0.907370,0.680540,4.321890,3.601590,3.087090,3.035340,2.698050,2.428250,2.517120,2.307370,2.129880,2.172190,2.027360,1.900660,2.957910,2.793580,2.646550,2.648480,2.522360,2.407710,2.456450,2.354100,2.259940,2.278180,2.193800,2.115460,2.744900,2.653400,2.567800,2.571480,2.493550,2.420220,2.451880,2.383780 };
 	for (int i = 0; i<42; i++)
 		arr_q[i] /= 100.0;
 
+	//double spot=297.22;
 	double vol_term[] = { 0.08333,0.16667,0.250000,0.500000,0.750000,1.000000,1.500000,2.000000,2.500000,3.000000 };
 	double vol_strike[] = { 178.332,193.193,208.054,222.915,237.776,252.637,267.498,282.359,297.22,312.081,326.942,341.803,356.664,371.525,386.386,401.247,416.108 };//17spot
-	
+	Vol volat(10, 17);
 	double t0[] = { 0.3484,	0.3310,	0.3135,	0.2960,	0.2778,	0.2577, 0.2279, 0.1924, 0.1641, 0.1532, 0.1618, 0.1729, 0.1807, 0.1883, 0.1968,	0.2034,	0.2090 };
 	double t1[] = { 0.3182,	0.3002,	0.2822,	0.2640,	0.2454,	0.2252,	0.2010,	0.1770,	0.1568,	0.1452,	0.1429,	0.1484,	0.1565,	0.1645,	0.1722,	0.1792,	0.1855 };
 	double t2[] = { 0.3069,	0.2883,	0.2697,	0.2509,	0.2318,	0.2118,	0.1907,	0.1699,	0.1527,	0.1432,	0.1423,	0.1476,	0.1554,	0.1634,	0.1711,	0.1782,	0.1849 };
@@ -2173,23 +2168,97 @@ MarketParameters set_paras()
 	Rate q(v_q, v_qts);
 
 
+	//double intpvol = volat.getInpVol(1.0, putstrike);  //flat interpolation use .getBSVol
+
+	//상품타입변경
+	//bool is_flat_vol = true;
+	//int hitflag = 1;
+	//long nM = 30000;
+
+	//***상품타입변경
+	double spot = 297.22;
+	signed int vd = 43340;
+	double refprice = 297.22;
+	double putstrike = spot;
+
 	return MarketParameters(vd, spot, volat, r, q);
+}
+void test_calc2_mc_vanilla_paras_module(MarketParameters& paras, long n)
+{
+	//instrument(vanilla)
+	double refprice = paras.get_spot(); //spot과 동일(거래일 평가)
+	double putstrike = refprice; //100%, ATM
+	signed int exd = paras.get_vdate()+365; //1y
+	PayoffPut putpay(putstrike);
+
+	EuropeanOption EurPut(refprice, exd, putpay);
+
+	EuropeanOptionMC EurPutMC(refprice, exd, putpay);
+	EuropeanOptionMC EurPutMC_paras(refprice, exd, putpay);
+
+
+	//EurPut.Calc(para);
+	EurPut.Calc2(paras);
+	//EurPutMC.Calc(para,n);
+	EurPutMC_paras.Calc2(paras, n);
+
+	std::cout.precision(8);
+	std::cout << std::fixed;
+
+	//std::vector<double> rs = EurPut.GetResult();
+	vector<double> rs_fdm_paras_module = EurPut.GetResult();
+	//vector<double> rs3 = EurPutMC.GetResult();
+	vector<double> rs_mc_paras_module = EurPutMC_paras.GetResult();
+
+
+	cout << "result : test_calc2_mc_vanilla_paras_module \n";
+	//std::cout << "pv by calc1 localvol r,q term " << rs[0] << "=%price " << rs[0] / spot * 100 << "%" << std::endl;
+	std::cout << "pv by calc2 localvol r,q term module " << rs_fdm_paras_module[0] << "=%price " << rs_fdm_paras_module[0] / refprice * 100 << "%" << std::endl;
+	//cout << "pv by mc numMC="  <<n << "  "  << rs3[0] << "=%price " << rs3[0] / spot * 100 << "%" << std::endl;
+	cout << "pv by mc paras module numMC(paras)=" << n << "  " << rs_mc_paras_module[0] << "=%price " << rs_mc_paras_module[0] / refprice * 100 << "%" << std::endl;
+
+}
+
+void test_calc2_mc_vanilla_paras_module_inst(MarketParameters& paras, EuropeanOptionMC& eop, long n)
+{
+	eop.Calc2(paras, n);
+
+	std::cout.precision(8);
+	std::cout << std::fixed;
+	vector<double> rs_mc_paras_module_inst = eop.GetResult();
+
+	cout << "result : test_calc2_mc_vanilla_paras_module_inst \n ";
+	cout << "pv by mc paras module numMC(paras) instrument=" << n << "  " << rs_mc_paras_module_inst[0] << "=%price " << rs_mc_paras_module_inst[0] / eop.GetRefPrice() * 100 << "%" << std::endl;
 }
 
 int main()
 {	
+	//market parameter module
 	MarketParameters paras;
 	paras=set_paras();
+	
+	//instrument 
+	unsigned int exd = paras.get_vdate() + 365; //1y vanilla
+	double refprice = 297.22;
+	double putstrike = refprice;
+	PayoffPut putpay(putstrike);
+	EuropeanOption EurPut(refprice, exd, putpay);
+	EuropeanOptionMC EurPutMC(refprice, exd, putpay);
+
+
+	/*Test*/
 	/*test cal1 vs calc2 for vanilla option*/
-	test_calc1_vs_calc2_for_vanilla();
+	//test_calc1_vs_calc2_for_vanilla();
 
 	/*test for mc vanilla	*/
 	//test_calc2_mc_for_vanilla(50000);
-	//
+	test_calc2_mc_vanilla_paras_module(paras, 50000);
+	test_calc2_mc_vanilla_paras_module_inst(paras, EurPutMC, 50000);
 
 	/*test calc2 for param vs params vanilla	*/
-	test_calc2_for_vanilla_param_params();
-	test_clac2_for_vanilla_param_params_module(paras);
+	//test_calc2_for_vanilla_param_params();  //parameter vs parameters -> outdated 
+	//test_calc2_for_vanilla_param_params_module(paras); //-> outdated
+	//test_calc2_for_vanilla_param_params_module_inst(paras, EurPut);
 
 	/*test for div transform*/
 	//test_dividend();
@@ -2198,7 +2267,7 @@ int main()
 	//test_calc2_discrete_localvol();
 	/*Test autocall Calc2 vs Calc2_paras*/
 	//test_autocall_Cal2_vs_paras();
-	test_autocall_Calc_vs_paras_paramodule(paras);
+	//test_autocall_Calc_vs_paras_paramodule(paras);
 
 
 

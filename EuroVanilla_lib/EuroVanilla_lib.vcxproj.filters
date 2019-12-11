@@ -57,6 +57,9 @@
     <ClCompile Include="..\SingleOption\EtcFunctions.cpp">
       <Filter>ext</Filter>
     </ClCompile>
+    <ClCompile Include="..\SingleOption\EuropeanOptionMC.cpp">
+      <Filter>ext</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="maintest.h">

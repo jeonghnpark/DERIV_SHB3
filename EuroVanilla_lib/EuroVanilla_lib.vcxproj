@@ -24,6 +24,7 @@
     <ClCompile Include="..\SingleOption\Dividend.cpp" />
     <ClCompile Include="..\SingleOption\EtcFunctions.cpp" />
     <ClCompile Include="..\SingleOption\EuropeanOption.cpp" />
+    <ClCompile Include="..\SingleOption\EuropeanOptionMC.cpp" />
     <ClCompile Include="..\SingleOption\MarketParam.cpp" />
     <ClCompile Include="..\SingleOption\MarketParameters.cpp" />
     <ClCompile Include="..\SingleOption\PayoffCall.cpp" />
