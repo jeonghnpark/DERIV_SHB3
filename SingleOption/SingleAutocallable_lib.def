@@ -1,0 +1,5 @@
+LIBRARY SINGLEAUTOCALLABLE_LIB
+EXPORTS
+SingleAutocallable_lib
+SingleAutocallable_discrete_dividend_lib
+SingleAutocallable_MC_lib

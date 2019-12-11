@@ -1424,9 +1424,114 @@ void test_calc2_discrete_localvol()
 
 }
 
-void test_compare_fd_mc()
+void test_autocall__fd_mc()
 {//FD와 MC차이 분석 
 // 1. ki barrier를 충분히 내려서 discrete효과를 지움
+	double arr_rts[] = { 0.002739726,0.25,0.5,0.75,1,1.5,2,2.5,3,4,5,7,10,15,20 };
+	double arr_r[] = { 1.79000,1.81000,1.74000,1.69000,1.65000,1.59000,1.55000,1.52000,1.50000,1.50000,1.50000,1.50000,1.50000,1.50000 ,1.50000 };
+
+	for (int i = 0; i<15; i++)
+		arr_r[i] /= 100.0;
+
+	double arr_qts[] = { 0.01918000 ,	0.03836000 ,	0.05753000 ,	0.07671000 	,0.09589000 ,	0.11507000 	,0.13425000 ,	0.16438000 ,	0.24658000, 	0.32877000 ,	0.41096000 	,0.49315000 	,0.57534000 ,	0.65753000 ,	0.73973000 ,	0.82192000 ,	0.90411000 ,	0.98630000 ,	1.06849000 ,	1.15068000 	,1.23288000 ,	1.31507000 ,	1.39726000 ,	1.47945000 	,1.56164000 	,1.64384000 ,	1.72603000 ,	1.80822000 ,	1.89041000 ,	1.97260000 ,	2.05479000 ,2.13699000 	,2.21918000, 	2.30137000 ,	2.38356000 	,2.46575000 ,	2.54795000 ,	2.63014000 ,	2.71233000 ,	2.79452000 ,	2.87671000, 	2.95890000 };
+	double arr_q[] = { 0.00000,0.00000,0.00000,0.00000,2.33330,1.94438,1.666590,1.361110,0.907370,0.680540,4.321890,3.601590,3.087090,3.035340,2.698050,2.428250,2.517120,2.307370,2.129880,2.172190,2.027360,1.900660,2.957910,2.793580,2.646550,2.648480,2.522360,2.407710,2.456450,2.354100,2.259940,2.278180,2.193800,2.115460,2.744900,2.653400,2.567800,2.571480,2.493550,2.420220,2.451880,2.383780 };
+	for (int i = 0; i<42; i++)
+		arr_q[i] /= 100.0;
+
+	//double spot=297.22;
+	double vol_term[] = { 0.08333,0.16667,0.250000,0.500000,0.750000,1.000000,1.500000,2.000000,2.500000,3.000000 };
+	double vol_strike[] = { 178.332,193.193,208.054,222.915,237.776,252.637,267.498,282.359,297.22,312.081,326.942,341.803,356.664,371.525,386.386,401.247,416.108 };//17spot
+	Vol volat(10, 17);
+	double t0[] = { 0.3484,	0.3310,	0.3135,	0.2960,	0.2778,	0.2577, 0.2279, 0.1924, 0.1641, 0.1532, 0.1618, 0.1729, 0.1807, 0.1883, 0.1968,	0.2034,	0.2090 };
+	double t1[] = { 0.3182,	0.3002,	0.2822,	0.2640,	0.2454,	0.2252,	0.2010,	0.1770,	0.1568,	0.1452,	0.1429,	0.1484,	0.1565,	0.1645,	0.1722,	0.1792,	0.1855 };
+	double t2[] = { 0.3069,	0.2883,	0.2697,	0.2509,	0.2318,	0.2118,	0.1907,	0.1699,	0.1527,	0.1432,	0.1423,	0.1476,	0.1554,	0.1634,	0.1711,	0.1782,	0.1849 };
+	double t3[] = { 0.2709,	0.2543,	0.2380,	0.2218,	0.2058,	0.1900,	0.1748,	0.1607,	0.1491,	0.1418,	0.1395,	0.1411,	0.1451,	0.1502,	0.1555,	0.1609,	0.1662 };
+	double t4[] = { 0.2441,	0.2300,	0.2163,	0.2029,	0.1901,	0.1778,	0.1664,	0.1562,	0.1479,	0.1423,	0.1396,	0.1394,	0.1410,	0.1437,	0.1470,	0.1506,	0.1543 };
+	double t5[] = { 0.2277,	0.2156,	0.2041,	0.1930,	0.1826,	0.1727,	0.1636,	0.1556,	0.1490,	0.1440,	0.1409,	0.1395,	0.1396,	0.1406,	0.1424,	0.1446,	0.1471 };
+	double t6[] = { 0.2073, 0.1981,	0.1895,	0.1814,	0.1739,	0.1669,	0.1606,	0.1550,	0.1503,	0.1465,	0.1436,	0.1416,	0.1404,	0.1400,	0.1401,	0.1407,	0.1417 };
+	double t7[] = { 0.1944,	0.1871,	0.1802,	0.1739,	0.1681,	0.1629,	0.1581,	0.1539,	0.1503,	0.1473,	0.1449,	0.1431,	0.1418,	0.1410,	0.1406,	0.1405,	0.1407 };
+	double t8[] = { 0.1876,	0.1815,	0.1760,	0.1709,	0.1662,	0.1619,	0.1580,	0.1546,	0.1516,	0.1490,	0.1468,	0.1451,	0.1436,	0.1426,	0.1418,	0.1413,	0.1410 };
+	double t9[] = { 0.1821,	0.1770,	0.1723,	0.1680,	0.1641,	0.1606,	0.1573,	0.1545,	0.1520,	0.1497,	0.1478,	0.1462,	0.1449,	0.1438,	0.1429,	0.1422,	0.1418 };
+
+	volat.set_vol_strike(vol_strike, 17);
+	volat.set_vol_term(vol_term, 10);
+
+	volat.set_volsurface_by_term(t0, 0, 17);
+	volat.set_volsurface_by_term(t1, 1, 17);
+	volat.set_volsurface_by_term(t2, 2, 17);
+	volat.set_volsurface_by_term(t3, 3, 17);
+	volat.set_volsurface_by_term(t4, 4, 17);
+	volat.set_volsurface_by_term(t5, 5, 17);
+	volat.set_volsurface_by_term(t6, 6, 17);
+	volat.set_volsurface_by_term(t7, 7, 17);
+	volat.set_volsurface_by_term(t8, 8, 17);
+	volat.set_volsurface_by_term(t9, 9, 17);
+
+	std::vector<double> v_rts(std::begin(arr_rts), std::end(arr_rts));
+	std::vector<double> v_r(std::begin(arr_r), std::end(arr_r));
+	std::vector<double> v_qts(std::begin(arr_qts), std::end(arr_qts));
+	std::vector<double> v_q(std::begin(arr_q), std::end(arr_q));
+
+	Rate r(v_r, v_rts);
+	Rate q(v_q, v_qts);
+
+
+	//double intpvol = volat.getInpVol(1.0, putstrike);  //flat interpolation use .getBSVol
+
+	//상품타입변경
+	//bool is_flat_vol = true;
+	//int hitflag = 1;
+
+	double refprice = 297.22;
+
+
+	//상품타입변경
+	bool is_flat_vol = false;
+	int hitflag = 0;
+	long nM = 30000;
+	double spot = 297.22;
+
+	
+	MarketParam para(43340, spot, volat, r, q);
+
+	signed int expiryDate = 44436;
+	int nb_autocall = 6;
+	signed int auto_date[7] = { -1,43524,43705,43889,44071,44255,44436 };
+	double auto_strike[7] = { -1,297.22,	297.22,	282.359	,282.359,	267.498,	267.498 };
+	double auto_coupon[7] = { -1, 0.0230,	0.0460,	0.0690,	0.0920,	0.1150,	0.1380 };
+	double auto_ki_barrier = refprice*0.6;
+	double auto_dummy_coupon = auto_coupon[6];
+
+	double auto_put_strike;
+	auto_put_strike = refprice*1.0; // if put_strike=0, notional protected
+
+	PayoffAutocallStd autoPayoff(nb_autocall, auto_date, auto_strike, auto_coupon, auto_ki_barrier, auto_put_strike, auto_dummy_coupon, refprice);
+	AutocallOption AutoKOSPI(refprice, expiryDate, autoPayoff, hitflag);
+	//AutocallOption AutoKOSPI_mc(refprice, expiryDate, autoPayoff, hitflag);
+
+
+	AutoKOSPI.Calc(para);
+	//AutoKOSPI_mc.CalcMC(para, nM);
+
+	//	AutoKOSPI.Calc(para);
+
+	std::vector<double> rs = AutoKOSPI.GetResult();
+	//std::vector<double> rs_mc = AutoKOSPI_mc.GetResult();
+
+	std::cout.precision(8);
+	std::cout << std::fixed;
+
+	cout << "\ntest_autocall__fd_mc\n";
+	std::cout << "spot " << rs[5] << std::endl;
+
+	std::cout << "pv(FD) " << (hitflag ? "hitted " : "not hit ")<<(is_flat_vol ? "flatvol" : "surfacevol ") <<"->" << rs[0] << std::endl;
+	//std::cout << "pv(MC) " << (hitflag ? "hitted " : "not hit ")<<(is_flat_vol ? "flatvol" : "surfacevol ") <<"nMC= " << nM << "-> "<<  rs_mc[0] << std::endl;
+
+
+}
+
+void test_autocall_calc2()
+{
 	double arr_rts[] = { 0.002739726,0.25,0.5,0.75,1,1.5,2,2.5,3,4,5,7,10,15,20 };
 	double arr_r[] = { 1.54,1.64,1.72,1.77,1.8,1.85,1.88,1.90,1.92,1.92,1.92,1.92,1.92,1.92,1.92 };
 	for (int i = 0; i<15; i++)
@@ -1502,7 +1607,7 @@ void test_compare_fd_mc()
 		q.set_const_rate(const_q);
 	}
 
-	
+
 	MarketParam para(43340, spot, volat, r, q);
 
 	signed int expiryDate = 44436;
@@ -1534,12 +1639,11 @@ void test_compare_fd_mc()
 
 	std::cout << "spot " << rs[5] << std::endl;
 
-	std::cout << "pv(FD) " << (hitflag ? "hitted " : "not hit ")<<(is_flat_vol ? "flatvol" : "surfacevol ") <<"->" << rs[0] << std::endl;
-	std::cout << "pv(MC) " << (hitflag ? "hitted " : "not hit ")<<(is_flat_vol ? "flatvol" : "surfacevol ") <<"nMC= " << nM << "-> "<<  rs_mc[0] << std::endl;
+	std::cout << "pv(FD) " << (hitflag ? "hitted " : "not hit ") << (is_flat_vol ? "flatvol" : "surfacevol ") << "->" << rs[0] << std::endl;
+	std::cout << "pv(MC) " << (hitflag ? "hitted " : "not hit ") << (is_flat_vol ? "flatvol" : "surfacevol ") << "nMC= " << nM << "-> " << rs_mc[0] << std::endl;
 
 
 }
-
 void test_Cal1_vs_Calc2()
 {
 	//Test Clac1 vs Calc2, for loop improvment
@@ -2252,8 +2356,8 @@ int main()
 
 	/*test for mc vanilla	*/
 	//test_calc2_mc_for_vanilla(50000);
-	test_calc2_mc_vanilla_paras_module(paras, 50000);
-	test_calc2_mc_vanilla_paras_module_inst(paras, EurPutMC, 50000);
+	//test_calc2_mc_vanilla_paras_module(paras, 50000);
+	//test_calc2_mc_vanilla_paras_module_inst(paras, EurPutMC, 50000);
 
 	/*test calc2 for param vs params vanilla	*/
 	//test_calc2_for_vanilla_param_params();  //parameter vs parameters -> outdated 
@@ -2272,7 +2376,8 @@ int main()
 
 
 	/*Value autocall analysis between FD and MC*/ 
-	//test_compare_fd_mc();
+	test_autocall__fd_mc();
+	
 
 
 

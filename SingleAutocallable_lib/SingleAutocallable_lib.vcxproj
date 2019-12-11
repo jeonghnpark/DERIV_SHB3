@@ -18,93 +18,34 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\..\LIB\klib\j_fd.cpp" />
-    <ClCompile Include="..\..\..\..\LIB\klib\k_BasicMath.cpp" />
-    <ClCompile Include="..\..\..\..\LIB\klib\k_miscellaneous.cpp" />
-    <ClCompile Include="..\..\..\..\LIB\klib\k_OptionFormula.cpp" />
-    <ClCompile Include="..\..\..\..\LIB\klib\k_probability.cpp" />
-    <ClCompile Include="AmericanOption.cpp" />
-    <ClCompile Include="AsianOption.cpp" />
-    <ClCompile Include="AutocallOption.cpp" />
-    <ClCompile Include="BarrierOption.cpp" />
-    <ClCompile Include="Dividend.cpp" />
-    <ClCompile Include="EtcFunctions.cpp" />
-    <ClCompile Include="EuropeanOption.cpp" />
-    <ClCompile Include="EuropeanOptionMC.cpp" />
-    <ClCompile Include="main5.cpp" />
-    <ClCompile Include="MarketParam.cpp" />
-    <ClCompile Include="MarketParameters.cpp" />
-    <ClCompile Include="PayoffAutocallable.cpp" />
-    <ClCompile Include="PayoffAutocallStd.cpp" />
-    <ClCompile Include="PayoffBarCUO.cpp" />
-    <ClCompile Include="PayoffBarPDO.cpp" />
-    <ClCompile Include="PayoffCall.cpp" />
-    <ClCompile Include="PayoffDigitalCall.cpp" />
-    <ClCompile Include="PayoffPut.cpp" />
-    <ClCompile Include="Rate.cpp" />
-    <ClCompile Include="UpdateAutocall.cpp" />
-    <ClCompile Include="volatility.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\LIB\klib\j_fd.h" />
-    <ClInclude Include="..\..\..\..\LIB\klib\k_BasicMath.hpp" />
-    <ClInclude Include="..\..\..\..\LIB\klib\k_miscellaneous.hpp" />
-    <ClInclude Include="..\..\..\..\LIB\klib\k_OptionFormula.hpp" />
-    <ClInclude Include="..\..\..\..\LIB\klib\k_probability.hpp" />
-    <ClInclude Include="AmericanOption.h" />
-    <ClInclude Include="AsianOption.h" />
-    <ClInclude Include="AutocallOption.h" />
-    <ClInclude Include="BarrierOption.h" />
-    <ClInclude Include="Dividend.h" />
-    <ClInclude Include="EtcFunctions.h" />
-    <ClInclude Include="EuropeanOption.h" />
-    <ClInclude Include="EuropeanOptionMC.h" />
-    <ClInclude Include="FDM.h" />
-    <ClInclude Include="MarketParam.h" />
-    <ClInclude Include="MarketParameters.h" />
-    <ClInclude Include="Payoff.h" />
-    <ClInclude Include="PayoffAutocall.h" />
-    <ClInclude Include="PayoffAutocallStd.h" />
-    <ClInclude Include="PayoffBarCUO.h" />
-    <ClInclude Include="PayoffBarPDO.h" />
-    <ClInclude Include="PayoffBarrier.h" />
-    <ClInclude Include="PayoffCall.h" />
-    <ClInclude Include="PayoffCUO.h" />
-    <ClInclude Include="PayoffDigitalCall.h" />
-    <ClInclude Include="PayoffPut.h" />
-    <ClInclude Include="Rate.h" />
-    <ClInclude Include="UpdateAutocall.h" />
-    <ClInclude Include="volatility.h" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{950E2446-085B-4F61-B7BB-FDD02E6A0AE4}</ProjectGuid>
+    <ProjectGuid>{6E3105FC-E4B0-495F-8493-F28500144E8C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>SingleOption</RootNamespace>
+    <RootNamespace>SingleAutocallable_lib</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -146,14 +87,13 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\LIB\gsl_lawrence\include;D:\LIB\klib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SINGLEAUTOCALLABLE_LIB_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\LIB\klib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\LIB\gsl_lawrence\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>cblas.lib;gsl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>SingleAutocallable_lib.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -162,11 +102,10 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\LIB\gsl_lawrence\include;D:\LIB\klib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;SINGLEAUTOCALLABLE_LIB_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -178,10 +117,10 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SINGLEAUTOCALLABLE_LIB_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -195,15 +134,44 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;SINGLEAUTOCALLABLE_LIB_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\LIB\klib\j_fd.cpp" />
+    <ClCompile Include="..\..\..\..\LIB\klib\k_miscellaneous.cpp" />
+    <ClCompile Include="..\SingleOption\AutocallOption.cpp" />
+    <ClCompile Include="..\SingleOption\Dividend.cpp" />
+    <ClCompile Include="..\SingleOption\EtcFunctions.cpp" />
+    <ClCompile Include="..\SingleOption\MarketParam.cpp" />
+    <ClCompile Include="..\SingleOption\MarketParameters.cpp" />
+    <ClCompile Include="..\SingleOption\PayoffAutocallStd.cpp" />
+    <ClCompile Include="..\SingleOption\Rate.cpp" />
+    <ClCompile Include="..\SingleOption\volatility.cpp" />
+    <ClCompile Include="SingleAutocallable_lib.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SingleAutocallable_lib.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\LIB\klib\j_fd.h" />
+    <ClInclude Include="..\..\..\..\LIB\klib\k_miscellaneous.hpp" />
+    <ClInclude Include="..\SingleOption\AutocallOption.h" />
+    <ClInclude Include="..\SingleOption\Dividend.h" />
+    <ClInclude Include="..\SingleOption\EtcFunctions.h" />
+    <ClInclude Include="..\SingleOption\MarketParam.h" />
+    <ClInclude Include="..\SingleOption\MarketParameters.h" />
+    <ClInclude Include="..\SingleOption\PayoffAutocallStd.h" />
+    <ClInclude Include="..\SingleOption\Rate.h" />
+    <ClInclude Include="..\SingleOption\volatility.h" />
+    <ClInclude Include="SingleAutocallable_lib.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
