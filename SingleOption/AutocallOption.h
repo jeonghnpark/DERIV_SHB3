@@ -11,7 +11,8 @@ public:
 	double Calc(MarketParam& para);//interpolation optimized
 	double Calc(MarketParameters& paras);//class GRID under construction...
 	double CalcMC(MarketParam& para, long nMC=1000); //r,div inerpolation not optimized
-	double CalcMC2(MarketParam& para, long nMC = 1000);//r,div interpolation optimized
+	double CalcMC_calc2(MarketParam & para, long nMC = 1000); //r,div optimized
+	
 	signed int GetExpiryd() const;
 	double GetRefPrice() const;
 	std::vector<double> GetResult() const;

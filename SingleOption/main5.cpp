@@ -1048,237 +1048,9 @@ void test_autocall_mc(double spot, int hitflag = 0, long nMC=30000, FvsS fvss=su
 }
 
 
-void test_autocall_mc2(double spot, int hitflag = 0, long nMC = 30000, FvsS fvss = surface)
-{
-	double arr_rts[] = { 0.002739726,0.25,0.5,0.75,1,1.5,2,2.5,3,4,5,7,10,15,20 };
-	double arr_r[] = { 1.54,1.64,1.72,1.77,1.8,1.85,1.88,1.90,1.92,1.92,1.92,1.92,1.92,1.92,1.92 };
-	for (int i = 0; i<15; i++)
-		arr_r[i] /= 100.0;
-
-	double arr_qts[] = { 0.0191780821917808,0.038356164,0.057534247,0.084931507,0.104109589,0.123287671,0.142465753,0.167123288,0.252054795,0.334246575,0.419178082,0.504109589,0.580821918,0.665753425,0.747945205,0.832876712,0.915068493,1,1.084931507,1.167123288,1.252054795,1.334246575,1.419178082,1.504109589,1.583561644,1.668493151,1.750684932,1.835616438,1.917808219,	2.002739726	,2.087671233,2.169863014,2.254794521,2.336986301,2.421917808,2.506849315,2.583561644,2.668493151,2.750684932,2.835616438,2.917808219,3.002739726 };
-	double arr_q[] = { 0.00000,0.00000,0.00000,2.57097, 2.09737,1.77112,1.53270, 1.30656 ,0.86631 ,5.16283, 4.11677,3.42318,3.34816,2.92103,2.60139,2.67302,2.43293,2.22630,2.26258, 2.10325,1.96057,3.00733,2.82806 ,2.66837, 2.53449,2.53675,2.41823 ,2.46233 ,2.35680 ,2.25685 ,2.27446 ,2.18831 ,2.10588 ,2.66917,2.57598,2.48871,2.41481,2.42319,2.35115 ,2.38170 ,2.31461 ,2.24914 };
-	for (int i = 0; i<42; i++)
-		arr_q[i] /= 100.0;
-
-	//double spot=297.22;
-	double vol_term[] = { 0.08493150,0.16712330,0.25205480,0.50410960,0.74794520,1.00000000,1.50410960,2.00273970,2.50684930,3.00273970 }; //10terms
-	double vol_strike[] = { 178.332,193.193,208.054,222.915,237.776,252.637,267.498,282.359,297.22,312.081,326.942,341.803,356.664,371.525,386.386,401.247,416.108 };//17spot
-	Vol volat(10, 17);
-	double t0[] = { 0.3095,0.2907,0.2719,0.2528,0.2331,0.2136,0.1816,0.1388,0.1081,0.105,0.1296,0.1606,0.1795,0.1892,0.1978,0.2057,0.2129 };
-	double t1[] = { 0.2807,0.2619,0.2431,0.2239,0.2042,0.1845,0.1586,0.1285,0.1095,0.1027,0.1076,0.1306,0.1518,0.1634,0.172,0.1798,0.1869 };
-	double t2[] = { 0.2621,0.2448,0.2274,0.2098,0.1916,0.172,0.1505,0.128,0.1131,0.1076,0.1125,0.1264,0.1413,0.1517,0.16,0.1676,0.1745 };
-	double t3[] = { 0.2376,0.2219,0.2061,0.1902,0.1741,0.1576,0.141,0.1261,0.1169,0.1161,0.1215,0.1292,0.1371,0.1447,0.1517,0.1583,0.1644 };
-	double t4[] = { 0.2286,0.214,0.1997,0.1854,0.1712,0.1571,0.1437,0.1319,0.1238,0.1211,0.1231,0.128,0.1339,0.14,0.146,0.1517,0.1571 };
-	double t5[] = { 0.221,0.2077,0.1946,0.1819,0.1694,0.1574,0.1462,0.1366,0.1295,0.1261,0.1261,0.1287,0.1327,0.1374,0.1422,0.1469,0.1516 };
-	double t6[] = { 0.2063,0.1949,0.1841,0.1737,0.1639,0.1549,0.1469,0.1403,0.1355,0.1329,0.1322,0.1331,0.1352,0.1379,0.1409,0.1442,0.1475 };
-	double t7[] = { 0.1993,0.1897,0.1806,0.1721,0.1642,0.157,0.1506,0.1453,0.1411,0.1383,0.1368,0.1364,0.1369,0.1381,0.1398,0.1418,0.144 };
-	double t8[] = { 0.1927,0.1844,0.1768,0.1696,0.1631,0.1572,0.1521,0.1477,0.1443,0.1418,0.1402,0.1394,0.1393,0.1398,0.1407,0.1419,0.1434 };
-	double t9[] = { 0.1892,0.182,0.1754,0.1692,0.1637,0.1586,0.1542,0.1505,0.1474,0.145,0.1432,0.1421,0.1415,0.1414,0.1417,0.1423,0.1431 };
-
-	volat.set_vol_strike(vol_strike, 17);
-	volat.set_vol_term(vol_term, 10);
-
-	volat.set_volsurface_by_term(t0, 0, 17);
-	volat.set_volsurface_by_term(t1, 1, 17);
-	volat.set_volsurface_by_term(t2, 2, 17);
-	volat.set_volsurface_by_term(t3, 3, 17);
-	volat.set_volsurface_by_term(t4, 4, 17);
-	volat.set_volsurface_by_term(t5, 5, 17);
-	volat.set_volsurface_by_term(t6, 6, 17);
-	volat.set_volsurface_by_term(t7, 7, 17);
-	volat.set_volsurface_by_term(t8, 8, 17);
-	volat.set_volsurface_by_term(t9, 9, 17);
-
-	std::vector<double> v_rts(std::begin(arr_rts), std::end(arr_rts));
-	std::vector<double> v_r(std::begin(arr_r), std::end(arr_r));
-	std::vector<double> v_qts(std::begin(arr_qts), std::end(arr_qts));
-	std::vector<double> v_q(std::begin(arr_q), std::end(arr_q));
-
-	Rate r(v_r, v_rts);
-	Rate q(v_q, v_qts);
-
-	double refprice = 297.22;
-	double rf_for_bs = r.getIntpRate(1.0);
-	double div_for_bs = q.getIntpRate(1.0);
-	double putstrike = 297.22*0.9;
-	double callstrike = 297.22*1.0;
-	double upbarrier = 297.22*1.2;
-	double intpvol = volat.getInpVol(1.0, putstrike);
-	double rebate = 0.0;
-
-	double const_vol = volat.getBSVol(1.0, 297.22);
-	double const_rf = r.getIntpRate(1.0);
-	double const_q = q.getIntpRate(1.0);
-
-	if (fvss == flat) {
-		volat.set_const_vol(const_vol);
-		r.set_const_rate(const_rf);
-		q.set_const_rate(const_q);
-	}
-	MarketParam para(43340, spot, volat, r, q);
-	
-	signed int exd = 44436;
-	int nb_autocall = 6;
-	signed int auto_date[7] = { -1,43524,43705,43889,44071,44255,44436 };
-	double auto_strike[7] = { -1,297.22,297.22,282.359,282.359,267.498,267.498};
-	double auto_coupon[7] = { -1, 0.0230,0.0460,0.0690,0.0920,0.1150,0.1380};
-	double auto_ki_barrier = refprice*0.6;
-	double auto_dummy_coupon = auto_coupon[6];
-
-	double auto_put_strike;
-	auto_put_strike = refprice; // if put_strike=0, notional protected
-
-	PayoffAutocallStd autoPayoff(nb_autocall, auto_date, auto_strike, auto_coupon, auto_ki_barrier, auto_put_strike, auto_dummy_coupon, refprice);
-	AutocallOption AutoKOSPI(refprice, exd, autoPayoff, hitflag);
-	AutoKOSPI.CalcMC2(para, nMC);
-	std::vector<double> rs_auto = AutoKOSPI.GetResult();
-
-	std::cout.precision(8);
-	std::cout << std::fixed;
-
-	std::cout << "\npv(MC2) " << (hitflag ? "hitted  " : "not hit  ") << rs_auto[10] << std::endl;
-	//std::cout << "delta " << rs_auto[1] << std::endl;
-	//std::cout << "gamma " << rs_auto[2] << std::endl;
-	std::cout << "spot " << rs_auto[5] << std::endl;
-	std::cout << "atm vol at ref " << volat.getBSVol(1.0, refprice) << std::endl;
-
-	//const double ds = 297.22*0.01;
-
-	//Vol volat_up(volat);
-	//volat_up.Vol_up(0.01);
-	//MarketParam para_volup(0, spot, volat_up, r, q);
-	//AutocallOption AutoKOSPI_vega(refprice, exd, autoPayoff, hitflag);
-	//AutoKOSPI_vega.CalcMC2(para_volup, nMC);
 
 
-	//std::vector<double> rs_vega = AutoKOSPI_vega.GetResult();
-	//std::cout << "\npv(for vega)  " << (hitflag ? "hitted  " : "not hit  ") << rs_vega[10] << std::endl;
-	////std::cout << "delta(for vega) " << rs_vega[1] << std::endl;
-	////std::cout << "gamma(for vega) " << rs_vega[2] << std::endl;
-	////std::cout << "spot(for vega) " << rs_vega[5] << std::endl;
-	//std::cout << "BS vol(for vega)=" << volat_up.getBSVol(1.0, callstrike) << std::endl;
-	////std::cout << "\n";
 
-	//std::cout << "vega(for vega) " << rs_vega[10] - rs_auto[10] << std::endl;
-}
-
-
-void test_autocall_mc2_simple(double spot, int hitflag = 0, long nMC = 30000, FvsS fvss = surface)
-{
-	double arr_rts[] = { 0.002739726,0.25,0.5,0.75,1,1.5,2,2.5,3,4,5,7,10,15,20 };
-	//double arr_r[] = { 1.54,1.64,1.72,1.77,1.8,1.85,1.88,1.90,1.92,1.92,1.92,1.92,1.92,1.92,1.92 };
-	double arr_r[] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
-
-	for (int i = 0; i<15; i++)
-		arr_r[i] /= 100.0;
-
-	double arr_qts[] = { 0.0191780821917808,0.038356164,0.057534247,0.084931507,0.104109589,0.123287671,0.142465753,0.167123288,0.252054795,0.334246575,0.419178082,0.504109589,0.580821918,0.665753425,0.747945205,0.832876712,0.915068493,1,1.084931507,1.167123288,1.252054795,1.334246575,1.419178082,1.504109589,1.583561644,1.668493151,1.750684932,1.835616438,1.917808219,	2.002739726	,2.087671233,2.169863014,2.254794521,2.336986301,2.421917808,2.506849315,2.583561644,2.668493151,2.750684932,2.835616438,2.917808219,3.002739726 };
-	double arr_q[] = { 0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
-	for (int i = 0; i<42; i++)
-		arr_q[i] /= 100.0;
-
-	//double spot=297.22;
-	double vol_term[] = { 0.08493150,0.16712330,0.25205480,0.50410960,0.74794520,1.00000000,1.50410960,2.00273970,2.50684930,3.00273970 }; //10terms
-	double vol_strike[] = { 178.332,193.193,208.054,222.915,237.776,252.637,267.498,282.359,297.22,312.081,326.942,341.803,356.664,371.525,386.386,401.247,416.108 };//17spot
-	Vol volat(10, 17);
-	double t0[] = { 0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15 };
-	double t1[] = { 0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15 };
-	double t2[] = { 0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15 };
-	double t3[] = { 0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15 };
-	double t4[] = { 0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15 };
-	double t5[] = { 0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15 };
-	double t6[] = { 0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15 };
-	double t7[] = { 0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15 };
-	double t8[] = { 0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15 };
-	double t9[] = { 0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15 };
-
-
-	volat.set_vol_strike(vol_strike, 17);
-	volat.set_vol_term(vol_term, 10);
-
-	volat.set_volsurface_by_term(t0, 0, 17);
-	volat.set_volsurface_by_term(t1, 1, 17);
-	volat.set_volsurface_by_term(t2, 2, 17);
-	volat.set_volsurface_by_term(t3, 3, 17);
-	volat.set_volsurface_by_term(t4, 4, 17);
-	volat.set_volsurface_by_term(t5, 5, 17);
-	volat.set_volsurface_by_term(t6, 6, 17);
-	volat.set_volsurface_by_term(t7, 7, 17);
-	volat.set_volsurface_by_term(t8, 8, 17);
-	volat.set_volsurface_by_term(t9, 9, 17);
-
-	std::vector<double> v_rts(std::begin(arr_rts), std::end(arr_rts));
-	std::vector<double> v_r(std::begin(arr_r), std::end(arr_r));
-	std::vector<double> v_qts(std::begin(arr_qts), std::end(arr_qts));
-	std::vector<double> v_q(std::begin(arr_q), std::end(arr_q));
-
-	Rate r(v_r, v_rts);
-	Rate q(v_q, v_qts);
-
-	double refprice = 297.22;
-	double rf_for_bs = r.getIntpRate(1.0);
-	double div_for_bs = q.getIntpRate(1.0);
-	double putstrike = 297.22*0.9;
-	double callstrike = 297.22*1.0;
-	double upbarrier = 297.22*1.2;
-	double intpvol = volat.getInpVol(1.0, putstrike);
-	double rebate = 0.0;
-
-	double const_vol = volat.getBSVol(1.0, 297.22);
-	double const_rf = r.getIntpRate(1.0);
-	double const_q = q.getIntpRate(1.0);
-
-	if (fvss == flat) {
-		volat.set_const_vol(const_vol);
-		r.set_const_rate(const_rf);
-		q.set_const_rate(const_q);
-	}
-	MarketParam para(43340, spot, volat, r, q);
-
-	signed int exd = 44436;
-	int nb_autocall = 6;
-	signed int auto_date[7] = { -1,43524,43705,43889,44071,44255,44436 };
-	double auto_strike[7] = { -1,297.22,297.22,282.359,282.359,267.498,267.498 };
-	double auto_coupon[7] = { -1, 0.0230,0.0460,0.0690,0.0920,0.1150,0.1380 };
-	double auto_ki_barrier = refprice*0.6;
-	double auto_dummy_coupon = auto_coupon[6];
-
-	double auto_put_strike;
-	auto_put_strike = refprice; // if put_strike=0, notional protected
-
-	PayoffAutocallStd autoPayoff(nb_autocall, auto_date, auto_strike, auto_coupon, auto_ki_barrier, auto_put_strike, auto_dummy_coupon, refprice);
-	AutocallOption AutoKOSPI(refprice, exd, autoPayoff, hitflag);
-	AutoKOSPI.CalcMC2(para, nMC);
-	std::vector<double> rs_auto = AutoKOSPI.GetResult();
-
-	std::cout.precision(8);
-	std::cout << std::fixed;
-
-	std::cout << "\npv(MC2) " << (hitflag ? "hitted  " : "not hit  ") << rs_auto[10] << std::endl;
-	//std::cout << "delta " << rs_auto[1] << std::endl;
-	//std::cout << "gamma " << rs_auto[2] << std::endl;
-	std::cout << "spot " << rs_auto[5] << std::endl;
-	std::cout << "atm vol at ref " << volat.getBSVol(1.0, refprice) << std::endl;
-
-	//const double ds = 297.22*0.01;
-
-	//Vol volat_up(volat);
-	//volat_up.Vol_up(0.01);
-	//MarketParam para_volup(0, spot, volat_up, r, q);
-	//AutocallOption AutoKOSPI_vega(refprice, exd, autoPayoff, hitflag);
-	//AutoKOSPI_vega.CalcMC2(para_volup, nMC);
-
-
-	//std::vector<double> rs_vega = AutoKOSPI_vega.GetResult();
-	//std::cout << "\npv(for vega)  " << (hitflag ? "hitted  " : "not hit  ") << rs_vega[10] << std::endl;
-	////std::cout << "delta(for vega) " << rs_vega[1] << std::endl;
-	////std::cout << "gamma(for vega) " << rs_vega[2] << std::endl;
-	////std::cout << "spot(for vega) " << rs_vega[5] << std::endl;
-	//std::cout << "BS vol(for vega)=" << volat_up.getBSVol(1.0, callstrike) << std::endl;
-	////std::cout << "\n";
-
-	//std::cout << "vega(for vega) " << rs_vega[10] - rs_auto[10] << std::endl;
-}
 void test_dividend()
 {
 	vector<signed int> divexdate = { 43278,43370,43461,43554,43645,43736,43823,43828,43920,44011,44103,44192,44194,44285,44376,44468,44557,44559,44650,44741,44833,44922,44924 };
@@ -1488,7 +1260,7 @@ void test_autocall__fd_mc()
 	//상품타입변경
 	bool is_flat_vol = false;
 	int hitflag = 0;
-	long nM = 30000;
+	
 	double spot = 297.22;
 
 	
@@ -1507,16 +1279,18 @@ void test_autocall__fd_mc()
 
 	PayoffAutocallStd autoPayoff(nb_autocall, auto_date, auto_strike, auto_coupon, auto_ki_barrier, auto_put_strike, auto_dummy_coupon, refprice);
 	AutocallOption AutoKOSPI(refprice, expiryDate, autoPayoff, hitflag);
-	//AutocallOption AutoKOSPI_mc(refprice, expiryDate, autoPayoff, hitflag);
+	AutocallOption AutoKOSPI_mc(refprice, expiryDate, autoPayoff, hitflag);
 
-
+	long nM = 1000;
 	AutoKOSPI.Calc(para);
 	//AutoKOSPI_mc.CalcMC(para, nM);
+	AutoKOSPI_mc.CalcMC_calc2(para, nM);
+
 
 	//	AutoKOSPI.Calc(para);
 
 	std::vector<double> rs = AutoKOSPI.GetResult();
-	//std::vector<double> rs_mc = AutoKOSPI_mc.GetResult();
+	std::vector<double> rs_mc = AutoKOSPI_mc.GetResult();
 
 	std::cout.precision(8);
 	std::cout << std::fixed;
@@ -1525,7 +1299,7 @@ void test_autocall__fd_mc()
 	std::cout << "spot " << rs[5] << std::endl;
 
 	std::cout << "pv(FD) " << (hitflag ? "hitted " : "not hit ")<<(is_flat_vol ? "flatvol" : "surfacevol ") <<"->" << rs[0] << std::endl;
-	//std::cout << "pv(MC) " << (hitflag ? "hitted " : "not hit ")<<(is_flat_vol ? "flatvol" : "surfacevol ") <<"nMC= " << nM << "-> "<<  rs_mc[0] << std::endl;
+	std::cout << "pv(MC) " << (hitflag ? "hitted " : "not hit ")<<(is_flat_vol ? "flatvol" : "surfacevol ") <<"nMC= " << nM << "-> "<<  rs_mc[0] << std::endl;
 
 
 }
@@ -2337,6 +2111,10 @@ void test_calc2_mc_vanilla_paras_module_inst(MarketParameters& paras, EuropeanOp
 
 int main()
 {	
+
+	using clock = std::chrono::system_clock;
+	using sec = std::chrono::duration<double>;
+
 	//market parameter module
 	MarketParameters paras;
 	paras=set_paras();
@@ -2376,12 +2154,11 @@ int main()
 
 
 	/*Value autocall analysis between FD and MC*/ 
-	test_autocall__fd_mc();
 	
-
-
-
-
+	const auto before = clock::now();
+	test_autocall__fd_mc();
+	const sec duration = clock::now() - before;
+	std::cout << "It took " << duration.count() << "s" << std::endl;
 
 
 

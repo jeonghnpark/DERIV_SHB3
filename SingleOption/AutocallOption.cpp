@@ -707,7 +707,7 @@ double AutocallOption::Calc(MarketParameters & paras)
 	return pv;
 }
 
-double AutocallOption::CalcMC2(MarketParam & para, long numMC_)
+double AutocallOption::CalcMC_calc2(MarketParam & para, long numMC_)
 {
 	double s0 = para.get_spot();
 	Rate R = para.get_rfrate();
@@ -757,6 +757,10 @@ double AutocallOption::CalcMC2(MarketParam & para, long numMC_)
 
 	for (long i = 0; i<numMC_; i++)
 	{
+		if (i % (numMC_ / 50) == 0) {
+			cout << "now " << i << endl;
+		}
+
 		s_tmp = s0;
 		tmpKIFlag = hitflag;
 
@@ -812,7 +816,7 @@ double AutocallOption::CalcMC2(MarketParam & para, long numMC_)
 		npv += mcvalues[i];
 	npv /= numMC_;
 
-	result[10] = npv;
+	result[0] = npv;
 	result[5] = s0;
 
 	delete[] mcvalues;
@@ -861,9 +865,14 @@ double AutocallOption::CalcMC(MarketParam & para, long numMC_)
 	int tmpKIFlag;
 	int daydivide_ = 1;
 
+	double dt = 1 / 365.0;
 
 	for (long i = 0; i<numMC_; i++)
 	{
+		if (i % (numMC_ / 50) == 0) {
+			cout << "now " << i << endl;
+		}
+
 		s_tmp = s0;
 	
 		tmpKIFlag = hitflag;
@@ -871,7 +880,7 @@ double AutocallOption::CalcMC(MarketParam & para, long numMC_)
 		for (int k = 1; k <= nb_autocall; k++) {
 			for (signed int t = std::max(autocall_date[k - 1], vd) + 1; t <= autocall_date[k]; t++) {
 				double tau = (t - vd) / 365.0;
-				double dt = 1 / 365.0;
+				
 
 				double short_vol = vol.lvol(tau, s_tmp);
 				double r_forward = R.getForward(tau);
@@ -939,6 +948,8 @@ double AutocallOption::CalcMC(MarketParam & para, long numMC_)
 
 	return npv;
 }
+
+
 
 signed int AutocallOption::GetExpiryd() const
 {
