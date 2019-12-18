@@ -52,6 +52,12 @@ double MarketParameters::get_Lvol(int i_t, int i_k) const
 	return vol.get_Lvol(i_t, i_k);
 }
 
+double MarketParameters::get_Lvol_hybrid(int i_t, double s_axis) const
+{
+	int i_k = find_index_spot(s_axis);
+	return vol.get_Lvol(i_t, i_k);
+}
+
 double MarketParameters::get_Lvol_up(int i_t, int i_k) const
 {
 	return vol.get_Lvol(i_t, i_k);

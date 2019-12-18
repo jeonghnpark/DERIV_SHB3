@@ -39,12 +39,11 @@ public:
 	signed int get_vdate() const { return vdate; }
 
 	void set_spot(double _s) { spot = _s; }
-	//double get_Lvol()
-	//double get_Lvol(int i_t, int i_k) const;
 	void calcLV(); 
 
-	double lvol(double t_axis, double s_axis) const;
-	double get_Lvol(int i_t, int i_k) const;
+	double lvol(double t_axis, double s_axis) const; //search local vol from real input(time, spot)
+	double get_Lvol(int i_t, int i_k) const; //earch local vol from indices
+	double get_Lvol_hybrid(int i_t, double s_axis) const;
 
 	double lvol_up(double t_axis, double s_axis) const;
 	double get_Lvol_up(int i_t, int i_k) const;
@@ -54,5 +53,5 @@ public:
 
 	int find_index_spot(double target) const;
 	int find_index_term(double target) const;
-	//void print_rate() const;
+
 };

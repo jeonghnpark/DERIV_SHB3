@@ -1425,6 +1425,25 @@ void test_autocall__fd_inst_swip_first(MarketParameters& paras, AutocallOption& 
 	//std::cout << "pv(MC) " << (autoop.GetHitFlag() ? "hitted " : "not hit ") << "nMC= " << nM << "-> " << rs_mc[0] << std::endl;
 }
 
+void test_autocall__mc_inst_swip_first_time(MarketParameters& paras, AutocallOption& autoop, long nM=1000)
+{//setpara
+	double spot = paras.get_spot();
+	//autoop.Calc(paras);
+	//std::vector<double> rs = autoop.GetResult();
+
+	autoop.CalcMC_calc2(paras, nM);
+	std::vector<double> rs_mc = autoop.GetResult();
+
+	std::cout.precision(8);
+	std::cout << std::fixed;
+
+	//std::cout << "spot " << rs[5] << std::endl;
+	std::cout << "spot " << rs_mc[5] << std::endl;
+
+	//std::cout << "pv(FD) " << (autoop.GetHitFlag() ? "hitted " : "not hit ") << "->" << rs[0] << std::endl;
+	std::cout << "pv(MC) " << (autoop.GetHitFlag() ? "hitted " : "not hit ") << "nMC= " << nM << "-> " << rs_mc[0] << std::endl;
+}
+
 void test_autocall__fd_mc_inst_swip_first(MarketParam& para, AutocallOption& autoop)
 {
 	double spot = para.get_spot();
@@ -2565,11 +2584,16 @@ int main()
 	//std::cout << "test_autocall__fd_mc_inst(paras, AutoKOSPI) : It took " << duration.count() << "s" << std::endl;
 
 	//
-	before = clock::now();
-	test_autocall__fd_inst_swip_first(paras, AutoKOSPI);
-	duration = clock::now() - before;
-	std::cout << "test_autocall__fd_inst_swip_first(paras, AutoKOSPI, 1000); : It took " << duration.count() << "s" << std::endl;
+	//before = clock::now();
+	//test_autocall__fd_inst_swip_first(paras, AutoKOSPI);
+	//duration = clock::now() - before;
+	//std::cout << "test_autocall__fd_inst_swip_first(paras, AutoKOSPI, 1000); : It took " << duration.count() << "s" << std::endl;
 
+	before = clock::now();
+	long nM = 1000;
+	test_autocall__mc_inst_swip_first_time(paras, AutoKOSPI,nM);
+	duration = clock::now() - before;
+	std::cout << "test_autocall__fd_inst_swip_first(paras, AutoKOSPI, nM); nM="<<nM << " It took "  << duration.count() << "s" << std::endl;
 
 
 

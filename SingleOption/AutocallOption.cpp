@@ -557,6 +557,7 @@ double AutocallOption::Calc(MarketParameters & paras)
 	}
 
 	double dt = 1 / 365.0; 
+
 	int *idxS = new int[maxassetnodeindex + 1];
 	int *idxT = new signed int[autocall_date[nb_autocall] - vd + 1];
 	for (int i = 0; i <= maxassetnodeindex; i++) {
@@ -874,6 +875,16 @@ double AutocallOption::CalcMC_calc2(MarketParameters & paras, long numMC_)
 
 	double dt = 1 / 365.0;
 
+	//int *idxS = new int[maxassetnodeindex + 1];
+	int *idxT = new signed int[autocall_date[nb_autocall] - vd + 1];
+	//for (int i = 0; i <= maxassetnodeindex; i++) {
+	//	idxS[i] = paras.find_index_spot(px[i]);
+	//}
+
+	for (int tfv = 0; tfv <= autocall_date[nb_autocall] - vd; tfv++) {
+		idxT[tfv] = paras.find_index_term(tfv / 365.0);
+	}
+
 	for (long i = 0; i<numMC_; i++)
 	{
 		if (i % (numMC_ / 50) == 0) {
@@ -886,7 +897,8 @@ double AutocallOption::CalcMC_calc2(MarketParameters & paras, long numMC_)
 		for (int k = 1; k <= nb_autocall; k++) {
 			for (signed int t = std::max(autocall_date[k - 1], vd) + 1; t <= autocall_date[k]; t++) {
 
-				double short_vol = paras.lvol(tau_p[t - vd], s_tmp);
+				//double short_vol = paras.lvol(tau_p[t - vd], s_tmp);
+				double short_vol = paras.get_Lvol_hybrid(idxT[t - vd], s_tmp);
 
 				double drift = (r_forward_p[t - vd] - q_forward_p[t - vd] - 0.5*short_vol*short_vol)*dt;
 				double diff = short_vol*std::sqrt(dt);
