@@ -260,7 +260,6 @@ double AutocallOption::Calc(MarketParam & para)
 	double *vnew_up = new double[maxassetnodeindex + 1];
 	double *vnew_down = new double[maxassetnodeindex + 1];
 
-
 	double *unew = new double[maxassetnodeindex + 1];
 	double *unew_up = new double[maxassetnodeindex + 1];
 	double *unew_down = new double[maxassetnodeindex + 1];
@@ -268,7 +267,6 @@ double AutocallOption::Calc(MarketParam & para)
 	double *A = new double[maxassetnodeindex + 1];
 	double *A_up = new double[maxassetnodeindex + 1];
 	double *A_down = new double[maxassetnodeindex + 1];
-
 
 	double *B = new double[maxassetnodeindex + 1];
 	double *B_up = new double[maxassetnodeindex + 1];
@@ -313,6 +311,7 @@ double AutocallOption::Calc(MarketParam & para)
 	}
 
 	double dt = 1 / 365.0;
+
 	int *idxS = new int[maxassetnodeindex + 1];
 	int *idxT = new signed int[autocall_date[nb_autocall]-vd + 1];
 	for (int i = 0; i <= maxassetnodeindex; i++) {
@@ -322,7 +321,6 @@ double AutocallOption::Calc(MarketParam & para)
 	for (int tfv = 0; tfv <= autocall_date[nb_autocall] - vd; tfv++) {
 		idxT[tfv] = vol.find_index_term(tfv/365.0);
 	}
-
 
 	for (int k = nb_autocall; k > 0; k--) {
 		for (t = autocall_date[k]; t >= std::max(vd + 1, autocall_date[k - 1] + 1); t--) {
@@ -341,12 +339,12 @@ double AutocallOption::Calc(MarketParam & para)
 			}
 
 			for (int i = 0; i <= maxassetnodeindex; i++) {
-				//double short_vol = vol.lvol(tau_p[t-vd], px[i]);
-				//double short_vol_up = vol.lvol_up(tau_p[t - vd], px[i]);
-				//double short_vol_down = vol.lvol_down(tau_p[t - vd], px[i]);
-				double short_vol = vol.get_Lvol(idxT[t - vd], idxS[i]);
-				double short_vol_up = vol.get_Lvol_up(idxT[t - vd], idxS[i]);
-				double short_vol_down = vol.get_Lvol_down(idxT[t - vd], idxS[i]);
+				double short_vol = vol.lvol(tau_p[t-vd], px[i]);
+				double short_vol_up = vol.lvol_up(tau_p[t - vd], px[i]);
+				double short_vol_down = vol.lvol_down(tau_p[t - vd], px[i]);
+				//double short_vol = vol.get_Lvol(idxT[t - vd], idxS[i]);
+				//double short_vol_up = vol.get_Lvol_up(idxT[t - vd], idxS[i]);
+				//double short_vol_down = vol.get_Lvol_down(idxT[t - vd], idxS[i]);
 
 				alpha[i] = 0.5*short_vol*short_vol*dt;
 				alpha_up[i] = 0.5*short_vol_up*short_vol_up*dt;
@@ -555,10 +553,6 @@ double AutocallOption::Calc(MarketParameters & paras)
 		r_forward_p[i] = paras.getForward(tau_p[i]);
 		r_dc_p[i] = paras.getIntpRate(tau_p[i]);
 		q_forward_p[i] = paras.getDivForward(tau_p[i]);
-		//temp test
-		//r_forward_p[i] = 0.0;
-		//r_dc_p[i] = 0.0;
-		//q_forward_p[i] = 0.0;
 
 	}
 
@@ -584,9 +578,12 @@ double AutocallOption::Calc(MarketParameters & paras)
 			}
 
 			for (int i = 0; i <= maxassetnodeindex; i++) {
-				double short_vol = paras.lvol(idxT[t - vd], idxS[i]);
-				double short_vol_up = paras.lvol_up(idxT[t - vd], idxS[i]);
-				double short_vol_down = paras.lvol_down(idxT[t - vd], idxS[i]);
+				//double short_vol = paras.lvol(tau_p[t - vd], px[i]);
+				//double short_vol_up = paras.lvol_up(tau_p[t - vd], px[i]);
+				//double short_vol_down = paras.lvol_down(tau_p[t - vd], px[i]);
+				double short_vol = paras.get_Lvol(idxT[t - vd], idxS[i]);
+				double short_vol_up = paras.get_Lvol_up(idxT[t - vd], idxS[i]);
+				double short_vol_down = paras.get_Lvol_down(idxT[t - vd], idxS[i]);
 
 				alpha[i] = 0.5*short_vol*short_vol*dt;
 				alpha_up[i] = 0.5*short_vol_up*short_vol_up*dt;

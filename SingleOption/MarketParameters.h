@@ -44,13 +44,13 @@ public:
 	void calcLV(); 
 
 	double lvol(double t_axis, double s_axis) const;
-	double lvol(int i_t, int i_k) const;
+	double get_Lvol(int i_t, int i_k) const;
 
 	double lvol_up(double t_axis, double s_axis) const;
-	double lvol_up(int i_t, int i_k) const;
+	double get_Lvol_up(int i_t, int i_k) const;
 
 	double lvol_down(double t_axis, double s_axis) const;
-	double lvol_down(int i_t, int i_k) const;
+	double get_Lvol_down(int i_t, int i_k) const;
 
 	int find_index_spot(double target) const;
 	int find_index_term(double target) const;
