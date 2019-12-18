@@ -101,6 +101,78 @@ int Vol::find_index_spot(double target) const
 	return -1;
 }
 
+int Vol::find_index_spot2(double target) const
+{
+	if (target <= vol_strike[0])
+		return (init_i=0);
+	if (target >= vol_strike[nb_vol_strike - 1])
+		return (init_i=nb_vol_strike - 1);
+
+	if (vol_strike[init_i] <= target && target <vol_strike[init_i + 1]) {
+		if (target - vol_strike[init_i] <vol_strike[init_i + 1] - target) {
+			return init_i;
+		}
+		else {
+			return (init_i = init_i + 1);
+		}
+	}
+
+	int i = init_i;
+	while (1) {
+		i = i + 1;
+		if (i < nb_vol_strike-1) {
+			if (vol_strike[i] <= target && target < vol_strike[i + 1]) {
+				if (target - vol_strike[i] < vol_strike[i + 1] - target) {
+					return (init_i = i);
+				}
+				else {
+					return (init_i = i + 1);
+				}
+			}
+		}
+
+		int j = init_i - (i - init_i);
+		if (j >= 0) {
+			if (vol_strike[j] <= target && target <vol_strike[j + 1]) {
+				if (target - vol_strike[j] <vol_strike[j + 1] - target) {
+					return (init_i = j);
+				}
+				else {
+					return (init_i = j + 1);
+				}
+			}
+		}
+	}
+
+	//for (int i = init_i + 1; i<nb_vol_strike - 1; i++) {
+	//	if (vol_strike[i] <= target && target <vol_strike[i + 1]) {
+	//		if (target - vol_strike[i] <vol_strike[i + 1] - target) {
+	//			return (init_i = i);
+	//		}
+	//		else {
+	//			return (init_i = i + 1);
+	//		}
+	//	}
+
+	//	int j = init_i - (i - init_i);
+	//	if (j > 0) {
+	//		if (vol_strike[j] <= target && target <vol_strike[j + 1]) {
+	//			if (target - vol_strike[j] <vol_strike[j + 1] - target) {
+	//				return (init_i = j);
+	//			}
+	//			else {
+	//				return (init_i = j + 1);
+	//			}
+	//		}
+	//	}
+	//}
+
+
+
+	throw std::logic_error("find_index_spot2 - interpolaton fail :findnearestindex, vol strike");
+	return -1;
+}
+
 
 void Vol::calcLv(double spot, const Rate& R, const Rate& Q)
 {

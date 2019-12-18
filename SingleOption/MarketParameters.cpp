@@ -54,7 +54,8 @@ double MarketParameters::get_Lvol(int i_t, int i_k) const
 
 double MarketParameters::get_Lvol_hybrid(int i_t, double s_axis) const
 {
-	int i_k = find_index_spot(s_axis);
+	//int i_k = find_index_spot(s_axis);
+	int i_k = find_index_spot2(s_axis); //SMART SEARCH 2019.12.18
 	return vol.get_Lvol(i_t, i_k);
 }
 
@@ -77,5 +78,10 @@ int MarketParameters::find_index_spot(double target) const
 int MarketParameters::find_index_term(double target) const
 {
 	return vol.find_index_term(target);
+}
+
+int MarketParameters::find_index_spot2(double target) const
+{
+	return vol.find_index_spot2(target);
 }
 

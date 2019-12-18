@@ -8,6 +8,7 @@ class Vol{
 private:
 	int nb_vol_term;
 	int nb_vol_strike;
+	mutable int init_i = 0;
 	std::vector<std::vector<double> > Ivol;
 	std::vector<double> vol_term;
 	std::vector<double> vol_strike;
@@ -56,6 +57,8 @@ public:
 	void Vol_up(double dv);
 	int find_index_term(double t) const;
 	int find_index_spot(double s) const;
+
+	int find_index_spot2(double s) const;
 	
 };
 

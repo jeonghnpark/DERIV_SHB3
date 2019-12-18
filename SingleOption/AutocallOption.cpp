@@ -894,6 +894,9 @@ double AutocallOption::CalcMC_calc2(MarketParameters & paras, long numMC_)
 		s_tmp = s0;
 		tmpKIFlag = hitflag;
 
+		if (i == 1) {
+			i = i;
+		}
 		for (int k = 1; k <= nb_autocall; k++) {
 			for (signed int t = std::max(autocall_date[k - 1], vd) + 1; t <= autocall_date[k]; t++) {
 
