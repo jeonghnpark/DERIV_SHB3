@@ -12,10 +12,12 @@ public:
 	double Calc(MarketParameters& paras);//class GRID under construction...
 	double CalcMC(MarketParam& para, long nMC=1000); //r,div inerpolation not optimized
 	double CalcMC_calc2(MarketParam & para, long nMC = 1000); //r,div optimized
-	
+	double CalcMC_calc2(MarketParameters & paras, long nMC = 1000); //r,div optimized
+
 	signed int GetExpiryd() const;
 	double GetRefPrice() const;
 	std::vector<double> GetResult() const;
+	int GetHitFlag() const { return hitflag; }
 
 protected:
 	double refprice;

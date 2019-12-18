@@ -14,6 +14,11 @@ protected:
 	Rate r;
 	Rate q;
 public:
+	MarketParam()
+	{
+
+	}
+
 	MarketParam(signed int _vdate, double _spot, Vol _vol, Rate _r, Rate _q)
 		:vdate(_vdate), spot(_spot), vol(_vol), r(_r), q(_q)
 	{

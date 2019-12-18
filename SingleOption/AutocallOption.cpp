@@ -757,10 +757,10 @@ double AutocallOption::CalcMC_calc2(MarketParam & para, long numMC_)
 
 	for (long i = 0; i<numMC_; i++)
 	{
-		if (i % (numMC_ / 50) == 0) {
+	/*	if (i % (numMC_ / 50) == 0) {
 			cout << "now " << i << endl;
 		}
-
+*/
 		s_tmp = s0;
 		tmpKIFlag = hitflag;
 
@@ -829,6 +829,127 @@ double AutocallOption::CalcMC_calc2(MarketParam & para, long numMC_)
 	return npv;
 }
 
+double AutocallOption::CalcMC_calc2(MarketParameters & paras, long numMC_)
+{
+	double s0 = paras.get_spot();
+	//Rate R = para.get_rfrate();
+	//Rate Q = para.get_q();
+	signed int vd = paras.get_vdate();
+	int nb_autocall = ThePayoffPtr->GetNbAutocall();
+
+	//Vol vol = para.get_vol();
+	paras.calcLV();
+
+	std::vector<signed int> autocall_date;
+	autocall_date = ThePayoffPtr->GetAutocall_date();
+
+	double kibarrier = ThePayoffPtr->GetKiBarrier();
+
+	std::vector<double> autocall_strike;
+	autocall_strike = ThePayoffPtr->GetAutocall_strike();
+
+	std::vector<double> autocall_coupon;
+	autocall_coupon = ThePayoffPtr->GetAutocall_coupon();
+
+	//std::random_device rd;
+	std::mt19937 gen(130);
+	std::normal_distribution<>ndist(0, 1);
+	double* mcvalues = new double[numMC_];
+
+	double put_strike = ThePayoffPtr->GetPutStrike();
+	double dummy_coupon = ThePayoffPtr->GetDummyCoupon();
+
+	double s_tmp;
+	int tmpKIFlag;
+	int daydivide_ = 1;
+
+	double* tau_p = new double[autocall_date[nb_autocall] - vd + 1];
+	double* r_forward_p = new double[autocall_date[nb_autocall] - vd + 1];
+	double* r_dc_p = new double[autocall_date[nb_autocall] - vd + 1];
+	double* q_forward_p = new double[autocall_date[nb_autocall] - vd + 1];
+
+	for (signed int i = 0; i <= autocall_date[nb_autocall] - vd; i++) {
+		tau_p[i] = (i) / 365.0;
+		r_forward_p[i] = paras.getForward(tau_p[i]);
+		r_dc_p[i] = paras.getIntpRate(tau_p[i]);
+		q_forward_p[i] = paras.getDivForward(tau_p[i]);
+	}
+
+	double dt = 1 / 365.0;
+
+	for (long i = 0; i<numMC_; i++)
+	{
+		if (i % (numMC_ / 50) == 0) {
+			cout << "now " << i << endl;
+		}
+
+		s_tmp = s0;
+		tmpKIFlag = hitflag;
+
+		for (int k = 1; k <= nb_autocall; k++) {
+			for (signed int t = std::max(autocall_date[k - 1], vd) + 1; t <= autocall_date[k]; t++) {
+
+				double short_vol = paras.lvol(tau_p[t - vd], s_tmp);
+
+				double drift = (r_forward_p[t - vd] - q_forward_p[t - vd] - 0.5*short_vol*short_vol)*dt;
+				double diff = short_vol*std::sqrt(dt);
+
+				for (long t2 = 1; t2 <= daydivide_; t2++) {
+					s_tmp = s_tmp*std::exp(drift + diff*ndist(gen));
+					if (s_tmp<kibarrier)
+						tmpKIFlag = 1;
+				}
+			}
+
+			if (s_tmp >= autocall_strike[k]) { //check autocallability
+				mcvalues[i] = std::exp(-r_dc_p[autocall_date[k] - vd] * tau_p[autocall_date[k] - vd])*(1.0 + autocall_coupon[k]);
+				break; //k loop
+			}
+
+			//we are here because it is not autocalled at maturity
+			if (k == nb_autocall) {
+
+				if (s_tmp >= autocall_strike[k]) {
+					mcvalues[i] = std::exp(-r_dc_p[autocall_date[k] - vd] * tau_p[autocall_date[k] - vd])*(1.0 + autocall_coupon[k]);
+				}
+				else if (s_tmp >= kibarrier) {
+					if (tmpKIFlag == 1) {
+						mcvalues[i] = std::exp(-r_dc_p[autocall_date[k] - vd] * tau_p[autocall_date[k] - vd])*(1.0 - std::max((put_strike - s_tmp) / refprice, 0.0));
+					}
+					else if (tmpKIFlag == 0) {
+						mcvalues[i] = std::exp(-r_dc_p[autocall_date[k] - vd] * tau_p[autocall_date[k] - vd])*(1.0 + dummy_coupon);
+					}
+					else {
+						throw std::logic_error("unexpected KIFlag");
+					}
+				}
+				else {
+					mcvalues[i] = std::exp(-r_dc_p[autocall_date[k] - vd] * tau_p[autocall_date[k] - vd])*(1.0 - std::max((put_strike - s_tmp) / refprice, 0.0));
+				}
+
+			} //if k
+
+		}//for k
+
+	}//for(i=0..)
+
+	double npv = 0.0;
+	for (long i = 0; i<numMC_; i++)
+		npv += mcvalues[i];
+	npv /= numMC_;
+
+	result[0] = npv;
+	result[5] = s0;
+
+	delete[] mcvalues;
+
+	delete[] tau_p;
+	delete[] r_forward_p;
+	delete[] r_dc_p;
+	delete[] q_forward_p;
+
+	return npv;
+}
 double AutocallOption::CalcMC(MarketParam & para, long numMC_)
 {
 	double s0 = para.get_spot();
@@ -869,10 +990,10 @@ double AutocallOption::CalcMC(MarketParam & para, long numMC_)
 
 	for (long i = 0; i<numMC_; i++)
 	{
-		if (i % (numMC_ / 50) == 0) {
+	/*	if (i % (numMC_ / 50) == 0) {
 			cout << "now " << i << endl;
 		}
-
+*/
 		s_tmp = s0;
 	
 		tmpKIFlag = hitflag;

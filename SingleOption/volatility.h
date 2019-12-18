@@ -21,10 +21,12 @@ public:
 
 	Vol(){}
 	Vol(int nb_vol_term, int nb_vol_strike);
-	double lvol(double t_axis, double s_axis) const;
+
+	//real input : time, spot
+	double lvol(double t_axis, double s_axis) const; 
 	double lvol2(double t, double s);
 	double lvol_up(double t_axis, double s_axis) const;
-	double lvol_down(double t_axis, double s_axis) const;
+	double lvol_down(double t_axis, double s_axis) const; 
 
 	void set_const_vol(double v); //initialize value with constant
 	void set_vol_term(double* t, int n);
@@ -35,9 +37,10 @@ public:
 	void set_vol_by_point_vba(double* arr, int nb_term, int nb_strike);
 	void set_vol_by_point_vba2(double* arr, int nb_term, int nb_strike);
 
+	//indices input: time index, i_t, spot index
 	void set_Ivol(int i_t, int i_k, double v);
 	double get_Ivol(int i_t, int i_k) const;
-	double get_Lvol(int i_t, int i_k) const;
+	double get_Lvol(int i_t, int i_k) const; 
 	double get_Lvol_up(int i_t, int i_k) const;
 	double get_Lvol_down(int i_t, int i_k) const;
 

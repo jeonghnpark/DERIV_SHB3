@@ -466,14 +466,14 @@ double EuropeanOption::Calc2(MarketParameters & paras)
 
 
 }
-double EuropeanOption::Calc(MarketParameters & para)
+double EuropeanOption::Calc(MarketParameters & paras)
 //MarketParameters : conti dividend 2019.12.03
 {
-	signed int vd = para.get_vdate();
+	signed int vd = paras.get_vdate();
 
-	double s0 = para.get_spot();
+	double s0 = paras.get_spot();
 
-	para.calcLV();
+	paras.calcLV();
 	
 	int maxassetnodeindex = 300;
 	double *px = new double[maxassetnodeindex + 1];
@@ -536,10 +536,10 @@ double EuropeanOption::Calc(MarketParameters & para)
 
 		//double r_forward=getforward((t-md)/365.0,rfrate,rfrate_term,numrfrate);
 		//double r_forward = R.getForward(tau);
-		double r_forward = para.getForward(tau);
+		double r_forward = paras.getForward(tau);
 
 
-		double q_forward = para.getTodayDivAmount(t)/s0/dt;  //caution: t instead of tau 
+		double q_forward = paras.getTodayDivAmount(t)/s0/dt;  //caution: t instead of tau 
 
 		//double q_forward=0.0;
 		/*if(t==360){
@@ -550,9 +550,9 @@ double EuropeanOption::Calc(MarketParameters & para)
 		//	cout << "positive q at " << t << endl;
 
 		for (int i = 0; i <= maxassetnodeindex; i++) {
-			double short_vol = para.lvol(tau, px[i]);
-			double short_vol_up = para.lvol_up(tau, px[i]);
-			double short_vol_down = para.lvol_down(tau, px[i]);
+			double short_vol = paras.lvol(tau, px[i]);
+			double short_vol_up = paras.lvol_up(tau, px[i]);
+			double short_vol_down = paras.lvol_down(tau, px[i]);
 
 			alpha[i] = 0.5*short_vol*short_vol*dt;
 			alpha_up[i] = 0.5*short_vol_up*short_vol_up*dt;
