@@ -37,11 +37,11 @@ void __stdcall SingleAutocallable_MC_lib(double refprice, signed int expiryDate,
 
 	volat.set_vol_by_point_vba2(Ivol, nb_vol_term, nb_vol_strike);
 
-	MarketParam para(vd, spot, volat, r, q);
-
+//	MarketParam para(vd, spot, volat, r, q);
+	MarketParameters paras(vd, spot, volat, r, q);
 	PayoffAutocallStd autoPayoff(nb_autocall, auto_date, auto_strike, auto_coupon, kibarrier, put_strike, dummy_coupon, refprice);
 	AutocallOption AutoKOSPI(refprice, expiryDate, autoPayoff, hitflag);
-	AutoKOSPI.CalcMC2(para, numMc);
+	AutoKOSPI.CalcMC_calc2(paras, numMc);
 
 	std::vector<double> rs_auto = AutoKOSPI.GetResult();
 
@@ -82,11 +82,11 @@ void __stdcall SingleAutocallable_lib(double refprice, signed int expiryDate, in
 
 	volat.set_vol_by_point_vba2(Ivol, nb_vol_term, nb_vol_strike);
 
-	MarketParam para(vd, spot, volat, r, q);
+	MarketParameters paras(vd, spot, volat, r, q);
 
 	PayoffAutocallStd autoPayoff(nb_autocall, auto_date, auto_strike, auto_coupon, kibarrier, put_strike, dummy_coupon, refprice);
 	AutocallOption AutoKOSPI(refprice, expiryDate, autoPayoff, hitflag);
-	AutoKOSPI.Calc(para);
+	AutoKOSPI.Calc(paras);
 
 	std::vector<double> rs_auto = AutoKOSPI.GetResult();
 

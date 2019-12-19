@@ -118,7 +118,7 @@ int Vol::find_index_spot2(double target) const
 	}
 
 	int i = init_i;
-	while (1) {
+	while (1) {   //향후 이부분 개선 
 		i = i + 1;
 		if (i < nb_vol_strike-1) {
 			if (vol_strike[i] <= target && target < vol_strike[i + 1]) {

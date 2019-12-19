@@ -1340,8 +1340,8 @@ void test_autocall__fd_mc(MarketParam& para, long nM)
 	cout << "\ntest_autocall__fd_mc\n";
 	std::cout << "spot " << rs[5] << std::endl;
 
-	std::cout << "pv(FD) " << (hitflag ? "hitted " : "not hit ") << (is_flat_vol ? "flatvol" : "surfacevol ") << "->" << rs[0] << std::endl;
-	std::cout << "pv(MC) " << (hitflag ? "hitted " : "not hit ") << (is_flat_vol ? "flatvol" : "surfacevol ") << "nMC= " << nM << "-> " << rs_mc[0] << std::endl;
+	std::cout << "pv(FD) " << (AutoKOSPI.GetHitFlag() ? "hitted " : "not hit ") << "->" << rs[0] << std::endl;
+	std::cout << "pv(MC) " << (AutoKOSPI_mc.GetHitFlag() ? "hitted " : "not hit ")  << "nMC= " << nM << "-> " << rs_mc[0] << std::endl;
 }
 
 void test_autocall__fd_mc(MarketParameters& paras, long nM)
@@ -1425,7 +1425,7 @@ void test_autocall__fd_inst_swip_first(MarketParameters& paras, AutocallOption& 
 	//std::cout << "pv(MC) " << (autoop.GetHitFlag() ? "hitted " : "not hit ") << "nMC= " << nM << "-> " << rs_mc[0] << std::endl;
 }
 
-void test_autocall__mc_inst_swip_first_time(MarketParameters& paras, AutocallOption& autoop, long nM=1000)
+void test_autocall_fd_mc_inst_swip_first_time(MarketParameters& paras, AutocallOption& autoop, long nM=1000)
 {//setpara
 	double spot = paras.get_spot();
 	autoop.Calc(paras);
@@ -2536,6 +2536,9 @@ int main()
 	AutocallOption AutoKOSPI(refprice, exd_3y, autoPayoff, hitflag);
 	AutocallOption AutoKOSPI_mc(refprice, exd_3y, autoPayoff, hitflag);
 
+	AutocallOption AutoKOSPI_KI(refprice, exd_3y, autoPayoff, 1);
+	AutocallOption AutoKOSPI_mc_KI(refprice, exd_3y, autoPayoff, 1);
+
 
 	/*Test*/
 	/*test cal1 vs calc2 for vanilla option*/
@@ -2593,12 +2596,16 @@ int main()
 	//duration = clock::now() - before;
 	//std::cout << "test_autocall__fd_inst_swip_first(paras, AutoKOSPI, 1000); : It took " << duration.count() << "s" << std::endl;
 
+	long nM = 100000;
 	before = clock::now();
-	long nM = 30000;
-	test_autocall__mc_inst_swip_first_time(paras, AutoKOSPI,nM);
+	test_autocall_fd_mc_inst_swip_first_time(paras, AutoKOSPI,nM);
 	duration = clock::now() - before;
-	std::cout << "test_autocall__fd_inst_swip_first_time(paras, AutoKOSPI, nM); nM="<<nM << " It took "  << duration.count() << "s" << std::endl;
+	std::cout << "test_autocall__mc_inst_swip_first_time(paras, AutoKOSPI,nM); nM="<<nM << " It took "  << duration.count() << "s" << std::endl;
 
+	before = clock::now();
+	test_autocall_fd_mc_inst_swip_first_time(paras, AutoKOSPI_KI, nM);
+	duration = clock::now() - before;
+	std::cout << "test_autocall__mc_inst_swip_first_time(paras, AutoKOSPI_KI, nM); nM=" << nM << " It took " << duration.count() << "s" << std::endl;
 
 	//before = clock::now();
 	//test_autocall__fd_mc_inst_swip_first(para, AutoKOSPI);

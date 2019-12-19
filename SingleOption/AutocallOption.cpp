@@ -482,7 +482,7 @@ double AutocallOption::Calc(MarketParameters & paras)
 	std::vector<signed int> autocall_date;
 	autocall_date = ThePayoffPtr->GetAutocall_date();
 
-	int maxassetnodeindex = 300;
+	int maxassetnodeindex = 400;
 	double *px = new double[maxassetnodeindex + 1];
 	double *dpx = new double[maxassetnodeindex + 1];
 	double *alpha = new double[maxassetnodeindex + 1];
@@ -547,13 +547,11 @@ double AutocallOption::Calc(MarketParameters & paras)
 	double* r_dc_p = new double[autocall_date[nb_autocall] - vd + 1];
 	double* q_forward_p = new double[autocall_date[nb_autocall] - vd + 1];
 
-	
 	for (signed int i = 0; i <= autocall_date[nb_autocall] - vd; i++) {
 		tau_p[i] = (i) / 365.0;
 		r_forward_p[i] = paras.getForward(tau_p[i]);
 		r_dc_p[i] = paras.getIntpRate(tau_p[i]);
 		q_forward_p[i] = paras.getDivForward(tau_p[i]);
-
 	}
 
 	double dt = 1 / 365.0; 
@@ -627,11 +625,9 @@ double AutocallOption::Calc(MarketParameters & paras)
 			ThePayoffPtr->updator(t, vold, uold, px, 0, maxassetnodeindex);
 			ThePayoffPtr->updator(t, vold_up, uold_up, px, 0, maxassetnodeindex);
 			ThePayoffPtr->updator(t, vold_down, uold_down, px, 0, maxassetnodeindex);
-
 		}
 		if (t == vd)
 			break;
-
 	}
 
 	double pv, pv_next, pv_up, pv_down;
@@ -830,12 +826,8 @@ double AutocallOption::CalcMC_calc2(MarketParam & para, long numMC_)
 double AutocallOption::CalcMC_calc2(MarketParameters & paras, long numMC_)
 {
 	double s0 = paras.get_spot();
-	//Rate R = para.get_rfrate();
-	//Rate Q = para.get_q();
 	signed int vd = paras.get_vdate();
 	int nb_autocall = ThePayoffPtr->GetNbAutocall();
-
-	//Vol vol = para.get_vol();
 	paras.calcLV();
 
 	std::vector<signed int> autocall_date;
@@ -875,28 +867,18 @@ double AutocallOption::CalcMC_calc2(MarketParameters & paras, long numMC_)
 
 	double dt = 1 / 365.0;
 
-	//int *idxS = new int[maxassetnodeindex + 1];
 	int *idxT = new signed int[autocall_date[nb_autocall] - vd + 1];
-	//for (int i = 0; i <= maxassetnodeindex; i++) {
-	//	idxS[i] = paras.find_index_spot(px[i]);
-	//}
-
 	for (int tfv = 0; tfv <= autocall_date[nb_autocall] - vd; tfv++) {
 		idxT[tfv] = paras.find_index_term(tfv / 365.0);
 	}
 
 	for (long i = 0; i<numMC_; i++)
 	{
-		if (i % (numMC_ / 50) == 0) {
-			cout << "now " << i << endl;
-		}
+
 
 		s_tmp = s0;
 		tmpKIFlag = hitflag;
 
-		if (i == 1) {
-			i = i;
-		}
 		for (int k = 1; k <= nb_autocall; k++) {
 			for (signed int t = std::max(autocall_date[k - 1], vd) + 1; t <= autocall_date[k]; t++) {
 
@@ -918,7 +900,7 @@ double AutocallOption::CalcMC_calc2(MarketParameters & paras, long numMC_)
 				break; //k loop
 			}
 
-			//we are here because it is not autocalled at maturity
+			//we are here because it hasn't been autocalled
 			if (k == nb_autocall) {
 
 				if (s_tmp >= autocall_strike[k]) {
