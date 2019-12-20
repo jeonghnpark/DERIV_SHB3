@@ -695,6 +695,7 @@ double AutocallOption::Calc(MarketParameters & paras)
 	delete[] r_forward_p;
 	delete[] r_dc_p;
 	delete[] q_forward_p;
+
 	delete[] idxT;
 	delete[] idxS;
 
@@ -941,7 +942,7 @@ double AutocallOption::CalcMC_calc2(MarketParameters & paras, long numMC_)
 	delete[] r_forward_p;
 	delete[] r_dc_p;
 	delete[] q_forward_p;
-
+	delete[] idxT;
 	return npv;
 }
 double AutocallOption::CalcMC(MarketParam & para, long numMC_)

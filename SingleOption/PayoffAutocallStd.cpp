@@ -139,3 +139,8 @@ double PayoffAutocallStd::GetDummyCoupon() const
 {
 	return dummy_coupon;
 }
+
+double PayoffAutocallStd::GetRefPrice() const
+{
+	return refprice;
+}

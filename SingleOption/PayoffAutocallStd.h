@@ -17,6 +17,7 @@ public:
 	std::vector<double> GetAutocall_coupon() const;
 	double GetPutStrike() const;
 	double GetDummyCoupon() const;
+	double GetRefPrice() const;
 	
 
 
