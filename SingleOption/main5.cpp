@@ -2596,7 +2596,7 @@ int main()
 	//duration = clock::now() - before;
 	//std::cout << "test_autocall__fd_inst_swip_first(paras, AutoKOSPI, 1000); : It took " << duration.count() << "s" << std::endl;
 
-	long nM = 100000;
+	long nM = 10000;
 	before = clock::now();
 	test_autocall_fd_mc_inst_swip_first_time(paras, AutoKOSPI,nM);
 	duration = clock::now() - before;
