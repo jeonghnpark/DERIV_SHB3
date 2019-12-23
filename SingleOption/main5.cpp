@@ -15,6 +15,7 @@
 #include "EuropeanOption.h"
 #include "AmericanOption.h"
 #include "k_OptionFormula.hpp"
+#include "k_miscellaneous.hpp"
 #include "PayoffBarCUO.h"
 #include "BarrierOption.h"
 #include "AutocallOption.h"
@@ -2302,7 +2303,9 @@ MarketParameters set_paras_spot1()
 	//long nM = 30000;
 
 	//***상품타입변경
-	double spot = 297.22*(0.99);
+//	double spot = 297.22*(0.99);
+	double spot = 297.22-1.0;
+
 	signed int vd = 43340;
 
 	return MarketParameters(vd, spot, volat, r, q);
@@ -2949,6 +2952,9 @@ void simulation(PayoffAutocallStd* ThePayoffPtr, MarketParameters& paras)
 			break;
 	}
 
+	double npv_fd;
+	npv_fd= intp1d(s0, px, vold, 1, maxassetnodeindex - 1);
+
 	for (auto iter_paths = paths.begin(); iter_paths != paths.end(); iter_paths++) {
 		//cout << "size is " << (*iter_paths).size() << endl;
 		auto riter_vgrid = vgrid.rbegin();
@@ -3158,18 +3164,15 @@ int main()
 	//duration = clock::now() - before;
 	//std::cout << "test_autocall__fd_mc_inst(paras, AutoKOSPI) : It took " << duration.count() << "s" << std::endl;
 
-	
-	before = clock::now();
-	test_autocall__fd_inst_swip_first(paras, AutoKOSPI);
-	duration = clock::now() - before;
-	std::cout << "test_autocall__fd_inst_swip_first(paras, AutoKOSPI); : It took " << duration.count() << "s" << std::endl;
+	//before = clock::now();
+	//test_autocall__fd_inst_swip_first(paras, AutoKOSPI);
+	//duration = clock::now() - before;
+	//std::cout << "test_autocall__fd_inst_swip_first(paras, AutoKOSPI); : It took " << duration.count() << "s" << std::endl;
 
-	before = clock::now();
-	test_autocall__fd_inst_swip_first(paras_spot1, AutoKOSPI);
-	duration = clock::now() - before;
-	std::cout << "test_autocall__fd_inst_swip_first(paras_spot1, AutoKOSPI); : It took " << duration.count() << "s" << std::endl;
-
-
+	//before = clock::now();
+	//test_autocall__fd_inst_swip_first(paras_spot1, AutoKOSPI);
+	//duration = clock::now() - before;
+	//std::cout << "test_autocall__fd_inst_swip_first(paras_spot1, AutoKOSPI); : It took " << duration.count() << "s" << std::endl;
 
 	//long nM = 10000;
 	//before = clock::now();
@@ -3202,14 +3205,8 @@ int main()
 	//std::cout << "test_autocall__fd_mc(paras_flat) : It took " << duration.count() << "s" << std::endl;
 
 	/*hedge simulation */
-	//simulation(&autoPayoff, paras);
+	simulation(&autoPayoff, paras);
 	
-
-
-
-
-
-
 	//long numMc = strtol(argv[1],nullptr, 10);
 	//test_dividend();
 	//test_european_discrete_localvol(spot);
