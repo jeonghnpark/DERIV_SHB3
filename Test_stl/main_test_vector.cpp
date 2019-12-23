@@ -83,6 +83,12 @@ int main()
 		iter2++;
 	}
 
+	cout << "dvec.size();"<<dvec.size();
+	vector<vector<double> > ddvec;
+	ddvec.push_back(dvec);
+	ddvec.push_back(dvec2);
+
+	cout <<"ddvec.size(); " <<ddvec.size();
 
 	return 0;
 }
