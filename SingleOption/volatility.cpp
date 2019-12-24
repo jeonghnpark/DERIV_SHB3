@@ -108,7 +108,7 @@ int Vol::find_index_spot2(double target) const
 	if (target >= vol_strike[nb_vol_strike - 1])
 		return (init_i=nb_vol_strike - 1);
 
-	if (vol_strike[init_i] <= target && target <vol_strike[init_i + 1]) {
+	if (vol_strike[init_i] <= target && target <vol_strike[init_i + 1]) {  // out of range??
 		if (target - vol_strike[init_i] <vol_strike[init_i + 1] - target) {
 			return init_i;
 		}
