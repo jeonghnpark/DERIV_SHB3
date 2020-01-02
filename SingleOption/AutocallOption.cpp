@@ -1,8 +1,13 @@
-#include "AutocallOption.h"
 #include <algorithm>
 #include <random>
+#include <cassert>
+#include <cmath>
+#include <fstream>
+#include "AutocallOption.h"
 #include "j_fd.h"
 #include "k_miscellaneous.hpp"
+
+using namespace std;
 
 AutocallOption::AutocallOption(double refprice_, signed int expiryd_, const PayoffAutocallStd & ThePayoff_, int hitflag_)
 	:refprice(refprice_), expiry_date(expiryd_),hitflag(hitflag_)
@@ -606,9 +611,9 @@ double AutocallOption::Calc(MarketParameters & paras)
 				vold_down[i] = vnew_down[i];
 			}
 
-			ThePayoffPtr->copy_v_to_u(vnew, unew, kiindex, kiindex);
-			ThePayoffPtr->copy_v_to_u(vnew_up, unew_up, kiindex, kiindex);
-			ThePayoffPtr->copy_v_to_u(vnew_down, unew_down, kiindex, kiindex);
+			ThePayoffPtr->copy_v_to_u(vnew, unew, 0, kiindex);
+			ThePayoffPtr->copy_v_to_u(vnew_up, unew_up, 0, kiindex);
+			ThePayoffPtr->copy_v_to_u(vnew_down, unew_down, 0, kiindex);
 
 			trimxsolve1d(A, B, C, uold, unew, kiindex, maxassetnodeindex, 1, 0);
 			trimxsolve1d(A_up, B_up, C_up, uold_up, unew_up, kiindex, maxassetnodeindex, 1, 0);
@@ -659,6 +664,9 @@ double AutocallOption::Calc(MarketParameters & paras)
 	}
 
 	result[5] = s0;
+
+	//pure delta
+
 
 	delete[] px;
 	delete[] dpx;
@@ -856,9 +864,9 @@ double AutocallOption::Simulation(MarketParameters & paras, long numMC_)
 				vold_down[i] = vnew_down[i];
 			}
 
-			ThePayoffPtr->copy_v_to_u(vnew, unew, kiindex, kiindex);
-			ThePayoffPtr->copy_v_to_u(vnew_up, unew_up, kiindex, kiindex);
-			ThePayoffPtr->copy_v_to_u(vnew_down, unew_down, kiindex, kiindex);
+			ThePayoffPtr->copy_v_to_u(vnew, unew, 0, kiindex);
+			ThePayoffPtr->copy_v_to_u(vnew_up, unew_up, 0, kiindex);
+			ThePayoffPtr->copy_v_to_u(vnew_down, unew_down, 0, kiindex);
 
 			trimxsolve1d(A, B, C, uold, unew, kiindex, maxassetnodeindex, 1, 0);
 			trimxsolve1d(A_up, B_up, C_up, uold_up, unew_up, kiindex, maxassetnodeindex, 1, 0);
@@ -872,8 +880,6 @@ double AutocallOption::Simulation(MarketParameters & paras, long numMC_)
 				vgrid[t-vd - 1][i] = vold[i];
 				ugrid[t-vd - 1][i] = uold[i];
 			}
-
-		
 		}//for t
 
 		 //update BC
@@ -881,6 +887,13 @@ double AutocallOption::Simulation(MarketParameters & paras, long numMC_)
 			ThePayoffPtr->updator(t, vold, uold, px, 0, maxassetnodeindex);
 			ThePayoffPtr->updator(t, vold_up, uold_up, px, 0, maxassetnodeindex);
 			ThePayoffPtr->updator(t, vold_down, uold_down, px, 0, maxassetnodeindex);
+			
+			//save vold, uold after updating
+			//for (int i = 0; i <= maxassetnodeindex; i++) {
+			//	vgrid[t - vd - 1][i] = vold[i];
+			//	ugrid[t - vd - 1][i] = uold[i];
+			//}
+
 		}
 		if (t == vd)
 			break;
@@ -915,6 +928,127 @@ double AutocallOption::Simulation(MarketParameters & paras, long numMC_)
 	}
 
 	result[5] = s0;
+
+	//MC simulation
+	double kibarrier = ThePayoffPtr->GetKiBarrier();
+	std::vector<double> autocall_strike;
+	autocall_strike = ThePayoffPtr->GetAutocall_strike();
+	std::vector<double> autocall_coupon;
+	autocall_coupon = ThePayoffPtr->GetAutocall_coupon();
+	double put_strike = ThePayoffPtr->GetPutStrike();
+	double dummy_coupon = ThePayoffPtr->GetDummyCoupon();
+
+	std::mt19937 gen(130);
+	std::normal_distribution<>ndist(0, 1);
+	double* mcvalues = new double[numMC_];
+	vector<vector<double> > paths;
+	vector<vector<double> > deltas;
+	vector<vector<double> > vals;
+	vector<vector<double> > cashes;
+	vector <vector<double> > npvs;
+
+	double s_tmp;
+	int tmpKIFlag;
+	int daydivide_ = 1;
+
+	for (long i = 0; i<numMC_; i++)
+	{
+		vector<double> apath;
+		vector<double> adelta;
+		vector<double> aval;
+		vector<double> acash;
+		vector<double> anpv;
+
+		int init_i = 0;
+		int tau = 0;
+		s_tmp = s0;
+		tmpKIFlag = hitflag;
+		
+		apath.push_back(s0);
+		//init_i = get_spot_index(s0, px, 0, maxassetnodeindex, init_i);
+		adelta.push_back(get_delta(s0, px, ugrid[0], vgrid[0], tmpKIFlag, 0, maxassetnodeindex, init_i));
+		aval.push_back(get_val(s0,px,ugrid[0], vgrid[0], tmpKIFlag, 0, maxassetnodeindex, init_i));
+		acash.push_back(aval.back() - adelta.back()*s0);
+		anpv.push_back(acash.back()-aval.back()+adelta.back()*s0); //should be zero
+		
+		assert(roundf(anpv[0]*100000.0)/100000.0 == 0);
+		assert(aval.front() == pv);
+
+
+		for (int k = 1; k <= nb_autocall; k++) {
+			for (signed int t = std::max(autocall_date[k - 1], vd) + 1; t <= autocall_date[k]; t++) {
+
+				//double short_vol = paras.lvol(tau_p[t - vd], s_tmp);
+				double short_vol = paras.get_Lvol_hybrid(idxT[t - vd], s_tmp);
+
+				double drift = (r_forward_p[t - vd] - q_forward_p[t - vd] - 0.5*short_vol*short_vol)*dt;
+				double diff = short_vol*std::sqrt(dt);
+
+				s_tmp = s_tmp*std::exp(drift + diff*ndist(gen));
+				if (s_tmp<kibarrier)
+					tmpKIFlag = 1;
+
+				double df = std::exp(-r_dc_p[t - vd] * tau_p[t - vd]);
+
+				apath.push_back(s_tmp);
+				adelta.push_back(get_delta(s_tmp, px, ugrid[t-vd], vgrid[t-vd], tmpKIFlag, 0, maxassetnodeindex, init_i));
+				aval.push_back(df*(get_val(s_tmp, px, ugrid[t - vd], vgrid[t - vd], tmpKIFlag, 0, maxassetnodeindex, init_i)));
+				acash.push_back(df*(acash.back()*std::exp(r_forward_p[t - vd] * dt) - s_tmp*(adelta.back() - *(adelta.rbegin() + 1))));
+
+				anpv.push_back(acash.back() - aval.back() + df*s_tmp*adelta.back());
+			}
+
+			if (s_tmp >= autocall_strike[k]) { //check autocallability
+				double df = std::exp(-r_dc_p[autocall_date[k] - vd] * tau_p[autocall_date[k] - vd]);
+				mcvalues[i] = df*(1.0 + autocall_coupon[k]);
+				aval.back() = mcvalues[i]; 
+				anpv.back()=acash.back() - aval.back() + df*s_tmp*adelta.back();
+				break; //k loop
+			}
+
+			//we are here because it hasn't been autocalled
+			if (k == nb_autocall) {
+				double df = std::exp(-r_dc_p[autocall_date[k] - vd] * tau_p[autocall_date[k] - vd]);
+				if (s_tmp >= autocall_strike[k]) {
+					
+					mcvalues[i] = df*(1.0 + autocall_coupon[k]);
+					aval.back() = mcvalues[i];
+					anpv.back() = acash.back() - aval.back() + df*s_tmp*adelta.back();
+				}
+				else if (s_tmp >= kibarrier) {
+					if (tmpKIFlag == 1) {
+						mcvalues[i] =df*(1.0 - std::max((put_strike - s_tmp) / refprice, 0.0));
+						aval.back() = mcvalues[i];
+						anpv.back() = acash.back() - aval.back() + df*s_tmp*adelta.back();
+
+					}
+					else if (tmpKIFlag == 0) {
+						mcvalues[i] = df*(1.0 + dummy_coupon);
+						aval.back() = mcvalues[i];
+						anpv.back() = acash.back() - aval.back() + df*s_tmp*adelta.back();
+					}
+					else {
+						throw std::logic_error("unexpected KIFlag");
+					}
+				}
+				else {
+					mcvalues[i] = std::exp(-r_dc_p[autocall_date[k] - vd] * tau_p[autocall_date[k] - vd])*(1.0 - std::max((put_strike - s_tmp) / refprice, 0.0));
+					aval.back() = mcvalues[i];
+					anpv.back() = acash.back() - aval.back() + s_tmp*adelta.back();
+				}
+
+			} //if k
+
+		}//for k
+
+		paths.push_back(apath);
+		deltas.push_back(adelta);
+		vals.push_back(aval);
+		cashes.push_back(acash);
+		npvs.push_back(anpv);
+
+	}//for(i=0..)
+
 
 
 	delete[] alpha;
@@ -951,104 +1085,22 @@ double AutocallOption::Simulation(MarketParameters & paras, long numMC_)
 	delete[] r_dc_p;
 	delete[] q_forward_p;
 
-	/*delete[] idxT;
-	delete[] idxS;
-*/
-	//MC simulation
-	double kibarrier = ThePayoffPtr->GetKiBarrier();
-	std::vector<double> autocall_strike;
-	autocall_strike = ThePayoffPtr->GetAutocall_strike();
-	std::vector<double> autocall_coupon;
-	autocall_coupon = ThePayoffPtr->GetAutocall_coupon();
-	double put_strike = ThePayoffPtr->GetPutStrike();
-	double dummy_coupon = ThePayoffPtr->GetDummyCoupon();
-
-	std::mt19937 gen(130);
-	std::normal_distribution<>ndist(0, 1);
-	double* mcvalues = new double[numMC_];
-	vector<vector<double> > paths;
-	vector<vector<double> > deltas;
-
-	double s_tmp;
-	int tmpKIFlag;
-	int daydivide_ = 1;
-
-	for (long i = 0; i<numMC_; i++)
-	{
-		vector<double> apath;
-		vector<double> adelta;
-
-		paths.push_back(apath);
-		deltas.push_back(adelta);
-
-		int init_i = 0;
-		int tau = 0;
-		s_tmp = s0;
-		tmpKIFlag = hitflag;
-		
-		apath.push_back(s0);
-		//init_i = get_spot_index(s0, px, 0, maxassetnodeindex, init_i);
-		adelta.push_back(get_delta(s0, px, ugrid[0], vgrid[0], tmpKIFlag, 0, maxassetnodeindex, init_i));
-
-		for (int k = 1; k <= nb_autocall; k++) {
-			for (signed int t = std::max(autocall_date[k - 1], vd) + 1; t <= autocall_date[k]; t++) {
-
-				//double short_vol = paras.lvol(tau_p[t - vd], s_tmp);
-				double short_vol = paras.get_Lvol_hybrid(idxT[t - vd], s_tmp);
-
-				double drift = (r_forward_p[t - vd] - q_forward_p[t - vd] - 0.5*short_vol*short_vol)*dt;
-				double diff = short_vol*std::sqrt(dt);
-
-				for (long t2 = 1; t2 <= daydivide_; t2++) {
-					s_tmp = s_tmp*std::exp(drift + diff*ndist(gen));
-					if (s_tmp<kibarrier)
-						tmpKIFlag = 1;
-
-					apath.push_back(s_tmp);
-					adelta.push_back(get_delta(s_tmp, px, ugrid[t-vd], vgrid[t-vd], tmpKIFlag, 0, maxassetnodeindex, init_i));
-
-				}
-			}
-
-			if (s_tmp >= autocall_strike[k]) { //check autocallability
-				mcvalues[i] = std::exp(-r_dc_p[autocall_date[k] - vd] * tau_p[autocall_date[k] - vd])*(1.0 + autocall_coupon[k]);
-				break; //k loop
-			}
-
-			//we are here because it hasn't been autocalled
-			if (k == nb_autocall) {
-
-				if (s_tmp >= autocall_strike[k]) {
-					mcvalues[i] = std::exp(-r_dc_p[autocall_date[k] - vd] * tau_p[autocall_date[k] - vd])*(1.0 + autocall_coupon[k]);
-				}
-				else if (s_tmp >= kibarrier) {
-					if (tmpKIFlag == 1) {
-						mcvalues[i] = std::exp(-r_dc_p[autocall_date[k] - vd] * tau_p[autocall_date[k] - vd])*(1.0 - std::max((put_strike - s_tmp) / refprice, 0.0));
-					}
-					else if (tmpKIFlag == 0) {
-						mcvalues[i] = std::exp(-r_dc_p[autocall_date[k] - vd] * tau_p[autocall_date[k] - vd])*(1.0 + dummy_coupon);
-					}
-					else {
-						throw std::logic_error("unexpected KIFlag");
-					}
-				}
-				else {
-					mcvalues[i] = std::exp(-r_dc_p[autocall_date[k] - vd] * tau_p[autocall_date[k] - vd])*(1.0 - std::max((put_strike - s_tmp) / refprice, 0.0));
-				}
-
-			} //if k
-
-		}//for k
-
-	}//for(i=0..)
-
 	delete[] px;  //get_delta에서 쓰임
 	delete[] dpx;
 	delete[] idxT; //get_delta
 	delete[] idxS;
 
+	vector<double> fnpv;
+	for (auto i = npvs.begin(); i != npvs.end(); i++) {
+		cout << (*i).back() << endl;
+		fnpv.push_back((*i).back()); //final npvs
+	}
 
-	return pv;
+	ofstream ofs;
+	ofs.open("out.txt");
+	ofs.clear();
+	ofs.close();
+	return 0;
 }
 
 double AutocallOption::CalcMC_calc2(MarketParam & para, long numMC_)
@@ -1509,6 +1561,76 @@ double AutocallOption::get_delta(double target, double * px, double* uold, doubl
 				}
 				else if (KIFlag == 1) {
 					return (vold[init_i + 1] - vold[init_i - 1]) / (px[init_i + 1] - px[init_i - 1]);
+				}
+			}
+		}
+	}
+
+	throw std::logic_error("find_index_spot2 - interpolaton fail :findnearestindex, vol strike");
+	return -1;
+}
+
+double AutocallOption::get_val(double target, double * px, double * uold, double * vold, int KIFlag, int min, int max, int & init_i)
+{
+
+	//search relevant index with init_i
+	if (target <= px[min]) {
+		init_i = min;
+		if (KIFlag == 0) {
+			return uold[min];
+			
+		}
+		else if (KIFlag == 1) {
+			return vold[min];
+		}
+	}
+
+	if (target >= px[max]) {
+		init_i = max;
+		if (KIFlag == 0) {
+			return uold[max];
+		}
+		else if (KIFlag == 1) {
+			return vold[max];
+		}
+	}
+
+	if (px[init_i] <= target && target <px[init_i + 1]) {  //if init_i ==max already, it's returned 
+		if (KIFlag == 0) {
+			return (uold[init_i+1]*(target-px[init_i])+uold[init_i]*(px[init_i+1]-target))/(px[init_i+1]-px[init_i]);
+		}
+		else if (KIFlag == 1) {
+			return (vold[init_i + 1] * (target - px[init_i]) + vold[init_i] * (px[init_i + 1] - target)) / (px[init_i + 1] - px[init_i]);
+		}
+
+	}
+
+	int i = init_i;
+	while (1) {   //향후 이부분 개선 
+		i = i + 1;
+		if (i < max) {
+			if (px[i] <= target && target < px[i + 1]) {
+				init_i = i;
+
+				if (KIFlag == 0) {
+					return (uold[init_i + 1] * (target - px[init_i]) + uold[init_i] * (px[init_i + 1] - target)) / (px[init_i + 1] - px[init_i]);
+				}
+				else if (KIFlag == 1) {
+					return (vold[init_i + 1] * (target - px[init_i]) + vold[init_i] * (px[init_i + 1] - target)) / (px[init_i + 1] - px[init_i]);
+				}
+			}
+		}
+
+		int j = init_i - (i - init_i);
+		if (j >= 0) {
+			if (px[j] <= target && target <px[j + 1]) {
+				init_i = j;
+
+				if (KIFlag == 0) {
+					return (uold[init_i + 1] * (target - px[init_i]) + uold[init_i] * (px[init_i + 1] - target)) / (px[init_i + 1] - px[init_i]);
+				}
+				else if (KIFlag == 1) {
+					return (vold[init_i + 1] * (target - px[init_i]) + vold[init_i] * (px[init_i + 1] - target)) / (px[init_i + 1] - px[init_i]);
 				}
 			}
 		}

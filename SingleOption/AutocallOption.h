@@ -27,4 +27,5 @@ protected:
 	std::vector<double> result;
 	int hitflag;
 	double get_delta(double spot, double* px, double* uold, double* vold, int KIFlag,  int min, int max, int& init_i);
+	double get_val(double spot, double* px, double* uold, double* vold, int KIFlag, int min, int max, int& init_i);
 };
