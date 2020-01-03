@@ -1,5 +1,6 @@
 #include <vector>
 #include <iostream>
+#include <fstream>
 using namespace std;
 class A{
 public:
@@ -69,7 +70,7 @@ void test1()
 
 }
 
-int main()
+void vectorsize()
 {
 	double arr1[] = { 1,2,3 };
 	double arr2[] = { 4,5,6 };
@@ -89,6 +90,13 @@ int main()
 	ddvec.push_back(dvec2);
 
 	cout <<"ddvec.size(); " <<ddvec.size();
+
+}
+int main()
+{
+	std::ofstream out("hell.csv");
+	out << "hello";
+	out.close();
 
 	return 0;
 }

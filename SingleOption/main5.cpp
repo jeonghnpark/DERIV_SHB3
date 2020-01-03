@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <chrono>
 #include <numeric>
+#include <fstream>
 
 #include "volatility.h"
 #include "MarketParam.h"
@@ -2678,11 +2679,10 @@ unsigned int getIndex(double target, double* px, int i_min, int i_max, unsigned 
 	return -1;
 }
 
-void simulation2(PayoffAutocallStd* ThePayoffPtr, MarketParameters& paras, long numMC_ = 1)
+void simulation2(PayoffAutocallStd* ThePayoffPtr, MarketParameters& paras, long numMC_ = 1, bool db=false)
 {
 
 	vector<vector<double> > paths;
-	//long numMC_ = 1;
 	signed int vd = 43340;
 	int hitFlag = 0;
 	double refprice = ThePayoffPtr->GetRefPrice();
@@ -2708,10 +2708,8 @@ void simulation2(PayoffAutocallStd* ThePayoffPtr, MarketParameters& paras, long 
 	double put_strike = ThePayoffPtr->GetPutStrike();
 	double dummy_coupon = ThePayoffPtr->GetDummyCoupon();
 
-	//std::random_device rd;
 	std::mt19937 gen(130);
 	std::normal_distribution<>ndist(0, 1);
-	//double* mcvalues = new double[numMC_];
 	vector<double> mcvalues;
 	vector<double> pvs;
 	vector<vector<double> > PLs;
@@ -2780,36 +2778,10 @@ void simulation2(PayoffAutocallStd* ThePayoffPtr, MarketParameters& paras, long 
 	vector<vector<double> > vgrid;
 	vector<vector<double> > ugrid;
 
-	//vector<double> v(vold, vold + (maxassetnodeindex + 1));
-	//vector<double> u(uold, uold + (maxassetnodeindex + 1));
-
 	vgrid.push_back(vector<double>(vold, vold + (maxassetnodeindex + 1)));
 	ugrid.push_back(vector<double>(uold, uold + (maxassetnodeindex + 1)));
 
-
-
 	signed int t;
-	//double* tau_p = new double[autocall_date[nb_autocall] - vd + 1];
-	//double* r_forward_p = new double[autocall_date[nb_autocall] - vd + 1];
-	//double* r_dc_p = new double[autocall_date[nb_autocall] - vd + 1];
-	//double* q_forward_p = new double[autocall_date[nb_autocall] - vd + 1];
-
-	/*for (signed int i = 0; i <= autocall_date[nb_autocall] - vd; i++) {
-	tau_p[i] = (i) / 365.0;
-	r_forward_p[i] = paras.getForward(tau_p[i]);
-	r_dc_p[i] = paras.getIntpRate(tau_p[i]);
-	q_forward_p[i] = paras.getDivForward(tau_p[i]);
-	}
-	*/
-	//double dt = 1 / 365.0;
-
-
-
-	//for (int tfv = 0; tfv <= autocall_date[nb_autocall] - vd; tfv++) {
-	//	idxT[tfv] = paras.find_index_term(tfv / 365.0);
-	//}
-
-
 	double s_tmp;
 	int tmpKIFlag;
 	int daydivide_ = 1;
@@ -2830,7 +2802,6 @@ void simulation2(PayoffAutocallStd* ThePayoffPtr, MarketParameters& paras, long 
 	double dt = 1 / 365.0;
 
 	int *idxS = new int[maxassetnodeindex + 1];
-	//	int *idxT = new signed int[autocall_date[nb_autocall] - vd + 1];
 	for (int i = 0; i <= maxassetnodeindex; i++) {
 		idxS[i] = paras.find_index_spot(px[i]);
 	}
@@ -2851,9 +2822,6 @@ void simulation2(PayoffAutocallStd* ThePayoffPtr, MarketParameters& paras, long 
 			}
 
 			for (int i = 0; i <= maxassetnodeindex; i++) {
-				//double short_vol = paras.lvol(tau_p[t - vd], px[i]);
-				//double short_vol_up = paras.lvol_up(tau_p[t - vd], px[i]);
-				//double short_vol_down = paras.lvol_down(tau_p[t - vd], px[i]);
 				double short_vol = paras.get_Lvol(idxT[t - vd], idxS[i]);
 				double short_vol_up = paras.get_Lvol_up(idxT[t - vd], idxS[i]);
 				double short_vol_down = paras.get_Lvol_down(idxT[t - vd], idxS[i]);
@@ -2861,7 +2829,6 @@ void simulation2(PayoffAutocallStd* ThePayoffPtr, MarketParameters& paras, long 
 				alpha[i] = 0.5*short_vol*short_vol*dt;
 				alpha_up[i] = 0.5*short_vol_up*short_vol_up*dt;
 				alpha_down[i] = 0.5*short_vol_down*short_vol_down*dt;
-
 				beta[i] = (r_forward_p[t - vd] - q_forward_p[t - vd])*dt;
 			}
 
@@ -2920,6 +2887,14 @@ void simulation2(PayoffAutocallStd* ThePayoffPtr, MarketParameters& paras, long 
 	
 	cout << "npv_fd " << pv_fd << endl;
 
+	//file out
+	ofstream fuold("uold.csv");
+	fuold << "PX, uold" << endl;
+	for (int i = 0; i <= maxassetnodeindex; i++) {
+		fuold << px[i] << "," << (*it_ugrid)[i] << endl;
+	}
+	fuold.close();
+
 	for (long i = 0; i<numMC_; i++)
 	{
 		vector<double> path;
@@ -2977,8 +2952,8 @@ void simulation2(PayoffAutocallStd* ThePayoffPtr, MarketParameters& paras, long 
 		cash += pv-s_tmp*delta;
 		PL = cash - pv + s_tmp*delta;
 		aPL.push_back(PL);
-
-		cout << "t-vd " << 0 << " cash " << cash << " delta " << delta << " s_tmp " << s_tmp << " pv  " << pv << " PL " << PL << endl;
+		if(db)
+			cout << "t-vd " << 0 << " cash " << cash << " delta " << delta << " s_tmp " << s_tmp << " pv  " << pv << " PL " << PL << endl;
 
 		for (int k = 1; k <= nb_autocall; k++) {
 			for (signed int t = std::max(autocall_date[k - 1], vd) + 1; t <= autocall_date[k]; t++) {
@@ -3036,10 +3011,12 @@ void simulation2(PayoffAutocallStd* ThePayoffPtr, MarketParameters& paras, long 
 
 				cash *= std::exp(r_forward_p[t - vd] * dt);
 				cash -= s_tmp*(delta_new - delta);
+				cash += s_tmp*delta*(std::exp(q_forward_p[t-vd]*dt) - 1.0);
 				delta = delta_new;
 				PL = cash - pv + s_tmp*delta;
 				aPL.push_back(PL);
-				cout << "t-vd " << t - vd << " cash " << cash << " delta " << delta << " s_tmp " << s_tmp << " pv  " << pv << " PL " << PL <<  endl;
+				if(db)
+					cout << "t-vd " << t - vd << " cash " << cash << " delta " << delta << " s_tmp " << s_tmp << " pv  " << pv << " PL " << PL <<  endl;
 
 			}
 
@@ -3047,30 +3024,26 @@ void simulation2(PayoffAutocallStd* ThePayoffPtr, MarketParameters& paras, long 
 			double df = std::exp(-r_dc_p[autocall_date[k] - vd] * tau_p[autocall_date[k] - vd]);
 
 			if (s_tmp >= autocall_strike[k]) { //check autocallability
-				//mcvalues.push_back(std::exp(-r_dc_p[autocall_date[k] - vd] * tau_p[autocall_date[k] - vd])*(1.0 + autocall_coupon[k]));
 				mcvalues.push_back(1.0 + autocall_coupon[k]);
-
-				//pv = std::exp(-r_dc_p[autocall_date[k] - vd] * tau_p[autocall_date[k] - vd])*(cash + s_tmp*delta)-mcvalues.back();
 				pv = mcvalues.back();
-
 				pvs.push_back(pv);
 				PL = cash - pv + s_tmp*delta;
 				aPL.back() = PL;
-				cout << k <<"-th Autocalled" << " cash " << cash << " delta " << delta << " s_tmp " << s_tmp << " pv  " << pv << " PL " << PL << endl;
+				if(db)
+					cout << k <<"-th Autocalled" << " cash " << cash << " delta " << delta << " s_tmp " << s_tmp << " pv  " << pv << " PL " << PL << endl;
 
 				break; //k loop
 			}
 
 			if (k == nb_autocall) {//we are here because it hasn't been autocalled
 				if (s_tmp >= autocall_strike[k]) {
-					//mcvalues.push_back(std::exp(-r_dc_p[autocall_date[k] - vd] * tau_p[autocall_date[k] - vd])*(1.0 + autocall_coupon[k]));
 					mcvalues.push_back(1.0 + autocall_coupon[k]);
-
 					pv = mcvalues.back();
 					pvs.push_back(pv);
 					PL = cash - pv + s_tmp*delta;
 					aPL.back() = PL;
-					cout << k << "-th Autocalled" << " cash " << cash << " delta " << delta << " s_tmp " << s_tmp << " pv  " << pv << " PL " << PL << endl;
+					if(db)
+						cout << k << "-th Autocalled" << " cash " << cash << " delta " << delta << " s_tmp " << s_tmp << " pv  " << pv << " PL " << PL << endl;
 
 				}
 				else if (s_tmp >= kibarrier) {
@@ -3080,7 +3053,8 @@ void simulation2(PayoffAutocallStd* ThePayoffPtr, MarketParameters& paras, long 
 						pvs.push_back(pv);
 						PL = cash - pv + s_tmp*delta;
 						aPL.back() = PL;
-						cout << k << "-th Autocalled" << " cash " << cash << " delta " << delta << " s_tmp " << s_tmp << " pv  " << pv << " PL " << PL << endl;
+						if(db)
+							cout << k << "-th Autocalled" << " cash " << cash << " delta " << delta << " s_tmp " << s_tmp << " pv  " << pv << " PL " << PL << endl;
 
 					}
 					else if (tmpKIFlag == 0) {
@@ -3089,7 +3063,8 @@ void simulation2(PayoffAutocallStd* ThePayoffPtr, MarketParameters& paras, long 
 						pvs.push_back(pv);
 						PL = cash - pv + s_tmp*delta;
 						aPL.back() = PL;
-						cout << k << "-th Autocalled" << " cash " << cash << " delta " << delta << " s_tmp " << s_tmp << " pv  " << pv <<  " PL " << PL << endl;
+						if(db)
+							cout << k << "-th Autocalled" << " cash " << cash << " delta " << delta << " s_tmp " << s_tmp << " pv  " << pv <<  " PL " << PL << endl;
 
 					}
 					else {
@@ -3102,8 +3077,8 @@ void simulation2(PayoffAutocallStd* ThePayoffPtr, MarketParameters& paras, long 
 					pvs.push_back(pv);
 					PL = cash - pv + s_tmp*delta;
 					aPL.back() = PL;
-					cout << k << "-th Autocalled" << " cash " << cash << " delta " << delta << " s_tmp " << s_tmp << " pv  " << pv << " PL " << PL << endl;
-
+					if(db)
+						cout << k << "-th Autocalled" << " cash " << cash << " delta " << delta << " s_tmp " << s_tmp << " pv  " << pv << " PL " << PL << endl;
 				}
 
 			} //if k
@@ -3111,16 +3086,15 @@ void simulation2(PayoffAutocallStd* ThePayoffPtr, MarketParameters& paras, long 
 		}//for k
 		//cout << "t-vd " << t - vd << " cash " << cash << " delta " << delta << " s_tmp " << s_tmp << " pv  " << pv << " PL " << PL << endl;
 
-
 		paths.push_back(path);
 		PLs.push_back(aPL);
 	}//for(i=0..)
 
-	//double npv = accumulate(mcvalues.begin(), mcvalues.end(), 0.0) / mcvalues.size();
-	//
-	//cout << "pvs \n";
+	ofstream fout("PL.csv");
+	fout << "numMC,PL"  << endl;
 	for (auto iter = PLs.begin(); iter != PLs.end(); iter++)
-		cout << (*iter).back() << endl;
+		fout << iter-PLs.begin() <<"," <<(*iter).back() << endl;
+	fout.close();
 	//cout << "average PLS\n";
 	//double avg_pvs = accumulate(PLs.begin(), PLs.end(), 0.0) / PLs.size();
 	//cout << avg_pvs << endl;
@@ -3588,36 +3562,6 @@ void simulation(PayoffAutocallStd* ThePayoffPtr, MarketParameters& paras, long n
 
 	}
 
-
-
-	//if (hitflag) { //hitted -> vold 
-	//	pv = intp1d(s0, px, vold, 1, maxassetnodeindex - 1);
-	//	pv_next = intp1d(s0, px, vold_next, 1, maxassetnodeindex - 1);
-	//	pv_up = intp1d(s0*1.01, px, vold_up, 1, maxassetnodeindex - 1);
-	//	pv_down = intp1d(s0*0.99, px, vold_down, 1, maxassetnodeindex - 1);
-	//}
-	//else {
-	//	pv = intp1d(s0, px, uold, 1, maxassetnodeindex - 1);
-	//	pv_next = intp1d(s0, px, uold_next, 1, maxassetnodeindex - 1);
-	//	pv_up = intp1d(s0*1.01, px, uold_up, 1, maxassetnodeindex - 1);
-	//	pv_down = intp1d(s0*0.99, px, uold_down, 1, maxassetnodeindex - 1);
-	//}
-
-	//result.resize(30, 0.0);
-	//result[0] = pv;
-	//result[1] = (pv_up - pv_down) / (s0*0.02);
-	//result[2] = (pv_up - 2.0*pv + pv_down) / (s0*0.01) / (s0*0.01);
-	//result[3] = 0;  //vega
-
-	//if (vd == expiry_date) {
-	//	result[4] = 0;
-	//}
-	//else {
-	//	result[4] = pv_next - pv;  //theta
-	//}
-
-	//result[5] = s0;
-
 	delete[] px;
 	delete[] dpx;
 	delete[] alpha;
@@ -3770,7 +3714,7 @@ int main()
 	std::cout << "test_autocall__fd_inst_swip_first(paras, AutoKOSPI); : It took " << duration.count() << "s" << std::endl;
 
 
-	simulation2(&autoPayoff, paras,20);
+	simulation2(&autoPayoff, paras,10000,false);
 	/*before = clock::now();
 	test_autocall__fd_inst_swip_first_sim(paras, AutoKOSPI);
 	duration = clock::now() - before;
