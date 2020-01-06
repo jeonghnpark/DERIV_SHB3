@@ -328,3 +328,8 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+Test_stl/PL01071134.csv
+Test_stl/csvfile.csv
+SingleOption/ts01071203.csv
+SingleOption/PL01071207.csv
+Test_stl/fileinput.txt

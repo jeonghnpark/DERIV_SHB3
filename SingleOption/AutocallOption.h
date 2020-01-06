@@ -11,6 +11,8 @@ public:
 	double Calc(MarketParam& para);//interpolation optimized
 	double Calc(MarketParameters& paras);//class GRID under construction...
 	double Simulation(MarketParameters& paras, long nMC);
+	void Simulation2(MarketParameters& paras, long nMC, bool db = false);
+	void Simulation3(MarketParameters& paras, std::vector<double> apath, bool db = false);
 	double CalcMC(MarketParam& para, long nMC=1000); //r,div inerpolation not optimized
 	double CalcMC_calc2(MarketParam & para, long nMC = 1000); //r,div optimized
 	double CalcMC_calc2(MarketParameters & paras, long nMC = 1000); //r,div optimized
@@ -28,4 +30,8 @@ protected:
 	int hitflag;
 	double get_delta(double spot, double* px, double* uold, double* vold, int KIFlag,  int min, int max, int& init_i);
 	double get_val(double spot, double* px, double* uold, double* vold, int KIFlag, int min, int max, int& init_i);
+
+private:
+	unsigned int getIndex(double target, double* px, int i_min, int i_max) const;
+	mutable int init_i = 0;
 };

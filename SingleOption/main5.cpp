@@ -3647,9 +3647,14 @@ int main()
 	double auto_ki_barrier = refprice*0.6;
 	double auto_dummy_coupon = auto_coupon[6];
 	double auto_put_strike = refprice*1.0; // if put_strike=0, notional protected
+	double put_strike_notional_protect = refprice*0.0;
 
 	PayoffAutocallStd autoPayoff(nb_autocall, auto_date, auto_strike, auto_coupon, auto_ki_barrier, auto_put_strike, auto_dummy_coupon, refprice);
 	AutocallOption AutoKOSPI(refprice, exd_3y, autoPayoff, hitflag);
+	
+	PayoffAutocallStd autoPayoff_notional_protect(nb_autocall, auto_date, auto_strike, auto_coupon, auto_ki_barrier, put_strike_notional_protect, auto_dummy_coupon, refprice);
+	AutocallOption AutoKOSPI_notional_protect(refprice, exd_3y, autoPayoff_notional_protect, hitflag);
+
 	AutocallOption AutoKOSPI_mc(refprice, exd_3y, autoPayoff, hitflag);
 
 	AutocallOption AutoKOSPI_KI(refprice, exd_3y, autoPayoff, 1);
@@ -3713,8 +3718,12 @@ int main()
 	duration = clock::now() - before;
 	std::cout << "test_autocall__fd_inst_swip_first(paras, AutoKOSPI); : It took " << duration.count() << "s" << std::endl;
 
+	//AutoKOSPI.Simulation2(paras, 10000, true);
+	
+	//simulation2(&autoPayoff, paras,10000,false);
 
-	simulation2(&autoPayoff, paras,10000,false);
+
+
 	/*before = clock::now();
 	test_autocall__fd_inst_swip_first_sim(paras, AutoKOSPI);
 	duration = clock::now() - before;
