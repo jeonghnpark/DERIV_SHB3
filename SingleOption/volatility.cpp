@@ -431,6 +431,13 @@ void Vol::set_Ivol(int i_t, int i_k, double v)
 	Ivol[i_t][i_k]=v;
 }
 
+void Vol::reset_Ivol_up()
+{
+	for (int i = 0; i < nb_vol_term;i++)
+		for (int j = 0; j < nb_vol_strike;j++)
+			Ivol[i][j] += 0.01;
+}
+
 double Vol::get_Ivol(int i_t, int i_k) const
 {
 	if(i_t>=nb_vol_term || i_k >=nb_vol_strike) 

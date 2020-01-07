@@ -42,6 +42,7 @@ public:
 	void calcLV(); 
 
 	double lvol(double t_axis, double s_axis) const; //search local vol from real input(time, spot)
+	void reset_Ivol_up();
 	double get_Lvol(int i_t, int i_k) const; //earch local vol from indices
 	double get_Lvol_hybrid(int i_t, double s_axis) const;
 	double get_Lvol_hybrid_up(int i_t, double s_axis) const;

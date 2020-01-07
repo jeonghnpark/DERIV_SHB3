@@ -40,6 +40,7 @@ public:
 
 	//indices input: time index, i_t, spot index
 	void set_Ivol(int i_t, int i_k, double v);
+	void reset_Ivol_up();
 	double get_Ivol(int i_t, int i_k) const;
 	double get_Lvol(int i_t, int i_k) const; 
 	double get_Lvol_up(int i_t, int i_k) const;

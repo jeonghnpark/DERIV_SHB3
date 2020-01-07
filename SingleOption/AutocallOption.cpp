@@ -32,20 +32,20 @@ string getFnameTimeStartingWith(string init_str)
 	else
 		str_mon = to_string(curr_tm->tm_mon + 1);
 
-	if (curr_tm->tm_mday + 1 < 10)
-		str_day = string("0") + to_string(curr_tm->tm_mday + 1);
+	if (curr_tm->tm_mday< 10)
+		str_day = string("0") + to_string(curr_tm->tm_mday);
 	else
-		str_day = to_string(curr_tm->tm_mday + 1);
+		str_day = to_string(curr_tm->tm_mday);
 
-	if (curr_tm->tm_hour + 1 < 10)
-		str_hour = string("0") + to_string(curr_tm->tm_hour + 1);
+	if (curr_tm->tm_hour< 10)
+		str_hour = string("0") + to_string(curr_tm->tm_hour );
 	else
-		str_hour = to_string(curr_tm->tm_hour + 1);
+		str_hour = to_string(curr_tm->tm_hour );
 
-	if (curr_tm->tm_min + 1 < 10)
-		str_min = string("0") + to_string(curr_tm->tm_min + 1);
+	if (curr_tm->tm_min  < 10)
+		str_min = string("0") + to_string(curr_tm->tm_min );
 	else
-		str_min = to_string(curr_tm->tm_min + 1);
+		str_min = to_string(curr_tm->tm_min);
 
 
 	oss << init_str << str_mon << str_day << str_hour << str_min << ".csv";
@@ -1357,7 +1357,7 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 
 	string fn = getFnameTimeStartingWith(string("ts"));
 	ofstream fout_ts(fn.c_str());
-	fout_ts << "tau,s_tmp,cash,delta,pv,PL" << endl;
+	fout_ts << "tau,s_tmp,cash,delta,pv,r_for,q,PL" << endl;
 
 	for (long i = 0; i<numMC_; i++)
 	{
@@ -1417,7 +1417,7 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 		PL = cash - pv + s_tmp*delta;
 		aPL.push_back(PL);
 		if (db)
-			fout_ts << 0 << "," << s_tmp << "," << cash << "," << delta << "," << pv << "," << PL << endl;
+			fout_ts << 0 << "," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
 
 		for (int k = 1; k <= nb_autocall; k++) {
 			for (signed int t = std::max(autocall_date[k - 1], vd) + 1; t <= autocall_date[k]; t++) {
@@ -1479,7 +1479,7 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 				PL = cash - pv + s_tmp*delta;
 				aPL.push_back(PL);
 				if (db)
-					fout_ts << t - vd << "," << s_tmp << "," << cash << "," << delta << "," << pv << "," << PL << endl;
+					fout_ts << t - vd << "," << s_tmp << "," << cash << "," << delta << "," << pv << "," << r_forward_p[t - vd]  << "," << q_forward_p[t - vd] <<","<< PL << endl;
 			}
 
 			//autocall payoff 
@@ -1496,7 +1496,7 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 				PL = cash - pv + s_tmp*delta;
 				aPL.back() = PL;
 				if (db)
-					fout_ts << i << "_" << k << "-th Autocalled," << s_tmp << "," << cash << "," << delta << "," << pv << "," << PL << endl;
+					fout_ts << i << "_" << k << "-th Autocalled," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
 				break; //k loop
 			}
 
@@ -1510,7 +1510,7 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 					PL = cash - pv + s_tmp*delta;
 					aPL.back() = PL;
 					if (db)
-						fout_ts << i << "_" << k << "-th Autocalled," << s_tmp << "," << cash << "," << delta << "," << pv << "," << PL << endl;
+						fout_ts << i << "_" << k << "-th Autocalled," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
 
 				}
 				else if (s_tmp >= kibarrier) {
@@ -1521,7 +1521,7 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 						PL = cash - pv + s_tmp*delta;
 						aPL.back() = PL;
 						if (db)
-							fout_ts << i << "_" << k << "-th Autocalled," << s_tmp << "," << cash << "," << delta << "," << pv << "," << PL << endl;
+							fout_ts << i << "_" << k << "-th Autocalled," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
 
 					}
 					else if (tmpKIFlag == 0) {
@@ -1531,7 +1531,7 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 						PL = cash - pv + s_tmp*delta;
 						aPL.back() = PL;
 						if (db)
-							fout_ts << i << "_" << k << "-th Autocalled," << s_tmp << "," << cash << "," << delta << "," << pv << "," << PL << endl;
+							fout_ts << i << "_" << k << "-th Autocalled," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
 					}
 					else {
 						throw std::logic_error("unexpected KIFlag");
@@ -1544,7 +1544,7 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 					PL = cash - pv + s_tmp*delta;
 					aPL.back() = PL;
 					if (db)
-						fout_ts << i << "_" << k << "-th Autocalled," << s_tmp << "," << cash << "," << delta << "," << pv << "," << PL << endl;
+						fout_ts << i << "_" << k << "-th Autocalled," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
 				}
 
 			} //if k
@@ -1605,7 +1605,7 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 	delete[] q_forward_p;
 }
 
-void AutocallOption::Simulation3(MarketParameters & paras, std::vector<double> apath, bool db)
+void AutocallOption::Simulation3(MarketParameters & paras, std::vector<double>& apath, bool db)
 {
 	double s0 = paras.get_spot();
 	signed int vd = paras.get_vdate();
@@ -1815,8 +1815,21 @@ void AutocallOption::Simulation3(MarketParameters & paras, std::vector<double> a
 
 	cout << "npv_fd " << pv_fd << endl;
 
-	ofstream fout_ts("ts.csv");
-	fout_ts << "tau,s_tmp,cash,delta,pv,PL" << endl;
+	ofstream fuold("uold.csv");
+	ofstream fvold("vold.csv");
+	fuold << "PX, uold" << endl;
+	fvold << "PX, vold" << endl;
+
+	for (int i = 0; i <= maxassetnodeindex; i++) {
+		fuold << px[i] << "," << (*it_ugrid)[i] << endl;
+		fvold << px[i] << "," << (*it_vgrid)[i] << endl;
+	}
+	fuold.close();
+	fvold.close();
+
+	string fn = getFnameTimeStartingWith(string("ts"));
+	ofstream fout_ts(fn.c_str());
+	fout_ts << "tau,s_tmp,cash,delta,pv,r,q,PL" << endl;
 
 	for (long i = 0; i == 0; i++)
 	{
@@ -1876,22 +1889,15 @@ void AutocallOption::Simulation3(MarketParameters & paras, std::vector<double> a
 		PL = cash - pv + s_tmp*delta;
 		aPL.push_back(PL);
 		if (db)
-			fout_ts << 0 << "," << s_tmp << "," << cash << "," << delta << "," << pv << "," << PL << endl;
+			fout_ts << 0 << "," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
 
 		for (int k = 1; k <= nb_autocall; k++) {
 			for (signed int t = std::max(autocall_date[k - 1], vd) + 1; t <= autocall_date[k]; t++) {
 
-				//double short_vol = paras.get_Lvol_hybrid(idxT[t - vd], s_tmp);
-				//double drift = (r_forward_p[t - vd] - q_forward_p[t - vd] - 0.5*short_vol*short_vol)*dt;
-				//double diff = short_vol*std::sqrt(dt);
-
-				//for (long t2 = 1; t2 <= daydivide_; t2++) {
-				//	s_tmp = s_tmp*std::exp(drift + diff*ndist(gen));
 				s_tmp = apath[t - vd];
 				path.push_back(s_tmp);
 				if (s_tmp<kibarrier)
 					tmpKIFlag = 1;
-				//}
 
 				spot_idx = getIndex(s_tmp, px, 0, maxassetnodeindex);
 
@@ -1938,7 +1944,7 @@ void AutocallOption::Simulation3(MarketParameters & paras, std::vector<double> a
 				PL = cash - pv + s_tmp*delta;
 				aPL.push_back(PL);
 				if (db)
-					fout_ts << t - vd << "," << s_tmp << "," << cash << "," << delta << "," << pv << "," << PL << endl;
+					fout_ts << t - vd << "," << s_tmp << "," << cash << "," << delta << "," << pv << "," << r_forward_p[t - vd] <<","<< q_forward_p[t - vd] << ","<<  PL << endl;
 			}
 
 			//autocall payoff 
@@ -2016,7 +2022,8 @@ void AutocallOption::Simulation3(MarketParameters & paras, std::vector<double> a
 
 	fout_ts.close();
 
-	ofstream fout("PL.csv");
+	string fn2 = getFnameTimeStartingWith(string("PL"));
+	ofstream fout(fn2.c_str());
 	auto it = PLs.begin();
 	fout << "numMC,PL" << endl;
 	for (auto iter = PLs.begin(); iter != PLs.end(); iter++)

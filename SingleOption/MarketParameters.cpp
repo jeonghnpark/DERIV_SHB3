@@ -37,6 +37,11 @@ double MarketParameters::lvol(double t_axis, double s_axis) const
 	return vol.lvol(t_axis, s_axis);
 }
 
+void MarketParameters::reset_Ivol_up()
+{
+	vol.reset_Ivol_up();
+}
+
 double MarketParameters::lvol_up(double t_axis, double s_axis) const
 {
 	return vol.lvol_up(t_axis, s_axis);

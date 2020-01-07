@@ -2252,20 +2252,14 @@ MarketParameters set_paras()
 	Rate r(v_r, v_rts);
 	Rate q(v_q, v_qts);
 
-
-	//double intpvol = volat.getInpVol(1.0, putstrike);  //flat interpolation use .getBSVol
-
-	//상품타입변경
-	//bool is_flat_vol = true;
-	//int hitflag = 1;
-	//long nM = 30000;
-
 	//***상품타입변경
 	double spot = 297.22;
 	signed int vd = 43340;
 
 	return MarketParameters(vd, spot, volat, r, q);
 }
+
+
 
 MarketParameters set_paras_spot1()
 {
@@ -3610,6 +3604,20 @@ void simulation(PayoffAutocallStd* ThePayoffPtr, MarketParameters& paras, long n
 
 }
 
+vector<double> get_a_path_from_csv(char* s)
+{
+	ifstream ifs;
+	string str_buf;
+	vector<double> apath;
+	ifs.open("12th.csv");
+	while (!ifs.eof()) {
+		getline(ifs, str_buf, '\n');
+		apath.push_back(stod(str_buf));
+	}
+	ifs.close();
+	return apath;
+}
+
 int main()
 {	
 
@@ -3618,12 +3626,17 @@ int main()
 
 	//market parameter module
 	MarketParameters paras;
+	MarketParameters paras_volup;
 	MarketParameters paras_flat;
 	MarketParameters paras_spot1;
 	MarketParam para;
 	MarketParam para_flat;
 
 	paras=set_paras();
+	
+	paras_volup = set_paras();
+	paras_volup.reset_Ivol_up();
+
 	paras_spot1 = set_paras_spot1();
 
 	para = set_para();
@@ -3642,16 +3655,24 @@ int main()
 	signed int exd_3y = 44436; //3y 
 	int nb_autocall = 6;
 	signed int auto_date[7] = { -1,43524,43705,43889,44071,44255,44436 };
-	double auto_strike[7] = { -1,297.22,	297.22,	282.359	,282.359,	267.498,	267.498 };
+	double auto_strike[7] = { -1,297.22,297.22,282.359,282.359,267.498,267.498};
+	double auto_strike_shift[7] = { -1,297.22,297.22,230.3455,230.3455,230.3455,230.3455 };
 	double auto_coupon[7] = { -1, 0.0230,	0.0460,	0.0690,	0.0920,	0.1150,	0.1380 };
 	double auto_ki_barrier = refprice*0.6;
+	double auto_ki_barrier_shift = refprice*0.6;
+
 	double auto_dummy_coupon = auto_coupon[6];
 	double auto_put_strike = refprice*1.0; // if put_strike=0, notional protected
 	double put_strike_notional_protect = refprice*0.0;
 
 	PayoffAutocallStd autoPayoff(nb_autocall, auto_date, auto_strike, auto_coupon, auto_ki_barrier, auto_put_strike, auto_dummy_coupon, refprice);
+	PayoffAutocallStd autoPayoff_shift(nb_autocall, auto_date, auto_strike_shift, auto_coupon, auto_ki_barrier, auto_put_strike, auto_dummy_coupon, refprice);
+	PayoffAutocallStd autoPayoff_KI_shift(nb_autocall, auto_date, auto_strike, auto_coupon, auto_ki_barrier_shift, auto_put_strike, auto_dummy_coupon, refprice);
+
 	AutocallOption AutoKOSPI(refprice, exd_3y, autoPayoff, hitflag);
-	
+	AutocallOption AutoKOSPI_shift(refprice, exd_3y, autoPayoff_shift, hitflag);
+	AutocallOption AutoKOSPI_KI_shift(refprice, exd_3y, autoPayoff_KI_shift, hitflag);
+
 	PayoffAutocallStd autoPayoff_notional_protect(nb_autocall, auto_date, auto_strike, auto_coupon, auto_ki_barrier, put_strike_notional_protect, auto_dummy_coupon, refprice);
 	AutocallOption AutoKOSPI_notional_protect(refprice, exd_3y, autoPayoff_notional_protect, hitflag);
 
@@ -3713,13 +3734,16 @@ int main()
 	//duration = clock::now() - before;
 	//std::cout << "test_autocall__fd_mc_inst(paras, AutoKOSPI) : It took " << duration.count() << "s" << std::endl;
 
-	before = clock::now();
+	/*before = clock::now();
 	test_autocall__fd_inst_swip_first(paras, AutoKOSPI);
 	duration = clock::now() - before;
 	std::cout << "test_autocall__fd_inst_swip_first(paras, AutoKOSPI); : It took " << duration.count() << "s" << std::endl;
-
-	//AutoKOSPI.Simulation2(paras, 10000, true);
-	
+*/
+	//AutoKOSPI.Simulation2(paras, 30, true);
+	vector<double> apath;
+	apath = get_a_path_from_csv("12th.csv");
+	AutoKOSPI.Simulation3(paras_volupwater007!
+		, apath, true);
 	//simulation2(&autoPayoff, paras,10000,false);
 
 
