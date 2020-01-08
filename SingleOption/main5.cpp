@@ -3742,11 +3742,10 @@ int main()
 	//AutoKOSPI.Simulation2(paras, 30, true);
 	vector<double> apath;
 	apath = get_a_path_from_csv("12th.csv");
-	AutoKOSPI.Simulation3(paras_volupwater007!
-		, apath, true);
+	AutoKOSPI.Simulation2(paras, 1000, true);
 	//simulation2(&autoPayoff, paras,10000,false);
 
-
+	EurPut.Simulation2(paras, 1000, true);
 
 	/*before = clock::now();
 	test_autocall__fd_inst_swip_first_sim(paras, AutoKOSPI);

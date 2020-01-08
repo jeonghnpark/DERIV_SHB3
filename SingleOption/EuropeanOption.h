@@ -12,6 +12,7 @@ public:
 	double Calc2(MarketParam& para);
 	double Calc(MarketParameters& para);
 	double Calc2(MarketParameters& para);
+	void Simulation2(MarketParameters& paras, long nMC, bool db = false);
 
 	signed int GetExpiryd() const;
 	double GetRefPrice() const;
@@ -22,6 +23,8 @@ protected:
 	signed int expiry_date;
 	Payoff* ThePayoffPtr;
 	std::vector<double> result;
-	
+private:
+	unsigned int getIndex(double target, double * px, int i_min, int i_max) const;
+	mutable int init_i = 0;
 };
 #endif
