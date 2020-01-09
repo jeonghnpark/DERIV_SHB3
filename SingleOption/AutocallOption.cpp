@@ -12,46 +12,46 @@
 #include "k_miscellaneous.hpp"
 
 using namespace std;
-string getFnameTimeStartingWith(string init_str)
-{
-	std::ostringstream oss;
-
-
-	time_t curr_time;
-	struct tm *curr_tm;
-
-	curr_time = time(NULL);
-	curr_tm = localtime(&curr_time);
-	string str_mon;
-	string str_day;
-	string str_hour;
-	string str_min;
-
-	if (curr_tm->tm_mon + 1 < 10)
-		str_mon = string("0") + to_string(curr_tm->tm_mon + 1);
-	else
-		str_mon = to_string(curr_tm->tm_mon + 1);
-
-	if (curr_tm->tm_mday< 10)
-		str_day = string("0") + to_string(curr_tm->tm_mday);
-	else
-		str_day = to_string(curr_tm->tm_mday);
-
-	if (curr_tm->tm_hour< 10)
-		str_hour = string("0") + to_string(curr_tm->tm_hour );
-	else
-		str_hour = to_string(curr_tm->tm_hour );
-
-	if (curr_tm->tm_min  < 10)
-		str_min = string("0") + to_string(curr_tm->tm_min );
-	else
-		str_min = to_string(curr_tm->tm_min);
-
-
-	oss << init_str << str_mon << str_day << str_hour << str_min << ".csv";
-	
-	return oss.str();
-}
+//string getFnameTimeStartingWith(string init_str)
+//{
+//	std::ostringstream oss;
+//
+//
+//	time_t curr_time;
+//	struct tm *curr_tm;
+//
+//	curr_time = time(NULL);
+//	curr_tm = localtime(&curr_time);
+//	string str_mon;
+//	string str_day;
+//	string str_hour;
+//	string str_min;
+//
+//	if (curr_tm->tm_mon + 1 < 10)
+//		str_mon = string("0") + to_string(curr_tm->tm_mon + 1);
+//	else
+//		str_mon = to_string(curr_tm->tm_mon + 1);
+//
+//	if (curr_tm->tm_mday< 10)
+//		str_day = string("0") + to_string(curr_tm->tm_mday);
+//	else
+//		str_day = to_string(curr_tm->tm_mday);
+//
+//	if (curr_tm->tm_hour< 10)
+//		str_hour = string("0") + to_string(curr_tm->tm_hour );
+//	else
+//		str_hour = to_string(curr_tm->tm_hour );
+//
+//	if (curr_tm->tm_min  < 10)
+//		str_min = string("0") + to_string(curr_tm->tm_min );
+//	else
+//		str_min = to_string(curr_tm->tm_min);
+//
+//
+//	oss << init_str << str_mon << str_day << str_hour << str_min << ".csv";
+//	
+//	return oss.str();
+//}
 
 AutocallOption::AutocallOption(double refprice_, signed int expiryd_, const PayoffAutocallStd & ThePayoff_, int hitflag_)
 	:refprice(refprice_), expiry_date(expiryd_),hitflag(hitflag_)
@@ -1416,7 +1416,7 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 		cash += pv - s_tmp*delta;
 		PL = cash - pv + s_tmp*delta;
 		aPL.push_back(PL);
-		if (db)
+		if (0)
 			fout_ts << 0 << "," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
 
 		for (int k = 1; k <= nb_autocall; k++) {
@@ -1478,7 +1478,7 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 				delta = delta_new;
 				PL = cash - pv + s_tmp*delta;
 				aPL.push_back(PL);
-				if (db)
+				if (0)
 					fout_ts << t - vd << "," << s_tmp << "," << cash << "," << delta << "," << pv << "," << r_forward_p[t - vd]  << "," << q_forward_p[t - vd] <<","<< PL << endl;
 			}
 
@@ -1496,7 +1496,7 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 				PL = cash - pv + s_tmp*delta;
 				aPL.back() = PL;
 				if (db)
-					fout_ts << i << "_" << k << "-th Autocalled," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
+					fout_ts << tmpKIFlag << "_" << k << "-th Autocalled," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
 				break; //k loop
 			}
 
@@ -1510,7 +1510,7 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 					PL = cash - pv + s_tmp*delta;
 					aPL.back() = PL;
 					if (db)
-						fout_ts << i << "_" << k << "-th Autocalled," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
+						fout_ts << tmpKIFlag << "_" << k << "-th Autocalled," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
 
 				}
 				else if (s_tmp >= kibarrier) {
@@ -1521,7 +1521,7 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 						PL = cash - pv + s_tmp*delta;
 						aPL.back() = PL;
 						if (db)
-							fout_ts << i << "_" << k << "-th Autocalled," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
+							fout_ts << tmpKIFlag << "_" << k << "-th Autocalled," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
 
 					}
 					else if (tmpKIFlag == 0) {
@@ -1531,7 +1531,7 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 						PL = cash - pv + s_tmp*delta;
 						aPL.back() = PL;
 						if (db)
-							fout_ts << i << "_" << k << "-th Autocalled," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
+							fout_ts << tmpKIFlag << "_" << k << "-th Autocalled," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
 					}
 					else {
 						throw std::logic_error("unexpected KIFlag");
@@ -1544,7 +1544,7 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 					PL = cash - pv + s_tmp*delta;
 					aPL.back() = PL;
 					if (db)
-						fout_ts << i << "_" << k << "-th Autocalled," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
+						fout_ts << tmpKIFlag << "_" << k << "-th Autocalled," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
 				}
 
 			} //if k

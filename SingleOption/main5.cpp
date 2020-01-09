@@ -3646,8 +3646,13 @@ int main()
 	unsigned int exd = paras.get_vdate() + 365; //1y vanilla
 	double refprice = 297.22;
 	double putstrike = refprice;
+	double putstrike90 = refprice*0.9;
 	PayoffPut putpay(putstrike);
+	PayoffPut put90(putstrike90);
+
 	EuropeanOption EurPut(refprice, exd, putpay);
+	EuropeanOption EurPut90(refprice, exd, put90);
+
 	EuropeanOptionMC EurPutMC(refprice, exd, putpay);
 
 	//Make autocallable option
@@ -3656,6 +3661,7 @@ int main()
 	int nb_autocall = 6;
 	signed int auto_date[7] = { -1,43524,43705,43889,44071,44255,44436 };
 	double auto_strike[7] = { -1,297.22,297.22,282.359,282.359,267.498,267.498};
+	double auto_strike959085[7] = { -1,282.359,282.359,267.498,267.498,252.637,252.637 };
 	double auto_strike_shift[7] = { -1,297.22,297.22,230.3455,230.3455,230.3455,230.3455 };
 	double auto_coupon[7] = { -1, 0.0230,	0.0460,	0.0690,	0.0920,	0.1150,	0.1380 };
 	double auto_ki_barrier = refprice*0.6;
@@ -3668,8 +3674,11 @@ int main()
 	PayoffAutocallStd autoPayoff(nb_autocall, auto_date, auto_strike, auto_coupon, auto_ki_barrier, auto_put_strike, auto_dummy_coupon, refprice);
 	PayoffAutocallStd autoPayoff_shift(nb_autocall, auto_date, auto_strike_shift, auto_coupon, auto_ki_barrier, auto_put_strike, auto_dummy_coupon, refprice);
 	PayoffAutocallStd autoPayoff_KI_shift(nb_autocall, auto_date, auto_strike, auto_coupon, auto_ki_barrier_shift, auto_put_strike, auto_dummy_coupon, refprice);
+	PayoffAutocallStd autoPayoff959085(nb_autocall, auto_date, auto_strike959085, auto_coupon, auto_ki_barrier, auto_put_strike, auto_dummy_coupon, refprice);
 
 	AutocallOption AutoKOSPI(refprice, exd_3y, autoPayoff, hitflag);
+	AutocallOption AutoKOSPI959085(refprice, exd_3y, autoPayoff959085, hitflag);
+
 	AutocallOption AutoKOSPI_shift(refprice, exd_3y, autoPayoff_shift, hitflag);
 	AutocallOption AutoKOSPI_KI_shift(refprice, exd_3y, autoPayoff_KI_shift, hitflag);
 
@@ -3741,11 +3750,15 @@ int main()
 */
 	//AutoKOSPI.Simulation2(paras, 30, true);
 	vector<double> apath;
-	apath = get_a_path_from_csv("12th.csv");
-	AutoKOSPI.Simulation2(paras, 1000, true);
+	//apath = get_a_path_from_csv("12th.csv");
+	AutoKOSPI959085.Simulation2(paras, 10000, true);
+	//EurPut.Simulation2(paras_volup, 10, true);
+
+	//AutoKOSPI.Simulation3(paras_volup, apath, true);
+	//EurPut90.Simulation2(paras_volup, 10, true);
 	//simulation2(&autoPayoff, paras,10000,false);
 
-	EurPut.Simulation2(paras, 1000, true);
+	//EurPut.Simulation2(paras, 1000, true);
 
 	/*before = clock::now();
 	test_autocall__fd_inst_swip_first_sim(paras, AutoKOSPI);

@@ -383,7 +383,7 @@ double EuropeanOption::Calc2(MarketParameters & paras)
 	double s0 = paras.get_spot();
 	paras.calcLV();
 
-	int maxassetnodeindex = 300;
+	int maxassetnodeindex = 400;
 	double *px = new double[maxassetnodeindex + 1];
 	double *dpx = new double[maxassetnodeindex + 1];
 	double *alpha = new double[maxassetnodeindex + 1];
@@ -415,7 +415,7 @@ double EuropeanOption::Calc2(MarketParameters & paras)
 
 	//int kiindex=0;
 	px[0] = 0.0;
-	double tmp_ds = refprice*3.0 / maxassetnodeindex;
+	double tmp_ds = refprice*2.0 / maxassetnodeindex;
 	for (int i = 1; i <= maxassetnodeindex; i++)
 		px[i] = px[i - 1] + tmp_ds;
 	for (int i = 0; i<maxassetnodeindex; i++) //max index of dp is max index of px -1
@@ -663,6 +663,18 @@ void EuropeanOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 	pv_fd = inpt1d(s0, px, *it_vgrid, 0, maxassetnodeindex, 0);
 
 	cout << "npv_fd " << pv_fd << endl;
+
+
+	ofstream fvold("vold.csv");
+
+	fvold << "PX, vold" << endl;
+
+	for (int i = 0; i <= maxassetnodeindex; i++) {
+
+		fvold << px[i] << "," << (*it_vgrid)[i] << endl;
+	}
+
+	fvold.close();
 
 	string fn = getFnameTimeStartingWith(string("ts_vanilla"));
 	ofstream fout_ts(fn.c_str());
