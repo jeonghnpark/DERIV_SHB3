@@ -51,9 +51,6 @@
     <ClCompile Include="MarketParameters.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="PayoffAutocallable.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="PayoffAutocallStd.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -132,9 +129,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Payoff.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="PayoffAutocall.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="PayoffAutocallStd.h">

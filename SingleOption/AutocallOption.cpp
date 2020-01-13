@@ -1703,12 +1703,33 @@ void AutocallOption::Simulation3(MarketParameters & paras, std::vector<double>& 
 		uold_down[i] = uold[i];
 	}
 
+
+
 	/*save vold, uold in vector*/
 	vector<vector<double> > vgrid;
 	vector<vector<double> > ugrid;
 
 	vgrid.push_back(vector<double>(vold, vold + (maxassetnodeindex + 1)));
 	ugrid.push_back(vector<double>(uold, uold + (maxassetnodeindex + 1)));
+
+
+	if (db) {
+		auto it_vgrid = vgrid.rbegin();
+		auto it_ugrid = ugrid.rbegin();
+
+		ofstream fuold("uold_final.csv");
+		ofstream fvold("vold_final.csv");
+		fuold << "PX, uold" << endl;
+		fvold << "PX, vold" << endl;
+
+		for (int i = 0; i <= maxassetnodeindex; i++) {
+			fuold << px[i] << "," << (*it_ugrid)[i] << endl;
+			fvold << px[i] << "," << (*it_vgrid)[i] << endl;
+		}
+
+		fuold.close();
+		fvold.close();
+	}
 
 	signed int t;
 	double s_tmp;
@@ -1794,6 +1815,33 @@ void AutocallOption::Simulation3(MarketParameters & paras, std::vector<double>& 
 
 		 //update BC
 		if (t == autocall_date[k - 1]) {
+			if (db) {
+
+				ostringstream oss_uold;
+				ostringstream oss_vold;
+
+				oss_uold << "uold" << k-1 << ".csv";
+				oss_vold << "vold" << k-1 << ".csv";
+
+				auto it_vgrid = vgrid.rbegin();
+				auto it_ugrid = ugrid.rbegin();
+
+				ofstream fuold(oss_uold.str().c_str());
+				ofstream fvold(oss_vold.str().c_str());
+				fuold << "PX, uold" <<k-1<< endl;
+				fvold << "PX, vold" <<k-1<< endl;
+
+				for (int i = 0; i <= maxassetnodeindex; i++) {
+					fuold << px[i] << "," << (*it_ugrid)[i] << endl;
+					fvold << px[i] << "," << (*it_vgrid)[i] << endl;
+				}
+
+				fuold.close();
+				fvold.close();
+			}
+		}
+
+		if (t == autocall_date[k - 1]) {
 			ThePayoffPtr->updator(t, vold, uold, px, 0, maxassetnodeindex);
 			ThePayoffPtr->updator(t, vold_up, uold_up, px, 0, maxassetnodeindex);
 			ThePayoffPtr->updator(t, vold_down, uold_down, px, 0, maxassetnodeindex);
@@ -1824,6 +1872,7 @@ void AutocallOption::Simulation3(MarketParameters & paras, std::vector<double>& 
 		fuold << px[i] << "," << (*it_ugrid)[i] << endl;
 		fvold << px[i] << "," << (*it_vgrid)[i] << endl;
 	}
+
 	fuold.close();
 	fvold.close();
 

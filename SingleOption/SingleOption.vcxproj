@@ -35,7 +35,6 @@
     <ClCompile Include="main5.cpp" />
     <ClCompile Include="MarketParam.cpp" />
     <ClCompile Include="MarketParameters.cpp" />
-    <ClCompile Include="PayoffAutocallable.cpp" />
     <ClCompile Include="PayoffAutocallStd.cpp" />
     <ClCompile Include="PayoffBarCUO.cpp" />
     <ClCompile Include="PayoffBarPDO.cpp" />
@@ -64,7 +63,6 @@
     <ClInclude Include="MarketParam.h" />
     <ClInclude Include="MarketParameters.h" />
     <ClInclude Include="Payoff.h" />
-    <ClInclude Include="PayoffAutocall.h" />
     <ClInclude Include="PayoffAutocallStd.h" />
     <ClInclude Include="PayoffBarCUO.h" />
     <ClInclude Include="PayoffBarPDO.h" />
