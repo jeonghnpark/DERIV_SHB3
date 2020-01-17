@@ -2688,6 +2688,18 @@ void simulation2(PayoffAutocallStd* ThePayoffPtr, MarketParameters& paras, long 
 	int nb_autocall = ThePayoffPtr->GetNbAutocall();
 	paras.calcLV();
 
+	//if (db) {//save local vol in file
+	//	ofstream flvol("Lvol.csv");
+	//	//fuold << "PX, uold" << endl;
+	//	for (int i = 0; i <10; i++) {
+	//		for (int j = 0; j < 17; j++) {
+	//			flvol << paras.get_Lvol(i, j) << ",";
+	//		}
+	//		flvol << endl;
+	//	}
+	//	flvol.close();
+	//}
+
 	std::vector<signed int> autocall_date;
 	autocall_date = ThePayoffPtr->GetAutocall_date();
 
@@ -3644,14 +3656,18 @@ int main()
 	paras_flat = set_paras_flat();
 	//instrument 
 	unsigned int exd = paras.get_vdate() + 365; //1y vanilla
+	unsigned int exd6m = paras.get_vdate() + 180; //1y vanilla
+
 	double refprice = 297.22;
 	double putstrike = refprice;
 	double putstrike90 = refprice*0.9;
 	PayoffPut putpay(putstrike);
 	PayoffPut put90(putstrike90);
+	PayoffPut put6M(putstrike);
 
 	EuropeanOption EurPut(refprice, exd, putpay);
 	EuropeanOption EurPut90(refprice, exd, put90);
+	EuropeanOption EurPut6M(refprice, exd6m, putpay);
 
 	EuropeanOptionMC EurPutMC(refprice, exd, putpay);
 
@@ -3759,10 +3775,12 @@ int main()
 	//AutoKOSPI.Simulation2(paras, 30, true);
 	vector<double> apath;
 	apath = get_a_path_from_csv("12th.csv");
-	//AutoKOSPI_hifive.Simulation2(paras, 10000, true);
-	//EurPut.Simulation2(paras_volup, 10, true);
+	//AutoKOSPI.Simulation2(paras, 10, true);
+	AutoKOSPI.Simulation2_1(paras, EurPut6M,3000, false);
 
-	AutoKOSPI.Simulation3(paras, apath, true);
+	//EurPut.Simulation2(paras, 10, true);
+	//double apl = EurPut.Simulation3(paras, apath, false);
+	//AutoKOSPI.Simulation3(paras, apath, true);
 	//EurPut90.Simulation2(paras_volup, 10, true);
 	//simulation2(&autoPayoff, paras,10000,false);
 

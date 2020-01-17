@@ -13,6 +13,7 @@ public:
 	double Calc(MarketParameters& para);
 	double Calc2(MarketParameters& para);
 	void Simulation2(MarketParameters& paras, long nMC, bool db = false);
+	double Simulation3(MarketParameters& paras, std::vector<double>& apath, bool db);
 
 	signed int GetExpiryd() const;
 	double GetRefPrice() const;
