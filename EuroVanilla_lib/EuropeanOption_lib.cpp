@@ -56,7 +56,7 @@ void __stdcall EuropeanOption_lib(int CP, double refprice, signed int expiryDate
 		//Plain Put when cp=-1
 		EuropeanOption Eur(refprice, expiryDate, PayoffPut(strike));
 		//Eur.Calc2(para);
-		Eur.Calc2(paras);
+		Eur.Calc(paras);
 		std::vector<double> rs = Eur.GetResult();
 		for (int i = 0; i < 30; i++)
 			result[i] = rs[i];
@@ -65,7 +65,7 @@ void __stdcall EuropeanOption_lib(int CP, double refprice, signed int expiryDate
 	else if (CP == 1) {
 		//code here for plain call
 		EuropeanOption Eur(refprice, expiryDate, PayoffCall(strike));
-		Eur.Calc2(paras);
+		Eur.Calc(paras);
 		std::vector<double> rs = Eur.GetResult();
 		for (int i = 0; i < 30; i++)
 			result[i] = rs[i];
@@ -80,7 +80,7 @@ void __stdcall EuropeanOption_MC_lib(int CP, double refprice, signed int expiryD
 	double* Ivol, double* vol_term, double* vol_strike, int nb_vol_term, int nb_vol_strike,
 	double* rfrate, double* rfrate_term, int nb_rfrate,
 	double* divrate, double* divrate_term, int nb_divrate,
-	double* result)
+	double* result, signed int nM)
 {
 	std::vector<double> v_r;
 	std::vector<double> v_rts;
@@ -110,9 +110,9 @@ void __stdcall EuropeanOption_MC_lib(int CP, double refprice, signed int expiryD
 
 	if (CP == -1) {
 		//Plain Put when cp=-1
-		EuropeanOptionMC Eur(refprice, expiryDate, PayoffPut(strike));
+		EuropeanOption Eur(refprice, expiryDate, PayoffPut(strike));
 		//Eur.Calc2(para);
-		Eur.Calc2(paras,50000);
+		Eur.CalcMC(paras,nM);
 		std::vector<double> rs = Eur.GetResult();
 		for (int i = 0; i < 30; i++)
 			result[i] = rs[i];
@@ -120,8 +120,8 @@ void __stdcall EuropeanOption_MC_lib(int CP, double refprice, signed int expiryD
 	}
 	else if (CP == 1) {
 		//code here for plain call
-		EuropeanOptionMC Eur(refprice, expiryDate, PayoffCall(strike));
-		Eur.Calc2(paras,50000);
+		EuropeanOption Eur(refprice, expiryDate, PayoffCall(strike));
+		Eur.CalcMC(paras,nM);
 		std::vector<double> rs = Eur.GetResult();
 		for (int i = 0; i < 30; i++)
 			result[i] = rs[i];

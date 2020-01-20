@@ -7,6 +7,7 @@
 #include <chrono>
 #include <numeric>
 #include <fstream>
+#include <string>
 
 #include "volatility.h"
 #include "MarketParam.h"
@@ -1377,7 +1378,7 @@ void test_autocall__fd_mc(MarketParameters& paras, long nM)
 	//long nM = 10000;
 	AutoKOSPI.Calc(paras);
 	//AutoKOSPI_mc.CalcMC(para, nM);
-	AutoKOSPI_mc.CalcMC_calc2(paras, nM);
+	AutoKOSPI_mc.CalcMC(paras, nM);
 
 
 	//	AutoKOSPI.Calc(para);
@@ -1402,7 +1403,7 @@ void test_autocall__fd_mc_inst(MarketParameters& paras, AutocallOption& autoop, 
 	autoop.Calc(paras);
 	std::vector<double> rs = autoop.GetResult();
 
-	autoop.CalcMC_calc2(paras, nM);
+	autoop.CalcMC(paras, nM);
 	std::vector<double> rs_mc = autoop.GetResult();
 
 	std::cout.precision(8);
@@ -1463,7 +1464,7 @@ void test_autocall_fd_mc_inst_swip_first_time(MarketParameters& paras, AutocallO
 	autoop.Calc(paras);
 	std::vector<double> rs = autoop.GetResult();
 
-	autoop.CalcMC_calc2(paras, nM);
+	autoop.CalcMC(paras, nM);
 	std::vector<double> rs_mc = autoop.GetResult();
 
 	std::cout.precision(8);
@@ -1827,9 +1828,9 @@ void test_calc2_mc_for_vanilla(long n)
 
 
 	//EurPut.Calc(para);
-	EurPut2.Calc2(paras);
+	EurPut2.Calc(paras);
 	//EurPutMC.Calc(para,n);
-	EurPutMC_paras.Calc2(paras, n);
+	EurPutMC_paras.Calc(paras, n);
 
 	std::cout.precision(8);
 	std::cout << std::fixed;
@@ -2126,7 +2127,7 @@ void test_calc2_for_vanilla_param_params()
 	//EuropeanOptionMC EurPutMC(refprice, exd, putpay);
 
 	EurPut_para.Calc2(para);
-	EurPut_params.Calc2(paras);
+	EurPut_params.Calc(paras);
 
 	std::cout.precision(8);
 	std::cout << std::fixed;
@@ -2163,7 +2164,7 @@ void test_calc2_for_vanilla_param_params_module(MarketParameters& paras)
 
 	//EuropeanOptionMC EurPutMC(refprice, exd, putpay);
 
-	EurPut_paras_module.Calc2(paras);
+	EurPut_paras_module.Calc(paras);
 
 	std::cout.precision(8);
 	std::cout << std::fixed;
@@ -2176,7 +2177,7 @@ void test_calc2_for_vanilla_param_params_module(MarketParameters& paras)
 
 void test_calc2_for_vanilla_param_params_module_inst(MarketParameters& paras, EuropeanOption& eop)
 {
-	eop.Calc2(paras);
+	eop.Calc(paras);
 
 	std::cout.precision(8);
 	std::cout << std::fixed;
@@ -2201,6 +2202,7 @@ void test_calc2_for_vanilla_param_params_module_inst(MarketParam& para, European
 	cout << "\nresult : test_calc2_for_vanilla_paras_module_instrument\n";
 	std::cout << "test_calc2_for_vanilla_param_params_module_inst(MarketParam& para, EuropeanOption& eop)\n " << rs[0] << "=%price " << rs[0] / refprice * 100 << "%" << std::endl;
 }
+
 
 MarketParameters set_paras()
 {
@@ -2544,9 +2546,9 @@ void test_calc2_mc_vanilla_paras_module(MarketParameters& paras, long n)
 
 
 	//EurPut.Calc(para);
-	EurPut.Calc2(paras);
+	EurPut.Calc(paras);
 	//EurPutMC.Calc(para,n);
-	EurPutMC_paras.Calc2(paras, n);
+	EurPutMC_paras.Calc(paras, n);
 
 	std::cout.precision(8);
 	std::cout << std::fixed;
@@ -2567,7 +2569,7 @@ void test_calc2_mc_vanilla_paras_module(MarketParameters& paras, long n)
 
 void test_calc2_mc_vanilla_paras_module_inst(MarketParameters& paras, EuropeanOptionMC& eop, long n)
 {
-	eop.Calc2(paras, n);
+	eop.Calc(paras, n);
 
 	std::cout.precision(8);
 	std::cout << std::fixed;
@@ -3645,15 +3647,13 @@ int main()
 	MarketParam para_flat;
 
 	paras=set_paras();
-	
 	paras_volup = set_paras();
 	paras_volup.reset_Ivol_up();
-
 	paras_spot1 = set_paras_spot1();
-
 	para = set_para();
 	para_flat = set_para_flat();
 	paras_flat = set_paras_flat();
+
 	//instrument 
 	unsigned int exd = paras.get_vdate() + 365; //1y vanilla
 	unsigned int exd6m = paras.get_vdate() + 180; //1y vanilla
@@ -3684,7 +3684,6 @@ int main()
 	double auto_ki_barrier = refprice*0.6;
 	double auto_ki_barrier70 = refprice * 0.7; 
 	double auto_ki_barrier_shift = refprice*0.6;
-
 	double auto_dummy_coupon = auto_coupon[6];
 	double auto_put_strike = refprice*1.0; // if put_strike=0, notional protected
 	double put_strike_notional_protect = refprice*0.0;
@@ -3697,20 +3696,14 @@ int main()
 
 	AutocallOption AutoKOSPI(refprice, exd_3y, autoPayoff, hitflag);
 	AutocallOption AutoKOSPI_hit(refprice, exd_3y, autoPayoff, 1);
-
 	AutocallOption AutoKOSPI959085(refprice, exd_3y, autoPayoff959085, hitflag);
 	AutocallOption AutoKOSPI_hifive(refprice, exd_3y, autoPayoff_hifive, 0);
 	AutocallOption AutoKOSPI_hifive_hit(refprice, exd_3y, autoPayoff_hifive, 1);
-
-
 	AutocallOption AutoKOSPI_shift(refprice, exd_3y, autoPayoff_shift, hitflag);
 	AutocallOption AutoKOSPI_KI_shift(refprice, exd_3y, autoPayoff_KI_shift, hitflag);
-
 	PayoffAutocallStd autoPayoff_notional_protect(nb_autocall, auto_date, auto_strike, auto_coupon, auto_ki_barrier, put_strike_notional_protect, auto_dummy_coupon, refprice);
 	AutocallOption AutoKOSPI_notional_protect(refprice, exd_3y, autoPayoff_notional_protect, hitflag);
-
 	AutocallOption AutoKOSPI_mc(refprice, exd_3y, autoPayoff, hitflag);
-
 	AutocallOption AutoKOSPI_KI(refprice, exd_3y, autoPayoff, 1);
 	AutocallOption AutoKOSPI_mc_KI(refprice, exd_3y, autoPayoff, 1);
 
@@ -3742,8 +3735,6 @@ int main()
 	//test_autocall_Cal2_vs_paras();
 	//test_autocall_Calc_vs_paras_paramodule(paras);
 
-
-
 	/****Value autocall analysis between FD and MC*/ 
 	auto before = clock::now();
 	//test_autocall__fd_mc_old(10000);
@@ -3767,16 +3758,16 @@ int main()
 	//duration = clock::now() - before;
 	//std::cout << "test_autocall__fd_mc_inst(paras, AutoKOSPI) : It took " << duration.count() << "s" << std::endl;
 
-	/*before = clock::now();
+	before = clock::now();
 	test_autocall__fd_inst_swip_first(paras, AutoKOSPI);
 	duration = clock::now() - before;
 	std::cout << "test_autocall__fd_inst_swip_first(paras, AutoKOSPI); : It took " << duration.count() << "s" << std::endl;
-*/
+
 	//AutoKOSPI.Simulation2(paras, 30, true);
 	vector<double> apath;
 	apath = get_a_path_from_csv("12th.csv");
 	//AutoKOSPI.Simulation2(paras, 10, true);
-	AutoKOSPI.Simulation2_1(paras, EurPut6M,3000, false);
+	//AutoKOSPI.Simulation2_1(paras, EurPut6M,3000, false);
 
 	//EurPut.Simulation2(paras, 10, true);
 	//double apl = EurPut.Simulation3(paras, apath, false);

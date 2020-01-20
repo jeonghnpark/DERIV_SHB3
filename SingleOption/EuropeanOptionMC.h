@@ -9,7 +9,7 @@ public:
 	}
 
 	double Calc(MarketParam& para, long numMc = 10);
-	double Calc2(MarketParameters& paras, long numMc = 10);
+	double Calc(MarketParameters& paras, long numMc = 10);
 
 	~EuropeanOptionMC();
 private:

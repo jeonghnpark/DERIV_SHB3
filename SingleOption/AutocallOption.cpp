@@ -2738,7 +2738,7 @@ double AutocallOption::CalcMC_calc2(MarketParam & para, long numMC_)
 	return npv;
 }
 
-double AutocallOption::CalcMC_calc2(MarketParameters & paras, long numMC_)
+double AutocallOption::CalcMC(MarketParameters & paras, long numMC_)
 {
 	double s0 = paras.get_spot();
 	signed int vd = paras.get_vdate();

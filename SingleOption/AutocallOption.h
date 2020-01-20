@@ -8,21 +8,24 @@ class AutocallOption {
 public:
 	AutocallOption(double refprice_, signed int expiryd_, const PayoffAutocallStd& ThePayoff_, int hitflag=0);
 	virtual ~AutocallOption();
-	double Calc_old(MarketParam& para); //interpolation not optimized
-	double Calc(MarketParam& para);//interpolation optimized
+	
 	double Calc(MarketParameters& paras);//class GRID under construction...
+	double CalcMC(MarketParameters & paras, long nMC = 1000); //r,div optimized
 	double Simulation(MarketParameters& paras, long nMC);
 	void Simulation2(MarketParameters& paras, long nMC, bool db = false);
 	void Simulation2_1(MarketParameters & paras, EuropeanOption& eop, long numMC_, bool db);
 	void Simulation3(MarketParameters& paras, std::vector<double>& apath, bool db = false);
-	double CalcMC(MarketParam& para, long nMC=1000); //r,div inerpolation not optimized
-	double CalcMC_calc2(MarketParam & para, long nMC = 1000); //r,div optimized
-	double CalcMC_calc2(MarketParameters & paras, long nMC = 1000); //r,div optimized
-
 	signed int GetExpiryd() const;
 	double GetRefPrice() const;
 	std::vector<double> GetResult() const;
 	int GetHitFlag() const { return hitflag; }
+
+	//******old interface
+	double Calc_old(MarketParam& para); //interpolation not optimized
+	double Calc(MarketParam& para);//interpolation optimized
+	double CalcMC(MarketParam& para, long nMC = 1000); //r,div inerpolation not optimized
+	double CalcMC_calc2(MarketParam & para, long nMC = 1000); //r,div optimized
+	//** old interface
 
 protected:
 	double refprice;

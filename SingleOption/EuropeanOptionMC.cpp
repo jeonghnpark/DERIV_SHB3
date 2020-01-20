@@ -75,7 +75,7 @@ double EuropeanOptionMC::Calc(MarketParam & para, long numMc)
 }
 
 
-double EuropeanOptionMC::Calc2(MarketParameters & paras, long numMc)
+double EuropeanOptionMC::Calc(MarketParameters & paras, long numMc)
 {
 	//paras, conti div
 	signed int vd = paras.get_vdate();
@@ -113,13 +113,19 @@ double EuropeanOptionMC::Calc2(MarketParameters & paras, long numMc)
 	
 	double dt = 1 / 365.0;
 
+	int *idxT = new signed int[expiryd - vd + 1];
+	for (int tfv = 0; tfv <= expiryd - vd; tfv++) {
+		idxT[tfv] = paras.find_index_term(tfv / 365.0);
+	}
+
 	for (long i = 0; i<numMc; i++)
 	{
 		s_tmp = s0;
-
 		//make stock price dailiy 
 		for (signed int t = vd + 1; t <= expiryd; t++) {
-			double short_vol = paras.lvol(tau_p[t - vd], s_tmp);
+			//double short_vol = paras.lvol(tau_p[t - vd], s_tmp);
+			//fast search algorithm
+			double short_vol = paras.get_Lvol_hybrid(idxT[t - vd], s_tmp);
 			double drift = (r_forward_p[t - vd] - q_forward_p[t - vd] - 0.5*short_vol*short_vol)*dt;
 			double diff = short_vol*std::sqrt(dt);
 			s_tmp = s_tmp*std::exp(drift + diff*ndist(gen));
