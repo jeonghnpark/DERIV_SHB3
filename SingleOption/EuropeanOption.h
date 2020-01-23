@@ -11,6 +11,7 @@ public:
 	double Calc(MarketParameters& para);
 	double Calc_discrete(MarketParameters& para);
 	double CalcMC(MarketParameters& paras, long numMc = 10);
+	double CalcBS(MarketParameters& paras);
 
 	void Simulation2(MarketParameters& paras, long nMC, bool db = false);
 	double Simulation3(MarketParameters& paras, std::vector<double>& apath, bool db);
@@ -18,12 +19,10 @@ public:
 	signed int GetExpiryd() const;
 	double GetRefPrice() const;
 	std::vector<double> GetResult() const;
-	
-	//**old interface
-	double Calc(MarketParam& para); //old
-	double Calc2(MarketParam& para); //old
-	double CalcMC(MarketParam& para, long numMc = 10);
-    //***
+	void PrintResult() const;
+	double BSiv(MarketParameters& paras, double p) const;
+
+
 protected:
 	double refprice;
 	signed int expiry_date;
@@ -32,5 +31,12 @@ protected:
 private:
 	unsigned int getIndex(double target, double * px, int i_min, int i_max) const;
 	mutable int init_i = 0;
+
+private://**old interface, don't use it. I made it private for safety
+	double Calc(MarketParam& para); //old
+	double Calc2(MarketParam& para); //old
+	double CalcMC(MarketParam& para, long numMc = 10);
+
+
 };
 #endif

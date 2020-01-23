@@ -13,46 +13,6 @@
 #include "k_miscellaneous.hpp"
 
 using namespace std;
-//string getFnameTimeStartingWith(string init_str)
-//{
-//	std::ostringstream oss;
-//
-//
-//	time_t curr_time;
-//	struct tm *curr_tm;
-//
-//	curr_time = time(NULL);
-//	curr_tm = localtime(&curr_time);
-//	string str_mon;
-//	string str_day;
-//	string str_hour;
-//	string str_min;
-//
-//	if (curr_tm->tm_mon + 1 < 10)
-//		str_mon = string("0") + to_string(curr_tm->tm_mon + 1);
-//	else
-//		str_mon = to_string(curr_tm->tm_mon + 1);
-//
-//	if (curr_tm->tm_mday< 10)
-//		str_day = string("0") + to_string(curr_tm->tm_mday);
-//	else
-//		str_day = to_string(curr_tm->tm_mday);
-//
-//	if (curr_tm->tm_hour< 10)
-//		str_hour = string("0") + to_string(curr_tm->tm_hour );
-//	else
-//		str_hour = to_string(curr_tm->tm_hour );
-//
-//	if (curr_tm->tm_min  < 10)
-//		str_min = string("0") + to_string(curr_tm->tm_min );
-//	else
-//		str_min = to_string(curr_tm->tm_min);
-//
-//
-//	oss << init_str << str_mon << str_day << str_hour << str_min << ".csv";
-//	
-//	return oss.str();
-//}
 
 AutocallOption::AutocallOption(double refprice_, signed int expiryd_, const PayoffAutocallStd & ThePayoff_, int hitflag_)
 	:refprice(refprice_), expiry_date(expiryd_),hitflag(hitflag_)
@@ -700,6 +660,9 @@ double AutocallOption::Calc(MarketParameters & paras)
 	}
 
 	result.resize(30, 0.0);
+	for (auto iter = result.begin(); iter != result.end(); iter++)
+		*iter = 0.0;
+
 	result[0] = pv;
 	result[1] = (pv_up - pv_down) / (s0*0.02);
 	result[2] = (pv_up - 2.0*pv + pv_down) / (s0*0.01) / (s0*0.01);
@@ -2046,6 +2009,7 @@ void AutocallOption::Simulation2_1(MarketParameters & paras, EuropeanOption& eop
 		paths.push_back(path);
 		PLs.push_back(aPL);
 		pvs_final_euro.push_back(eop.Simulation3(paras,path,false));
+		//eop.Simulation3(paras, path, false);
 		if(!db)
 			cout << i << endl;
 	}//for(i=0..)
@@ -2102,6 +2066,8 @@ void AutocallOption::Simulation2_1(MarketParameters & paras, EuropeanOption& eop
 	delete[] r_dc_p;
 	delete[] q_forward_p;
 }
+
+
 void AutocallOption::Simulation3(MarketParameters & paras, std::vector<double>& apath, bool db)
 {
 	double s0 = paras.get_spot();
@@ -2845,6 +2811,10 @@ double AutocallOption::CalcMC(MarketParameters & paras, long numMC_)
 		npv += mcvalues[i];
 	npv /= numMC_;
 
+	result.resize(30, 0.0);
+	for (auto iter = result.begin(); iter != result.end(); iter++)
+		*iter = 0.0;
+
 	result[0] = npv;
 	result[5] = s0;
 
@@ -2993,6 +2963,18 @@ std::vector<double> AutocallOption::GetResult() const
 {
 	return result;
 }
+
+void AutocallOption::PrintResult() const
+{
+	cout << "pv " << result[0] << endl;
+	cout << "adjdelta " << result[1] << endl;
+	cout << "adjgamma " << result[2] << endl;
+	cout << "vega " << result[3] << endl;
+	cout << "theta " << result[4] << endl;
+	cout << "delta(pure) " << result[6] << endl;
+	cout << "gamma(pure) " << result[7] << endl;
+}
+
 
 double AutocallOption::get_delta(double target, double * px, double* uold, double* vold, int KIFlag, int min, int max, int& init_i)
 {

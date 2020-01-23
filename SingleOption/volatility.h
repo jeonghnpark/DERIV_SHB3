@@ -3,6 +3,7 @@
 
 #include <vector> 
 #include "Rate.h"
+using namespace std;
 
 class Vol{
 private:
@@ -22,7 +23,7 @@ public:
 
 	Vol(){}
 	Vol(int nb_vol_term, int nb_vol_strike);
-
+	Vol(vector<double>& vol_term_, vector<double>& vol_strike_, vector<vector<double> >& Ivol_);
 	//real input : time, spot
 	double lvol(double t_axis, double s_axis) const; 
 	double lvol2(double t, double s);

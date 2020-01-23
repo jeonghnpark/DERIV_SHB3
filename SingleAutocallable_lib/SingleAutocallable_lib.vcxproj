@@ -144,11 +144,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\LIB\klib\EtcFunctions.cpp" />
     <ClCompile Include="..\..\..\..\LIB\klib\j_fd.cpp" />
+    <ClCompile Include="..\..\..\..\LIB\klib\k_BasicMath.cpp" />
     <ClCompile Include="..\..\..\..\LIB\klib\k_miscellaneous.cpp" />
+    <ClCompile Include="..\..\..\..\LIB\klib\k_OptionFormula.cpp" />
+    <ClCompile Include="..\..\..\..\LIB\klib\k_probability.cpp" />
     <ClCompile Include="..\SingleOption\AutocallOption.cpp" />
     <ClCompile Include="..\SingleOption\Dividend.cpp" />
-    <ClCompile Include="..\SingleOption\EtcFunctions.cpp" />
+    <ClCompile Include="..\SingleOption\EuropeanOption.cpp" />
     <ClCompile Include="..\SingleOption\MarketParam.cpp" />
     <ClCompile Include="..\SingleOption\MarketParameters.cpp" />
     <ClCompile Include="..\SingleOption\PayoffAutocallStd.cpp" />
@@ -160,11 +164,15 @@
     <None Include="SingleAutocallable_lib.def" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\LIB\klib\EtcFunctions.h" />
     <ClInclude Include="..\..\..\..\LIB\klib\j_fd.h" />
+    <ClInclude Include="..\..\..\..\LIB\klib\k_BasicMath.hpp" />
     <ClInclude Include="..\..\..\..\LIB\klib\k_miscellaneous.hpp" />
+    <ClInclude Include="..\..\..\..\LIB\klib\k_OptionFormula.hpp" />
+    <ClInclude Include="..\..\..\..\LIB\klib\k_probability.hpp" />
     <ClInclude Include="..\SingleOption\AutocallOption.h" />
     <ClInclude Include="..\SingleOption\Dividend.h" />
-    <ClInclude Include="..\SingleOption\EtcFunctions.h" />
+    <ClInclude Include="..\SingleOption\EuropeanOption.h" />
     <ClInclude Include="..\SingleOption\MarketParam.h" />
     <ClInclude Include="..\SingleOption\MarketParameters.h" />
     <ClInclude Include="..\SingleOption\PayoffAutocallStd.h" />

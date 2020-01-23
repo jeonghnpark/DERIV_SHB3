@@ -9,6 +9,8 @@ public:
 	virtual ~PayoffCall(){}
 	virtual Payoff* clone() const;
 	virtual void ResetFDGrid(double* px, double* dpx, int minnode, int maxnode) const;
+	virtual double Get_strike() const;
+	virtual int GetPayoffId() const;
 protected:
 	double strike;
 };

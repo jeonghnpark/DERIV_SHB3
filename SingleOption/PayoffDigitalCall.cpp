@@ -18,6 +18,14 @@ void PayoffDigitalCall::ResetFDGrid(double* px, double* dpx, int minnode, int ma
 		}
 	}
 }
+double PayoffDigitalCall::Get_strike() const
+{
+	return strike;
+}
+int PayoffDigitalCall::GetPayoffId() const
+{
+	return payoffId;
+}
 PayoffDigitalCall::PayoffDigitalCall(double strike_):strike(strike_)
 {
 }

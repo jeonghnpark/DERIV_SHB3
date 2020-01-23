@@ -410,6 +410,15 @@ Vol::Vol(int _nb_vol_term, int _nb_vol_strike):nb_vol_term(_nb_vol_term),nb_vol_
 	//i_s = 0;
 }
 
+Vol::Vol(vector<double>& vol_term_, vector<double>& vol_strike_, vector<vector<double> >& Ivol_):vol_strike(vol_strike_),vol_term(vol_term_), Ivol(Ivol_)
+{
+	Lvol = Ivol;
+	Lvol_up = Ivol;
+	Lvol_down = Ivol;
+	nb_vol_term = vol_term_.size();;
+	nb_vol_strike = vol_strike_.size();
+}
+
 Vol::~Vol()
 {
 	

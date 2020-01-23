@@ -19,8 +19,9 @@ public:
 	double GetRefPrice() const;
 	std::vector<double> GetResult() const;
 	int GetHitFlag() const { return hitflag; }
+	void PrintResult() const;
 
-	//******old interface
+	//******old interface don't use
 	double Calc_old(MarketParam& para); //interpolation not optimized
 	double Calc(MarketParam& para);//interpolation optimized
 	double CalcMC(MarketParam& para, long nMC = 1000); //r,div inerpolation not optimized

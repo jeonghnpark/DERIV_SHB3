@@ -19,8 +19,19 @@ void PayoffCall::ResetFDGrid(double* px, double* dpx, int minnode, int maxnode) 
 	}
 }
 
+double PayoffCall::Get_strike() const
+{
+	return strike;
+}
+
+int PayoffCall::GetPayoffId() const
+{
+	return payoffId;
+}
+
 PayoffCall::PayoffCall(double strike_):strike(strike_)
 {
+	payoffId = 1; 
 }
 
 double PayoffCall::operator()(double spot) const

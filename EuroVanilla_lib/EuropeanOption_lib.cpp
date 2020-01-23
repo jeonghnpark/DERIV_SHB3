@@ -178,7 +178,7 @@ void __stdcall EuropeanOption_discrete_dividend_lib(int CP, double refprice, sig
 	if (CP == -1) {
 		//Plain Put when cp=-1
 		EuropeanOption Eur(refprice, expiryDate, PayoffPut(strike));
-		Eur.Calc(paras);
+		Eur.Calc_discrete(paras);
 		std::vector<double> rs = Eur.GetResult();
 		for (int i = 0; i < 30; i++)
 			result[i] = rs[i];
@@ -187,7 +187,7 @@ void __stdcall EuropeanOption_discrete_dividend_lib(int CP, double refprice, sig
 	else if (CP == 1) {
 		//code here for plain call
 		EuropeanOption Eur(refprice, expiryDate, PayoffCall(strike));
-		Eur.Calc(paras);
+		Eur.Calc_discrete(paras);
 		std::vector<double> rs = Eur.GetResult();
 		for (int i = 0; i < 30; i++)
 			result[i] = rs[i];

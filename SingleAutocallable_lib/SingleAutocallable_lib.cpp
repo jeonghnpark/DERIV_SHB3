@@ -1,6 +1,5 @@
 #include "SingleAutocallable_lib.h"
 #include "../SingleOption/AutocallOption.h"
-#include "../SingleOption/PayoffAutocallStd.h"
 #include "../SingleOption/Rate.h"
 #include "../SingleOption/volatility.h"
 
@@ -41,7 +40,7 @@ void __stdcall SingleAutocallable_MC_lib(double refprice, signed int expiryDate,
 	MarketParameters paras(vd, spot, volat, r, q);
 	PayoffAutocallStd autoPayoff(nb_autocall, auto_date, auto_strike, auto_coupon, kibarrier, put_strike, dummy_coupon, refprice);
 	AutocallOption AutoKOSPI(refprice, expiryDate, autoPayoff, hitflag);
-	AutoKOSPI.CalcMC_calc2(paras, numMc);
+	AutoKOSPI.CalcMC(paras, numMc);
 
 	std::vector<double> rs_auto = AutoKOSPI.GetResult();
 

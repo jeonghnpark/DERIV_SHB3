@@ -4,6 +4,11 @@
 
 using namespace std;
 
+double MarketParameters::getBSVol(double t, double k) const
+{
+	return vol.getBSVol(t,k);
+}
+
 double MarketParameters::getTodayDivAmount(signed int n_t) const
 {
 	

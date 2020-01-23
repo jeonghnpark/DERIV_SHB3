@@ -19,10 +19,11 @@ public:
 	MarketParameters() {
 	}
 
+	//discrete dividend
 	MarketParameters(signed int _vdate, double _spot, Vol _vol, Rate _r, Dividend _div)
 		:vdate(_vdate), spot(_spot), vol(_vol), r(_r), div(_div){
 	}
-
+	//continuous dividend
 	MarketParameters(signed int _vdate, double _spot, Vol _vol, Rate _r, Rate _q)
 		:vdate(_vdate), spot(_spot), vol(_vol), r(_r), q(_q){
 	}
@@ -34,6 +35,8 @@ public:
 	double getForward(double tau) const{ return r.getForward(tau); }
 	double getDivForward(double tau) const { return q.getForward(tau); }
 	double getIntpRate(double tau) const { return r.getIntpRate(tau); }
+	double getDivIntpRate(double tau) const { return q.getIntpRate(tau); }
+	double getBSVol(double t, double k) const;
 	double getTodayDivAmount(signed int n_t) const;
 
 	signed int get_vdate() const { return vdate; }

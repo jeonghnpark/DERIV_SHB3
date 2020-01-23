@@ -25,7 +25,7 @@ void PayoffPut::ResetFDGrid(double* px, double* dpx, int minnode, int maxnode) c
 }
 PayoffPut::PayoffPut(double strike_):strike(strike_)
 {
-
+	payoffId = -1;  //put -1, call +1
 }
 
 double PayoffPut::operator()(double spot) const
@@ -41,4 +41,14 @@ Payoff* PayoffPut::clone() const
 std::string PayoffPut::GetName() const
 {
 	return name;
+}
+
+double PayoffPut::Get_strike() const
+{
+	return strike;
+}
+
+int PayoffPut::GetPayoffId() const
+{
+	return payoffId;
 }

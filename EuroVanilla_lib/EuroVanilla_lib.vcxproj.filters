@@ -54,10 +54,19 @@
     <ClCompile Include="..\..\..\..\LIB\klib\k_miscellaneous.cpp">
       <Filter>ext</Filter>
     </ClCompile>
-    <ClCompile Include="..\SingleOption\EtcFunctions.cpp">
+    <ClCompile Include="..\SingleOption\EuropeanOptionMC.cpp">
       <Filter>ext</Filter>
     </ClCompile>
-    <ClCompile Include="..\SingleOption\EuropeanOptionMC.cpp">
+    <ClCompile Include="..\..\..\..\LIB\klib\EtcFunctions.cpp">
+      <Filter>ext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\LIB\klib\k_OptionFormula.cpp">
+      <Filter>ext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\LIB\klib\k_BasicMath.cpp">
+      <Filter>ext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\LIB\klib\k_probability.cpp">
       <Filter>ext</Filter>
     </ClCompile>
   </ItemGroup>
@@ -72,6 +81,18 @@
       <Filter>ext</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\LIB\klib\k_miscellaneous.hpp">
+      <Filter>ext</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\LIB\klib\EtcFunctions.h">
+      <Filter>ext</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\LIB\klib\k_OptionFormula.hpp">
+      <Filter>ext</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\LIB\klib\k_BasicMath.hpp">
+      <Filter>ext</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\LIB\klib\k_probability.hpp">
       <Filter>ext</Filter>
     </ClInclude>
   </ItemGroup>

@@ -33,13 +33,7 @@
     <ClCompile Include="Dividend.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="EtcFunctions.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="EuropeanOption.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="EuropeanOptionMC.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="main5.cpp">
@@ -93,6 +87,9 @@
     <ClCompile Include="MarketParam.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\LIB\klib\EtcFunctions.cpp">
+      <Filter>ext</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AmericanOption.h">
@@ -110,16 +107,7 @@
     <ClInclude Include="Dividend.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="EtcFunctions.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="EuropeanOption.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="EuropeanOptionMC.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="FDM.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="MarketParameters.h">
@@ -178,6 +166,9 @@
     </ClInclude>
     <ClInclude Include="MarketParam.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\LIB\klib\EtcFunctions.h">
+      <Filter>ext</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

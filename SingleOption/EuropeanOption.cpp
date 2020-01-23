@@ -7,6 +7,7 @@
 #include "EuropeanOption.h"
 #include "j_fd.h"
 #include "k_miscellaneous.hpp"
+#include "k_OptionFormula.hpp"
 
 using namespace std;
 string getFnameTimeStartingWith(string init_str);
@@ -589,7 +590,6 @@ double EuropeanOption::Calc(MarketParameters & paras)
 		q_forward_p[i] = paras.getDivForward(tau_p[i]);	
 	}
 
-
 	for (signed int t = expiry_date; t >= vd; t--) {
 		if (t == expiry_date) {  //b.c, expiry date
 			for (int i = 0; i <= maxassetnodeindex; i++) {
@@ -636,8 +636,13 @@ double EuropeanOption::Calc(MarketParameters & paras)
 
 	double pv = intp1d(s0, px, vold, 1, maxassetnodeindex - 1);
 	double pv_next = intp1d(s0, px, vold_next, 1, maxassetnodeindex - 1);
+
+	//sticky delta, gamma
 	double pv_up = intp1d(s0*1.01, px, vold_up, 1, maxassetnodeindex - 1);
 	double pv_down = intp1d(s0*0.99, px, vold_down, 1, maxassetnodeindex - 1);
+	//pure delta, gamma
+	double pv_up2 = intp1d(s0*1.01, px, vold, 1, maxassetnodeindex - 1);
+	double pv_down2 = intp1d(s0*0.99, px, vold, 1, maxassetnodeindex - 1);
 
 	delete[] px;
 	delete[] dpx;
@@ -668,16 +673,25 @@ double EuropeanOption::Calc(MarketParameters & paras)
 	delete[] C_up;
 	delete[] C_down;
 
+	delete[] tau_p; 
+	delete[] r_forward_p;
+	delete[] r_dc_p;
+	delete[] q_forward_p;
+
 	result.resize(30, 0.0);
+	for (auto iter=result.begin();iter!=result.end();iter++)
+		*iter = 0.0;
+
 	result[0] = pv;
-	result[1] = (pv_up - pv_down) / (s0*0.02); //delta
-	result[2] = (pv_up - 2.0*pv + pv_down) / (s0*0.01) / (s0*0.01); //gamma
+	result[1] = (pv_up - pv_down) / (s0*0.02); //sticky delta
+	result[2] = (pv_up - 2.0*pv + pv_down) / (s0*0.01) / (s0*0.01); //sticky  gamma
 	result[3] = 0;  //vega
 	result[4] = pv_next - pv;  //theta
-	result[5] = s0;
+	result[5] = 0;
+	result[6] = (pv_up2 - pv_down2) / (s0*0.02); //pure delta
+	result[7] = (pv_up2 - 2.0*pv + pv_down2) / (s0*0.01) / (s0*0.01); //pure gamma
+
 	return pv;
-
-
 }
 
 double EuropeanOption::Simulation3(MarketParameters& paras, std::vector<double>& apath, bool db)
@@ -1187,7 +1201,7 @@ double EuropeanOption::Calc_discrete(MarketParameters & paras)
 
 	paras.calcLV();
 	
-	int maxassetnodeindex = 300;
+	int maxassetnodeindex = 400;
 	double *px = new double[maxassetnodeindex + 1];
 	double *dpx = new double[maxassetnodeindex + 1];
 	double *alpha = new double[maxassetnodeindex + 1];
@@ -1281,8 +1295,6 @@ double EuropeanOption::Calc_discrete(MarketParameters & paras)
 		trimxsolve1d(A_up, B_up, C_up, vold_up, vnew_up, 0, maxassetnodeindex, 0, 0);
 		trimxsolve1d(A_down, B_down, C_down, vold_down, vnew_down, 0, maxassetnodeindex, 0, 0);
 
-
-
 		for (int i = 0; i <= maxassetnodeindex; i++) {
 			vold[i] = vnew[i];
 			vold_up[i] = vnew_up[i];
@@ -1296,6 +1308,9 @@ double EuropeanOption::Calc_discrete(MarketParameters & paras)
 	double pv_next = intp1d(s0, px, vold_next, 1, maxassetnodeindex - 1);
 	double pv_up = intp1d(s0*1.01, px, vold_up, 1, maxassetnodeindex - 1);
 	double pv_down = intp1d(s0*0.99, px, vold_down, 1, maxassetnodeindex - 1);
+	//pure delta, gamma
+	double pv_up2 = intp1d(s0*1.01, px, vold, 1, maxassetnodeindex - 1);
+	double pv_down2 = intp1d(s0*0.99, px, vold, 1, maxassetnodeindex - 1);
 
 	delete[] px;
 	delete[] dpx;
@@ -1327,12 +1342,18 @@ double EuropeanOption::Calc_discrete(MarketParameters & paras)
 	delete[] C_down;
 
 	result.resize(30, 0.0);
+	for (auto iter = result.begin(); iter != result.end(); iter++)
+		*iter = 0.0;
+
 	result[0] = pv;
 	result[1] = (pv_up - pv_down) / (s0*0.02); //delta
 	result[2] = (pv_up - 2.0*pv + pv_down) / (s0*0.01) / (s0*0.01); //gamma
 	result[3] = 0;  //vega
 	result[4] = pv_next - pv;  //theta
-	result[5] = s0;
+	result[5] = 0;
+	result[6] = (pv_up2 - pv_down2) / (s0*0.02); //pure delta
+	result[7] = (pv_up2 - 2.0*pv + pv_down2) / (s0*0.01) / (s0*0.01); //pure gamma
+
 	return pv;
 
 
@@ -1402,6 +1423,9 @@ double EuropeanOption::CalcMC(MarketParameters & paras, long numMc)
 
 	npv /= numMc;
 
+	result.resize(30, 0.0);
+	for (auto iter = result.begin(); iter != result.end(); iter++)
+		*iter = 0.0;
 	result[0] = npv;
 	result[5] = s0;
 
@@ -1414,6 +1438,45 @@ double EuropeanOption::CalcMC(MarketParameters & paras, long numMc)
 	delete[] is_obsDay;
 
 	return npv;
+}
+double EuropeanOption::CalcBS(MarketParameters & paras)
+{
+	signed int vd = paras.get_vdate();
+	double spot = paras.get_spot();
+	double k = ThePayoffPtr->Get_strike();
+	double tau = (expiry_date - vd) / 365.0;
+	double r = paras.getIntpRate(tau);
+	double q = paras.getDivIntpRate(tau);
+	double v = paras.getBSVol(tau, k);
+	
+	//double bs_put_value = k_fmla_BSPut(spot, putstrike, rf_for_bs, div_for_bs, vol_bs, (exd - vd) / 365.0);
+	//double bs_put_vega = k_fmla_BSVega(spot, putstrike, rf_for_bs, div_for_bs, vol_bs, (exd - vd) / 365.0);
+	result.resize(30, 0.0);
+	for (auto iter = result.begin(); iter != result.end(); iter++)
+		*iter = 0.0;
+
+	result[3] = k_fmla_BSVega(spot, k,r,q,v,tau)/100.0;  //vega
+	result[7] = k_fmla_BSGamma(spot, k, r, q, v, tau);
+
+	if (ThePayoffPtr->GetPayoffId() == -1) {
+		result[0] = k_fmla_BSPut(spot, k, r, q, v, tau);
+		result[1] = 0; //sticky delta
+		result[2] = 0; //sticky  gamma
+		result[4] = k_fmla_BSPutTheta(spot, k, r, q, v, tau)/365.0;  //theta
+		result[5] = 0;
+		result[6] = k_fmla_BSPutDelta(spot, k,r,q,v,tau); //pure delta
+	}
+	
+	if (ThePayoffPtr->GetPayoffId() == 1) {
+		result[0] = k_fmla_BSCall(spot, k, r, q, v, tau);
+		result[1] = 0; //sticky delta
+		result[2] = 0; //sticky  gamma
+		result[4] = k_fmla_BSCallTheta(spot, k, r, q, v, tau)/365.0;  //theta
+		result[5] = 0;
+		result[6] = k_fmla_BSCallDelta(spot, k, r, q, v, tau); //pure delta
+	}
+
+	return result[0];
 }
 double EuropeanOption::GetRefPrice() const
 {
@@ -1433,6 +1496,35 @@ EuropeanOption::EuropeanOption(double _refprice, signed int _expiryd,const Payof
 std::vector<double> EuropeanOption::GetResult() const
 {
 	return result;
+}
+
+void EuropeanOption::PrintResult() const
+{
+
+	cout << "pv " << result[0] << endl;
+	cout << "adjdelta " << result[1] << endl;
+	cout << "adjgamma " << result[2] << endl;
+	cout << "vega " << result[3] << endl;
+	cout << "theta " << result[4] << endl;
+	cout << "delta(pure) " << result[6] << endl;
+	cout << "gamma(pure) " << result[7] << endl;
+}
+
+double EuropeanOption::BSiv(MarketParameters& paras, double price) const
+{
+	double tau = (expiry_date - paras.get_vdate()) / 365.0;
+	double strike = ThePayoffPtr->Get_strike();
+	double vol = paras.getBSVol(tau, strike);
+	if (ThePayoffPtr->GetPayoffId() == -1) {
+		return put_iv(paras.get_spot(), strike, paras.getIntpRate(tau), paras.getDivIntpRate(tau),vol,tau,price);
+	}
+	else if (ThePayoffPtr->GetPayoffId() == 1) {
+		return call_iv(paras.get_spot(), strike, paras.getIntpRate(tau), paras.getDivIntpRate(tau), vol, tau, price);
+	}
+	else {
+		assert(0);
+		return 0;
+	}
 }
 
 EuropeanOption::~EuropeanOption()

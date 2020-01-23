@@ -7,8 +7,12 @@ public:
 		:EuropeanOption(_refprice, _expiryd, ThePayoff_), obsDays(_od)
 	{
 	}
+    double CalcMC(MarketParameters& paras, long numMc = 10000);
+	
+	//***old interface
+	double Calc(MarketParam& para, long numMc=10000);  
+	//***
 
-	double Calc(MarketParam& para, long numMc=10000);
 private:
 	vector<signed int> obsDays;
 };

@@ -17,6 +17,7 @@ PayoffAutocallStd::PayoffAutocallStd(int nb_autocall_, signed int* date_, double
 
 void PayoffAutocallStd::final_updator(double * vold, double* uold, double * px,int mini, int maxi) const
 {
+	//knock-in
 	for (int i = mini; i <= maxi; i++) {
 		if (px[i] > strike.back()) {
 			vold[i] = 1.0 + autocall_coupon.back();
@@ -26,9 +27,11 @@ void PayoffAutocallStd::final_updator(double * vold, double* uold, double * px,i
 		}
 	}
 
+	//not knocked-in
 	for (int i = mini; i <= maxi; i++) {
 		if (px[i] > ki_barier) {
-			uold[i] = 1.0 + autocall_coupon.back();
+//			uold[i] = 1.0 + autocall_coupon.back();
+			uold[i] = 1.0 + dummy_coupon;
 		}
 		else {
 			uold[i] = 1.0 - std::max(put_strike - px[i], 0.0) / refprice;

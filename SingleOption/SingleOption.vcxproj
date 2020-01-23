@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\LIB\klib\EtcFunctions.cpp" />
     <ClCompile Include="..\..\..\..\LIB\klib\j_fd.cpp" />
     <ClCompile Include="..\..\..\..\LIB\klib\k_BasicMath.cpp" />
     <ClCompile Include="..\..\..\..\LIB\klib\k_miscellaneous.cpp" />
@@ -29,9 +30,7 @@
     <ClCompile Include="AutocallOption.cpp" />
     <ClCompile Include="BarrierOption.cpp" />
     <ClCompile Include="Dividend.cpp" />
-    <ClCompile Include="EtcFunctions.cpp" />
     <ClCompile Include="EuropeanOption.cpp" />
-    <ClCompile Include="EuropeanOptionMC.cpp" />
     <ClCompile Include="main5.cpp" />
     <ClCompile Include="MarketParam.cpp" />
     <ClCompile Include="MarketParameters.cpp" />
@@ -46,6 +45,7 @@
     <ClCompile Include="volatility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\LIB\klib\EtcFunctions.h" />
     <ClInclude Include="..\..\..\..\LIB\klib\j_fd.h" />
     <ClInclude Include="..\..\..\..\LIB\klib\k_BasicMath.hpp" />
     <ClInclude Include="..\..\..\..\LIB\klib\k_miscellaneous.hpp" />
@@ -56,10 +56,7 @@
     <ClInclude Include="AutocallOption.h" />
     <ClInclude Include="BarrierOption.h" />
     <ClInclude Include="Dividend.h" />
-    <ClInclude Include="EtcFunctions.h" />
     <ClInclude Include="EuropeanOption.h" />
-    <ClInclude Include="EuropeanOptionMC.h" />
-    <ClInclude Include="FDM.h" />
     <ClInclude Include="MarketParam.h" />
     <ClInclude Include="MarketParameters.h" />
     <ClInclude Include="Payoff.h" />
