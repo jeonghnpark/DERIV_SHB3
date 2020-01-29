@@ -61,5 +61,6 @@ public:
 	int find_index_term(double target) const;
 
 	int find_index_spot2(double target) const;
+	void print() const;
 
 };

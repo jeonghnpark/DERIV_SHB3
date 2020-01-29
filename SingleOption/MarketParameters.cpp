@@ -109,3 +109,22 @@ int MarketParameters::find_index_spot2(double target) const
 	return vol.find_index_spot2(target);
 }
 
+void MarketParameters::print() const
+{
+	cout << "value date " << vdate << endl;
+	cout << "spot  " << spot << endl;
+	cout << "Ivol table\n";
+	vol.print();
+	cout << "\n";
+	cout << "Lvol table\n";
+	vol.printLV();
+	cout << "\n";
+	cout << "risk free rate \n";
+	r.print();
+	cout << "\n";
+	cout << "dividend rate \n";
+	q.print();
+
+	
+}
+

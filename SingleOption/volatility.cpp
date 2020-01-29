@@ -174,6 +174,8 @@ int Vol::find_index_spot2(double target) const
 }
 
 
+
+
 void Vol::calcLv(double spot, const Rate& R, const Rate& Q)
 {
 	EtcFunctions fct;
@@ -334,8 +336,8 @@ void Vol::print() const
 {
 	using namespace std;
 	cout<<fixed;
-	cout.precision(2);
-	cout<<"Ivol table\n";
+	cout.precision(4);
+	
 	for(int i=0;i<nb_vol_term;i++){
 		cout<<endl;
 		for(int j=0;j<nb_vol_strike;j++)
@@ -347,8 +349,8 @@ void Vol::printLV() const
 {
 	using namespace std;
 	cout<<fixed;
-	cout.precision(2);
-	cout<<"Lvol table\n";
+	cout.precision(4);
+	
 	for(int i=0;i<nb_vol_term;i++){
 		cout<<endl;
 		for(int j=0;j<nb_vol_strike;j++)

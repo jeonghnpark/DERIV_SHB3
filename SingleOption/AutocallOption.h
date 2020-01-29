@@ -6,7 +6,9 @@
 #include <memory>
 class AutocallOption {
 public:
+	AutocallOption() {}
 	AutocallOption(double refprice_, signed int expiryd_, const PayoffAutocallStd& ThePayoff_, int hitflag=0);
+	AutocallOption(char* csvfile);
 	virtual ~AutocallOption();
 	
 	double Calc(MarketParameters& paras);//class GRID under construction...
@@ -20,6 +22,7 @@ public:
 	std::vector<double> GetResult() const;
 	int GetHitFlag() const { return hitflag; }
 	void PrintResult() const;
+	void PrintSpec() const;
 
 	//******old interface don't use
 	double Calc_old(MarketParam& para); //interpolation not optimized

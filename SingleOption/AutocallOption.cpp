@@ -21,6 +21,162 @@ AutocallOption::AutocallOption(double refprice_, signed int expiryd_, const Payo
 	result = std::vector<double>(30);
 }
 
+AutocallOption::AutocallOption(char * csvfile)
+{
+	ifstream infile(csvfile); // for example
+
+	string line = "";
+	string word = "";
+	for (int i = 0; i < 14; i++) {
+		getline(infile, line); //skip first 14 lines
+	}
+
+	getline(infile, line); //line15
+	stringstream strstr(line);
+	getline(strstr, word, ','); //cells(15,1)
+	getline(strstr, word, ','); //cells(15,2)
+	this->refprice = stod(word);
+	while (getline(strstr, word, ',')) {
+	}
+
+	getline(infile, line); //line16
+	strstr=stringstream(line);
+	getline(strstr, word, ','); //cells(16,1)
+	getline(strstr, word, ','); //cells(16,2)
+	double spot = stod(word);
+	while (getline(strstr, word, ',')) {
+	}
+
+	getline(infile, line); //line17
+	getline(infile, line); //line18
+	getline(infile, line); //line19
+	strstr = stringstream(line);
+	getline(strstr, word, ','); //cells(19,1)
+	getline(strstr, word, ','); //cells(19,2)
+	long nM = stoul(word);
+	while (getline(strstr, word, ',')) {
+	}
+
+	for (int i = 0; i < 12; i++) {
+		getline(infile, line); //skip first 22 lines
+	}
+
+	getline(infile, line); //line32
+	strstr = stringstream(line);
+	getline(strstr, word, ','); //cells(32,1)
+	getline(strstr, word, ','); //cells(32,2)
+	unsigned int vd = stoul(word);
+	while (getline(strstr, word, ',')) {
+	}
+
+	getline(infile, line); //line33
+	strstr = stringstream(line);
+	getline(strstr, word, ','); //skip first col
+	getline(strstr, word, ','); //second col
+	this->expiry_date = stoul(word);
+	while (getline(strstr, word, ',')) {
+	}
+
+	getline(infile, line); //line34
+	getline(infile, line); //line35
+	strstr = stringstream(line);
+	getline(strstr, word, ','); //skip first col
+	getline(strstr, word, ','); //second col
+	int nokiflag = stoi(word);
+	while (getline(strstr, word, ',')) {
+	}
+
+	getline(infile, line); //line36
+	getline(infile, line); //line37
+	strstr = stringstream(line);
+	getline(strstr, word, ','); //skip first col
+	getline(strstr, word, ','); //second col
+	this->hitflag = stoi(word);
+	while (getline(strstr, word, ',')) {
+	}
+
+
+	getline(infile, line); //line38
+	getline(infile, line); //line39
+	strstr = stringstream(line);
+	getline(strstr, word, ','); //skip first col
+	getline(strstr, word, ','); //second col
+	double notional_protection = stod(word);
+	double put_strike = refprice*(1.0 - notional_protection);
+	while (getline(strstr, word, ',')) {
+	}
+
+	getline(infile, line); //line40
+	strstr = stringstream(line);
+	getline(strstr, word, ','); //skip first col
+	getline(strstr, word, ','); //second col
+	double kilevel = stod(word);
+	double kibarrier = kilevel*refprice;
+	while (getline(strstr, word, ',')) {
+	}
+
+	getline(infile, line); //line41
+	strstr = stringstream(line);
+	getline(strstr, word, ','); //skip first col
+	getline(strstr, word, ','); //second col
+	double dummycoupon = stod(word);
+	while (getline(strstr, word, ',')) {
+	}
+
+	vector<signed int> vdates;
+	vdates.push_back(-1);
+	for (int i = 0; i < 12; i++) {
+		getline(infile, line); 
+		strstr = stringstream(line);
+		getline(strstr, word, ','); //skip first col
+		getline(strstr, word, ','); //second col
+		if (!word.empty()) {
+			if (stod(word) > 0)
+				vdates.push_back(stoul(word));
+		}
+		while (getline(strstr, word, ',')) {
+		}
+	}
+
+	int	nb_autocall = vdates.size()-1;
+
+	vector<double> vstrikes;
+	vstrikes.push_back(-1);
+
+	for (int i = 0; i < 12; i++) {
+		getline(infile, line);
+		strstr = stringstream(line);
+		getline(strstr, word, ','); //skip first col
+		getline(strstr, word, ','); //second col
+		if (!word.empty()) {
+			if (stod(word) > 0)
+				vstrikes.push_back(stod(word)*refprice);
+		}
+		while (getline(strstr, word, ',')) {
+		}
+	}
+
+	vector<double> vcoupons;
+	vcoupons.push_back(-1);
+	for (int i = 0; i < 12; i++) {
+		getline(infile, line);
+		strstr = stringstream(line);
+		getline(strstr, word, ','); //skip first col
+		getline(strstr, word, ','); //second col
+		if (!word.empty()) {
+			if (stod(word) > 0)
+				vcoupons.push_back(stod(word));
+		}
+		while (getline(strstr, word, ',')) {
+		}
+	}
+
+
+	ThePayoffPtr = new PayoffAutocallStd(nb_autocall,vdates,vstrikes,vcoupons, kibarrier, put_strike,dummycoupon,refprice);
+	infile.close();
+	
+}
+
 
 AutocallOption::~AutocallOption()
 {
@@ -2966,6 +3122,8 @@ std::vector<double> AutocallOption::GetResult() const
 
 void AutocallOption::PrintResult() const
 {
+	std::cout.precision(8);
+	std::cout << std::fixed;
 	cout << "pv " << result[0] << endl;
 	cout << "adjdelta " << result[1] << endl;
 	cout << "adjgamma " << result[2] << endl;
@@ -2973,6 +3131,14 @@ void AutocallOption::PrintResult() const
 	cout << "theta " << result[4] << endl;
 	cout << "delta(pure) " << result[6] << endl;
 	cout << "gamma(pure) " << result[7] << endl;
+}
+
+void AutocallOption::PrintSpec() const
+{
+	cout << "refprice " << refprice << endl;
+	cout << "expiry_date " << expiry_date << endl;
+	cout << "hitflag " << hitflag << endl;
+	ThePayoffPtr->PrintPayoff();
 }
 
 

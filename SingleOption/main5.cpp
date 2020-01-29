@@ -30,6 +30,7 @@ using namespace std;
 enum FvsS{flat,surface};
 enum CalcMode{calc1,calc2};
 
+MarketParameters init_paras_file(const char* vol_csv, const char* rate_csv, const char* div_csv);
 
 void test_american(double spot)
 {
@@ -2188,8 +2189,8 @@ MarketParameters set_paras()
 	double spot = 297.22;
 	signed int vd = 43340;
 	
-	return MarketParameters();
-	//return MarketParameters(vd, spot, volat, r, q);
+	//return MarketParameters();
+	return MarketParameters(vd, spot, volat, r, q);
 }
 
 MarketParameters set_paras_spot1()
@@ -3555,6 +3556,31 @@ vector<double> get_a_path_from_csv(char* s)
 	ifs.close();
 	return apath;
 }
+
+void test_vanilla_file()
+{
+	MarketParameters paras_file = init_paras_file("vol20200128new.csv", "rate20200128new.csv", "div20200128new.csv");
+	unsigned int exd = 44210; //1y
+	double refprice = paras_file.get_spot();
+	double putstrike = refprice;
+	PayoffPut putpay(putstrike);
+	EuropeanOption EurPut1YATM(refprice, exd, putpay);
+	EurPut1YATM.Calc(paras_file);
+	
+	cout << "\nEurPut1YATM.Calc(paras_file);" << endl;
+	EurPut1YATM.PrintResult();
+
+	EurPut1YATM.CalcMC(paras_file,80000);
+	cout << "\nEurPut1YATM.CalcMC(paras_file,50000);" << endl;
+	EurPut1YATM.PrintResult();
+
+	EurPut1YATM.CalcBS(paras_file);
+	cout << "\nEurPut1YATM.CalcBS(paras_file);" << endl;
+	EurPut1YATM.PrintResult();
+
+
+}
+
 void test_vanilla_final()
 {
 	MarketParameters paras;
@@ -3575,22 +3601,40 @@ void test_vanilla_final()
 	EuropeanOption EurPut1Y90(refprice, exd, put90);
 	EuropeanOption EurPut6MATM(refprice, exd6m, putpay);
 
-	EurPut1YATM.Calc(paras);
-	cout << "\nEurPut1YATM.Calc(paras);" << endl;
-	EurPut1YATM.PrintResult();
+	//EurPut1YATM.Calc(paras);
+	//cout << "\nEurPut1YATM.Calc(paras);" << endl;
+	//EurPut1YATM.PrintResult();
+
+
+
 
 	//EurPut1YATM.Calc_discrete(paras);
 	//cout << "\n	EurPut1YATM.Calc_discrete(paras);" << endl;
 	//EurPut1YATM.PrintResult();
 
-	EurPut1YATM.CalcMC(paras,100000);
-	cout << "\nEurPut1YATM.CalcMC(paras);" << endl;
-	EurPut1YATM.PrintResult();
+	//EurPut1YATM.CalcMC(paras,100000);
+	//cout << "\nEurPut1YATM.CalcMC(paras);" << endl;
+	//EurPut1YATM.PrintResult();
 
-	double bsval=EurPut1YATM.CalcBS(paras);
-	cout << "\nEurPut1YATM.CalcBS(paras);" << endl;
-	EurPut1YATM.PrintResult();
-	cout << "BS implied vol= " << EurPut1YATM.BSiv(paras, bsval);
+	//double bsval=EurPut1YATM.CalcBS(paras);
+	//cout << "\nEurPut1YATM.CalcBS(paras);" << endl;
+	//EurPut1YATM.PrintResult();
+	//cout << "BS implied vol= " << EurPut1YATM.BSiv(paras, bsval);
+
+}
+
+
+void test_autocall_file()
+{
+	MarketParameters paras_file = init_paras_file("vol20200129-2.csv", "rate20200129-2.csv", "div20200129-2.csv");
+	AutocallOption ao("autocall20200129-2.csv");
+	ao.PrintSpec();
+	
+
+	ao.Calc(paras_file);
+	paras_file.print();
+	cout << "\nao.Calc(paras_file);" << endl;
+	ao.PrintResult();
 
 }
 void test_autocall_final()
@@ -3687,7 +3731,8 @@ MarketParameters set_file(const char* volcsv)
 	return MarketParameters();
 }
 
-MarketParameters set_from_file(const char* vol_csv, const char* rate_csv, const char* div_csv)
+
+MarketParameters init_paras_file(const char* vol_csv, const char* rate_csv, const char* div_csv)
 {
 	MarketParameters paras;
 
@@ -3754,6 +3799,7 @@ MarketParameters set_from_file(const char* vol_csv, const char* rate_csv, const 
 	while (getline(strstr, word, ',')) {
 		rate.push_back(stod(word)/100.0);
 	}
+	Rate r(rate, rate_term);
 	infile_rate.close();
 
 	ifstream infile_qrate(div_csv);
@@ -3767,17 +3813,26 @@ MarketParameters set_from_file(const char* vol_csv, const char* rate_csv, const 
 		qrate_term.push_back(stod(word));
 	}
 
-	getline(infile_qrate, line); //skip 2nd line
-	getline(infile_qrate, line); //3rd line
+	getline(infile_qrate, line); //line4
 	strstr = stringstream(line);
-	getline(strstr, word, ','); //spot
+	getline(strstr, word, ','); 
 	double spot = stod(word);
+	while (getline(strstr, word, ',')) {
+		//skip 
+	}
+
+	getline(infile_qrate, line); //line5
+	strstr = stringstream(line);
+	getline(strstr, word, ',');
+	unsigned int vd = stoul(word);
 	while (getline(strstr, word, ',')) {
 		qrate.push_back(stod(word)/100.0);
 	}
+	Rate q(qrate, qrate_term);
 	infile_qrate.close();
 
-	return MarketParameters();
+	return MarketParameters(vd, spot, vol, r, q);
+	//return MarketParameters(vol,r,q);
 }
 int main()
 {
@@ -3788,9 +3843,12 @@ int main()
 	//sec duration = clock::now() - before;
 	//cout << "\n"<<duration.count() << "s" << std::endl;
 	//MarketParameters p = set_file("volcsv.csv");;
-	MarketParameters paras= set_from_file("vol20200123.csv", "rate20200123.csv", "div20200123.csv");
+	
 	//test_vanilla_final();
+	//test_vanilla_file();
+	
 	//test_autocall_final();
+	test_autocall_file();
 }
 
 

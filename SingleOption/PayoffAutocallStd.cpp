@@ -1,5 +1,8 @@
 #include "PayoffAutocallStd.h"
 #include <algorithm>
+#include <vector>
+#include <iostream>
+using namespace std;
 
 PayoffAutocallStd::PayoffAutocallStd(int nb_autocall_, signed int* date_, double* strike_, double* coupon_, double ki_barrier_,double put_strike_,double dummy_coupon_ ,double refprice_)
 	:nb_autocall(nb_autocall_), ki_barier(ki_barrier_),put_strike(put_strike_),dummy_coupon(dummy_coupon_), refprice(refprice_)
@@ -13,6 +16,11 @@ PayoffAutocallStd::PayoffAutocallStd(int nb_autocall_, signed int* date_, double
 		autocall_date.push_back(date_[i]);
 		strike.push_back(strike_[i]);
 	}
+}
+
+PayoffAutocallStd::PayoffAutocallStd(int nb_autocall_, vector<signed int> autocall_date_, vector<double> strike_, vector<double> coupon_, double ki_barrier_, double put_strike_, double dummy_coupon_, double refprice_)
+	:nb_autocall(nb_autocall_),autocall_date(autocall_date_), strike(strike_), autocall_coupon(coupon_), ki_barier(ki_barrier_), put_strike(put_strike_), dummy_coupon(dummy_coupon_), refprice(refprice_)
+{
 }
 
 void PayoffAutocallStd::final_updator(double * vold, double* uold, double * px,int mini, int maxi) const
@@ -146,4 +154,23 @@ double PayoffAutocallStd::GetDummyCoupon() const
 double PayoffAutocallStd::GetRefPrice() const
 {
 	return refprice;
+}
+
+void PayoffAutocallStd::PrintPayoff() const
+{
+	cout << "payoff : ref price "  << refprice << endl;
+	cout << "ki_barreir " << ki_barier << endl;
+	cout << "put strike " << put_strike << endl;
+	cout << "nb autocall " << nb_autocall << endl;
+	cout << "dummy " << dummy_coupon << endl;
+	cout << "autocall date\n";
+	for (auto it = autocall_date.begin(); it != autocall_date.end(); it++)
+		cout << *it << endl;
+	cout << "strikes\n";
+	for (auto it = strike.begin(); it != strike.end(); it++)
+		cout << *it << endl;
+	cout << "coupons \n";
+	for (auto it = autocall_coupon.begin(); it != autocall_coupon.end(); it++)
+		cout << *it << endl;
+
 }

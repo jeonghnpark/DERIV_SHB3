@@ -61,7 +61,6 @@ public:
 	int find_index_spot(double s) const;
 
 	int find_index_spot2(double s) const;
-	
 };
 
 

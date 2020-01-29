@@ -17,13 +17,12 @@ void Rate::set_const_rate(double v)
 }
 void Rate::print() const
 {
-	auto iter_t=ts.begin();
+	std::cout << std::fixed;
+	std::cout.precision(4);
+	auto iter_r=r.begin();
 	for(auto iter=ts.begin();iter!=ts.end();iter++){
-		std::cout<<*iter<<" ";
-	}
-
-	for(auto iter=r.begin();iter!=r.end();iter++){
-		std::cout<<*iter_t<<" ";
+		std::cout << *iter << " " << *iter_r << std::endl;
+		iter_r++;
 	}
 
 }
