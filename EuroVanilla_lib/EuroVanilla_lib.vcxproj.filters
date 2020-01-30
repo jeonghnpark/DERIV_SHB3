@@ -54,9 +54,6 @@
     <ClCompile Include="..\..\..\..\LIB\klib\k_miscellaneous.cpp">
       <Filter>ext</Filter>
     </ClCompile>
-    <ClCompile Include="..\SingleOption\EuropeanOptionMC.cpp">
-      <Filter>ext</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\LIB\klib\EtcFunctions.cpp">
       <Filter>ext</Filter>
     </ClCompile>

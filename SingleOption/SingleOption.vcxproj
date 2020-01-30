@@ -41,7 +41,6 @@
     <ClCompile Include="PayoffDigitalCall.cpp" />
     <ClCompile Include="PayoffPut.cpp" />
     <ClCompile Include="Rate.cpp" />
-    <ClCompile Include="UpdateAutocall.cpp" />
     <ClCompile Include="volatility.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -69,7 +68,6 @@
     <ClInclude Include="PayoffDigitalCall.h" />
     <ClInclude Include="PayoffPut.h" />
     <ClInclude Include="Rate.h" />
-    <ClInclude Include="UpdateAutocall.h" />
     <ClInclude Include="volatility.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

@@ -1139,7 +1139,7 @@ double AutocallOption::Simulation(MarketParameters & paras, long numMC_)
 		acash.push_back(aval.back() - adelta.back()*s0);
 		anpv.push_back(acash.back()-aval.back()+adelta.back()*s0); //should be zero
 		
-		assert(roundf(anpv[0]*100000.0)/100000.0 == 0);
+		assert(round(anpv[0]*100000.0)/100000.0 == 0.0);
 		assert(aval.front() == pv);
 
 
@@ -1281,17 +1281,17 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 	paras.calcLV();
 
 
-	if (db) {//save local vol in file
-		ofstream flvol("Lvol.csv");
-		//fuold << "PX, uold" << endl;
-		for (int i = 0; i <10; i++) {
-			for (int j = 0; j < 17; j++) {
-				flvol << paras.get_Lvol(i, j) << ",";
-			}
-			flvol << endl;
-		}
-		flvol.close();
-	}
+	//if (db) {//save local vol in file
+	//	ofstream flvol("Lvol.csv");
+	//	//fuold << "PX, uold" << endl;
+	//	for (int i = 0; i <10; i++) {
+	//		for (int j = 0; j < 17; j++) {
+	//			flvol << paras.get_Lvol(i, j) << ",";
+	//		}
+	//		flvol << endl;
+	//	}
+	//	flvol.close();
+	//}
 
 	std::vector<signed int> autocall_date;
 	autocall_date = ThePayoffPtr->GetAutocall_date();
@@ -1553,7 +1553,7 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 		cash += pv - s_tmp*delta;
 		PL = cash - pv + s_tmp*delta;
 		aPL.push_back(PL);
-		if (0)
+		if (db)
 			fout_ts << 0 << "," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
 
 		for (int k = 1; k <= nb_autocall; k++) {
@@ -1615,7 +1615,7 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 				delta = delta_new;
 				PL = cash - pv + s_tmp*delta;
 				aPL.push_back(PL);
-				if (0)
+				if (db)
 					fout_ts << t - vd << "," << s_tmp << "," << cash << "," << delta << "," << pv << "," << r_forward_p[t - vd]  << "," << q_forward_p[t - vd] <<","<< PL << endl;
 			}
 
