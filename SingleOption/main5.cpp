@@ -1858,25 +1858,37 @@ vector<double> get_a_path_from_csv(char* s)
 
 void test_vanilla_iofile()
 {
-	MarketParameters paras_file = init_paras_file("vol20200128new.csv", "rate20200128new.csv", "div20200128new.csv");
-	unsigned int exd = 44210; //1y
+	MarketParameters paras_file = init_paras_file("vol20200129new.csv", "rate20200129new.csv", "div20200129new.csv");
+	
+	signed int exd6M = paras_file.get_vdate() + 180;
 	double refprice = paras_file.get_spot();
+	double putstrike90 = refprice*0.9;
 	double putstrike = refprice;
+
+	PayoffPut putpay90(putstrike90);
 	PayoffPut putpay(putstrike);
-	EuropeanOption EurPut1YATM(refprice, exd, putpay);
-	EurPut1YATM.Calc(paras_file);
+
+	EuropeanOption EurPut6M90(refprice, exd6M, putpay90);
+	EuropeanOption EurPut6M100(refprice, exd6M, putpay);
+
+	EurPut6M90.Calc(paras_file);
 	
 	cout << "\nEurPut1YATM.Calc(paras_file);" << endl;
-	EurPut1YATM.PrintResult();
+	EurPut6M90.PrintResult();
+	paras_file.print();
 
-	EurPut1YATM.CalcMC(paras_file,80000);
-	cout << "\nEurPut1YATM.CalcMC(paras_file,50000);" << endl;
-	EurPut1YATM.PrintResult();
+	//EurPut6M90.CalcMC(paras_file,80000);
+	//cout << "\nEurPut1YATM.CalcMC(paras_file,50000);" << endl;
+	//EurPut6M90.PrintResult();
 
-	EurPut1YATM.CalcBS(paras_file);
+	EurPut6M90.CalcBS(paras_file);
 	cout << "\nEurPut1YATM.CalcBS(paras_file);" << endl;
-	EurPut1YATM.PrintResult();
+	EurPut6M90.PrintResult();
 
+	vector<double> apath;
+	apath = get_a_path_from_csv("14th.csv");
+	EurPut6M90.Simulation2(paras_file,10, true);
+	//EurPut6M100.Simulation2(paras_file, 10, true);
 
 }
 
@@ -2132,10 +2144,10 @@ int main()
 	//MarketParameters p = set_file("volcsv.csv");;
 	
 	//test_vanilla_final();
-	//test_vanilla_iofile();
+	test_vanilla_iofile();
 	
 	//test_autocall_final();
-	test_autocall_final_iofile();
+	//test_autocall_final_iofile();
 }
 
 

@@ -707,7 +707,7 @@ double EuropeanOption::Simulation3(MarketParameters& paras, std::vector<double>&
 	assert(refprice == paras.get_spot());
 	assert(paras.get_vdate() == vd);
 
-	int maxassetnodeindex = 400;
+	int maxassetnodeindex = 300;
 	double *px = new double[maxassetnodeindex + 1];
 	double *dpx = new double[maxassetnodeindex + 1];
 	double *alpha = new double[maxassetnodeindex + 1];
@@ -1052,7 +1052,7 @@ void EuropeanOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 	cout << "npv_fd " << pv_fd << endl;
 
 
-	ofstream fvold("vold.csv");
+	ofstream fvold("vold_vanilla.csv");
 
 	fvold << "PX, vold" << endl;
 
