@@ -1488,7 +1488,7 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 	auto it_vgrid = vgrid.rbegin();
 	auto it_ugrid = ugrid.rbegin();
 
-	pv_fd = inpt1d(s0, px, *it_ugrid, 0, maxassetnodeindex, 0);
+	pv_fd = intp1d(s0, px, *it_ugrid, 0, maxassetnodeindex, 0);
 
 	cout << "npv_fd " << pv_fd << endl;
 
@@ -1520,33 +1520,33 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 		if (spot_idx == 0) {
 			if (tmpKIFlag) {
 				delta = ((*riter_vgrid)[spot_idx + 1] - (*riter_vgrid)[spot_idx]) / (px[spot_idx + 1] - px[spot_idx]);
-				pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+				pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 
 			}
 			else {
 				delta = ((*riter_ugrid)[spot_idx + 1] - (*riter_ugrid)[spot_idx]) / (px[spot_idx + 1] - px[spot_idx]);
-				pv = inpt1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
+				pv = intp1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
 			}
 		}
 		else if (spot_idx == maxassetnodeindex) {
 			if (tmpKIFlag) {
 				delta = ((*riter_vgrid)[spot_idx] - (*riter_vgrid)[spot_idx - 1]) / (px[spot_idx] - px[spot_idx - 1]);
-				pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+				pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 			}
 			else {
 				delta = ((*riter_ugrid)[spot_idx] - (*riter_ugrid)[spot_idx - 1]) / (px[spot_idx] - px[spot_idx - 1]);
-				pv = inpt1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
+				pv = intp1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
 			}
 
 		}
 		else {
 			if (tmpKIFlag) {
 				delta = ((*riter_vgrid)[spot_idx + 1] - (*riter_vgrid)[spot_idx - 1]) / (px[spot_idx + 1] - px[spot_idx - 1]);
-				pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+				pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 			}
 			else {
 				delta = ((*riter_ugrid)[spot_idx + 1] - (*riter_ugrid)[spot_idx - 1]) / (px[spot_idx + 1] - px[spot_idx - 1]);
-				pv = inpt1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
+				pv = intp1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
 			}
 		}
 
@@ -1579,32 +1579,32 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 				if (spot_idx == 0) {
 					if (tmpKIFlag) {
 						delta_new = ((*riter_vgrid)[spot_idx + 1] - (*riter_vgrid)[spot_idx]) / (px[spot_idx + 1] - px[spot_idx]);
-						pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+						pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 					}
 					else {
 						delta_new = ((*riter_ugrid)[spot_idx + 1] - (*riter_ugrid)[spot_idx]) / (px[spot_idx + 1] - px[spot_idx]);
-						pv = inpt1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
+						pv = intp1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
 					}
 				}
 				else if (spot_idx == maxassetnodeindex) {
 					if (tmpKIFlag) {
 						delta_new = ((*riter_vgrid)[spot_idx] - (*riter_vgrid)[spot_idx - 1]) / (px[spot_idx] - px[spot_idx - 1]);
-						pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+						pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 					}
 					else {
 						delta_new = ((*riter_ugrid)[spot_idx] - (*riter_ugrid)[spot_idx - 1]) / (px[spot_idx] - px[spot_idx - 1]);
-						pv = inpt1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
+						pv = intp1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
 					}
 
 				}
 				else {
 					if (tmpKIFlag) {
 						delta_new = ((*riter_vgrid)[spot_idx + 1] - (*riter_vgrid)[spot_idx - 1]) / (px[spot_idx + 1] - px[spot_idx - 1]);
-						pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+						pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 					}
 					else {
 						delta_new = ((*riter_ugrid)[spot_idx + 1] - (*riter_ugrid)[spot_idx - 1]) / (px[spot_idx + 1] - px[spot_idx - 1]);
-						pv = inpt1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
+						pv = intp1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
 					}
 				}
 
@@ -1633,7 +1633,7 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 				PL = cash - pv + s_tmp*delta;
 				aPL.back() = PL;
 				if (db)
-					fout_ts << tmpKIFlag << "_" << k << "-th Autocalled," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
+					fout_ts << tmpKIFlag << "_" << k << "-th Autocalled i=" << i <<"," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
 				break; //k loop
 			}
 
@@ -1647,7 +1647,7 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 					PL = cash - pv + s_tmp*delta;
 					aPL.back() = PL;
 					if (db)
-						fout_ts << tmpKIFlag << "_" << k << "-th Autocalled," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
+						fout_ts << tmpKIFlag << "_" << k << "-th Autocalled i=" << i << "," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
 
 				}
 				else if (s_tmp >= kibarrier) {
@@ -1658,7 +1658,7 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 						PL = cash - pv + s_tmp*delta;
 						aPL.back() = PL;
 						if (db)
-							fout_ts << tmpKIFlag << "_" << k << "-th Autocalled," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
+							fout_ts << tmpKIFlag << "_" << k << "-th Autocalled i=" << i << "," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
 
 					}
 					else if (tmpKIFlag == 0) {
@@ -1668,7 +1668,7 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 						PL = cash - pv + s_tmp*delta;
 						aPL.back() = PL;
 						if (db)
-							fout_ts << tmpKIFlag << "_" << k << "-th Autocalled," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
+							fout_ts << tmpKIFlag << "_" << k << "-th Autocalled i=" << i << "," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
 					}
 					else {
 						throw std::logic_error("unexpected KIFlag");
@@ -1681,7 +1681,7 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 					PL = cash - pv + s_tmp*delta;
 					aPL.back() = PL;
 					if (db)
-						fout_ts << tmpKIFlag << "_" << k << "-th Autocalled," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
+						fout_ts << tmpKIFlag << "_" << k << "-th Autocalled i=" << i << "," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
 				}
 
 			} //if k
@@ -1698,9 +1698,9 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 	string fn2 = getFnameTimeStartingWith(string("PL"));
 	ofstream fout(fn2.c_str());
 	auto it = PLs.begin();
-	fout << "numMC,PL" << endl;
+	fout << "numMC,PL,callday" << endl;
 	for (auto iter = PLs.begin(); iter != PLs.end(); iter++)
-		fout << iter - it << "," << (*iter).back() << endl;
+		fout << iter - it << "," << (*iter).back() <<","<<(*iter).size() << endl;
 
 	fout.close();
 
@@ -1751,19 +1751,6 @@ void AutocallOption::Simulation2_1(MarketParameters & paras, EuropeanOption& eop
 	int nb_autocall = ThePayoffPtr->GetNbAutocall();
 
 	paras.calcLV();
-
-
-	//if (db) {//save local vol in file
-	//	ofstream flvol("Lvol.csv");
-	//	//fuold << "PX, uold" << endl;
-	//	for (int i = 0; i <10; i++) {
-	//		for (int j = 0; j < 17; j++) {
-	//			flvol << paras.get_Lvol(i, j) << ",";
-	//		}
-	//		flvol << endl;
-	//	}
-	//	flvol.close();
-	//}
 
 	std::vector<signed int> autocall_date;
 	autocall_date = ThePayoffPtr->GetAutocall_date();
@@ -1962,7 +1949,7 @@ void AutocallOption::Simulation2_1(MarketParameters & paras, EuropeanOption& eop
 	auto it_vgrid = vgrid.rbegin();
 	auto it_ugrid = ugrid.rbegin();
 
-	pv_fd = inpt1d(s0, px, *it_ugrid, 0, maxassetnodeindex, 0);
+	pv_fd = intp1d(s0, px, *it_ugrid, 0, maxassetnodeindex, 0);
 
 	cout << "npv_fd " << pv_fd << endl;
 
@@ -1994,33 +1981,33 @@ void AutocallOption::Simulation2_1(MarketParameters & paras, EuropeanOption& eop
 		if (spot_idx == 0) {
 			if (tmpKIFlag) {
 				delta = ((*riter_vgrid)[spot_idx + 1] - (*riter_vgrid)[spot_idx]) / (px[spot_idx + 1] - px[spot_idx]);
-				pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+				pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 
 			}
 			else {
 				delta = ((*riter_ugrid)[spot_idx + 1] - (*riter_ugrid)[spot_idx]) / (px[spot_idx + 1] - px[spot_idx]);
-				pv = inpt1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
+				pv = intp1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
 			}
 		}
 		else if (spot_idx == maxassetnodeindex) {
 			if (tmpKIFlag) {
 				delta = ((*riter_vgrid)[spot_idx] - (*riter_vgrid)[spot_idx - 1]) / (px[spot_idx] - px[spot_idx - 1]);
-				pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+				pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 			}
 			else {
 				delta = ((*riter_ugrid)[spot_idx] - (*riter_ugrid)[spot_idx - 1]) / (px[spot_idx] - px[spot_idx - 1]);
-				pv = inpt1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
+				pv = intp1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
 			}
 
 		}
 		else {
 			if (tmpKIFlag) {
 				delta = ((*riter_vgrid)[spot_idx + 1] - (*riter_vgrid)[spot_idx - 1]) / (px[spot_idx + 1] - px[spot_idx - 1]);
-				pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+				pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 			}
 			else {
 				delta = ((*riter_ugrid)[spot_idx + 1] - (*riter_ugrid)[spot_idx - 1]) / (px[spot_idx + 1] - px[spot_idx - 1]);
-				pv = inpt1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
+				pv = intp1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
 			}
 		}
 
@@ -2053,32 +2040,32 @@ void AutocallOption::Simulation2_1(MarketParameters & paras, EuropeanOption& eop
 				if (spot_idx == 0) {
 					if (tmpKIFlag) {
 						delta_new = ((*riter_vgrid)[spot_idx + 1] - (*riter_vgrid)[spot_idx]) / (px[spot_idx + 1] - px[spot_idx]);
-						pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+						pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 					}
 					else {
 						delta_new = ((*riter_ugrid)[spot_idx + 1] - (*riter_ugrid)[spot_idx]) / (px[spot_idx + 1] - px[spot_idx]);
-						pv = inpt1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
+						pv = intp1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
 					}
 				}
 				else if (spot_idx == maxassetnodeindex) {
 					if (tmpKIFlag) {
 						delta_new = ((*riter_vgrid)[spot_idx] - (*riter_vgrid)[spot_idx - 1]) / (px[spot_idx] - px[spot_idx - 1]);
-						pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+						pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 					}
 					else {
 						delta_new = ((*riter_ugrid)[spot_idx] - (*riter_ugrid)[spot_idx - 1]) / (px[spot_idx] - px[spot_idx - 1]);
-						pv = inpt1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
+						pv = intp1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
 					}
 
 				}
 				else {
 					if (tmpKIFlag) {
 						delta_new = ((*riter_vgrid)[spot_idx + 1] - (*riter_vgrid)[spot_idx - 1]) / (px[spot_idx + 1] - px[spot_idx - 1]);
-						pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+						pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 					}
 					else {
 						delta_new = ((*riter_ugrid)[spot_idx + 1] - (*riter_ugrid)[spot_idx - 1]) / (px[spot_idx + 1] - px[spot_idx - 1]);
-						pv = inpt1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
+						pv = intp1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
 					}
 				}
 
@@ -2478,7 +2465,7 @@ void AutocallOption::Simulation3(MarketParameters & paras, std::vector<double>& 
 	auto it_vgrid = vgrid.rbegin();
 	auto it_ugrid = ugrid.rbegin();
 
-	pv_fd = inpt1d(s0, px, *it_ugrid, 0, maxassetnodeindex, 0);
+	pv_fd = intp1d(s0, px, *it_ugrid, 0, maxassetnodeindex, 0);
 
 	cout << "npv_fd " << pv_fd << endl;
 
@@ -2523,33 +2510,33 @@ void AutocallOption::Simulation3(MarketParameters & paras, std::vector<double>& 
 		if (spot_idx == 0) {
 			if (tmpKIFlag) {
 				delta = ((*riter_vgrid)[spot_idx + 1] - (*riter_vgrid)[spot_idx]) / (px[spot_idx + 1] - px[spot_idx]);
-				pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+				pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 
 			}
 			else {
 				delta = ((*riter_ugrid)[spot_idx + 1] - (*riter_ugrid)[spot_idx]) / (px[spot_idx + 1] - px[spot_idx]);
-				pv = inpt1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
+				pv = intp1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
 			}
 		}
 		else if (spot_idx == maxassetnodeindex) {
 			if (tmpKIFlag) {
 				delta = ((*riter_vgrid)[spot_idx] - (*riter_vgrid)[spot_idx - 1]) / (px[spot_idx] - px[spot_idx - 1]);
-				pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+				pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 			}
 			else {
 				delta = ((*riter_ugrid)[spot_idx] - (*riter_ugrid)[spot_idx - 1]) / (px[spot_idx] - px[spot_idx - 1]);
-				pv = inpt1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
+				pv = intp1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
 			}
 
 		}
 		else {
 			if (tmpKIFlag) {
 				delta = ((*riter_vgrid)[spot_idx + 1] - (*riter_vgrid)[spot_idx - 1]) / (px[spot_idx + 1] - px[spot_idx - 1]);
-				pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+				pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 			}
 			else {
 				delta = ((*riter_ugrid)[spot_idx + 1] - (*riter_ugrid)[spot_idx - 1]) / (px[spot_idx + 1] - px[spot_idx - 1]);
-				pv = inpt1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
+				pv = intp1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
 			}
 		}
 
@@ -2575,32 +2562,32 @@ void AutocallOption::Simulation3(MarketParameters & paras, std::vector<double>& 
 				if (spot_idx == 0) {
 					if (tmpKIFlag) {
 						delta_new = ((*riter_vgrid)[spot_idx + 1] - (*riter_vgrid)[spot_idx]) / (px[spot_idx + 1] - px[spot_idx]);
-						pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+						pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 					}
 					else {
 						delta_new = ((*riter_ugrid)[spot_idx + 1] - (*riter_ugrid)[spot_idx]) / (px[spot_idx + 1] - px[spot_idx]);
-						pv = inpt1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
+						pv = intp1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
 					}
 				}
 				else if (spot_idx == maxassetnodeindex) {
 					if (tmpKIFlag) {
 						delta_new = ((*riter_vgrid)[spot_idx] - (*riter_vgrid)[spot_idx - 1]) / (px[spot_idx] - px[spot_idx - 1]);
-						pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+						pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 					}
 					else {
 						delta_new = ((*riter_ugrid)[spot_idx] - (*riter_ugrid)[spot_idx - 1]) / (px[spot_idx] - px[spot_idx - 1]);
-						pv = inpt1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
+						pv = intp1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
 					}
 
 				}
 				else {
 					if (tmpKIFlag) {
 						delta_new = ((*riter_vgrid)[spot_idx + 1] - (*riter_vgrid)[spot_idx - 1]) / (px[spot_idx + 1] - px[spot_idx - 1]);
-						pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+						pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 					}
 					else {
 						delta_new = ((*riter_ugrid)[spot_idx + 1] - (*riter_ugrid)[spot_idx - 1]) / (px[spot_idx + 1] - px[spot_idx - 1]);
-						pv = inpt1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
+						pv = intp1d(s_tmp, px, *riter_ugrid, 0, maxassetnodeindex, 0);
 					}
 				}
 

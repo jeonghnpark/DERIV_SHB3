@@ -849,15 +849,15 @@ double EuropeanOption::Simulation3(MarketParameters& paras, std::vector<double>&
 
 	if (spot_idx == 0) {
 		delta = ((*riter_vgrid)[spot_idx + 1] - (*riter_vgrid)[spot_idx]) / (px[spot_idx + 1] - px[spot_idx]);
-		pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+		pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 	}
 	else if (spot_idx == maxassetnodeindex) {
 		delta = ((*riter_vgrid)[spot_idx] - (*riter_vgrid)[spot_idx - 1]) / (px[spot_idx] - px[spot_idx - 1]);
-		pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+		pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 	}
 	else {
 		delta = ((*riter_vgrid)[spot_idx + 1] - (*riter_vgrid)[spot_idx - 1]) / (px[spot_idx + 1] - px[spot_idx - 1]);
-		pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+		pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 	}
 
 	cash += pv - s_tmp*delta;
@@ -875,15 +875,15 @@ double EuropeanOption::Simulation3(MarketParameters& paras, std::vector<double>&
 
 		if (spot_idx == 0) {
 			delta_new = ((*riter_vgrid)[spot_idx + 1] - (*riter_vgrid)[spot_idx]) / (px[spot_idx + 1] - px[spot_idx]);
-			pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+			pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 		}
 		else if (spot_idx == maxassetnodeindex) {
 			delta_new = ((*riter_vgrid)[spot_idx] - (*riter_vgrid)[spot_idx - 1]) / (px[spot_idx] - px[spot_idx - 1]);
-			pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+			pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 		}
 		else {
 			delta_new = ((*riter_vgrid)[spot_idx + 1] - (*riter_vgrid)[spot_idx - 1]) / (px[spot_idx + 1] - px[spot_idx - 1]);
-			pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+			pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 		}
 
 		cash *= std::exp(r_forward_p[t - vd] * dt);
@@ -1047,7 +1047,7 @@ void EuropeanOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 	//doule check
 	auto it_vgrid = vgrid.rbegin();
 
-	pv_fd = inpt1d(s0, px, *it_vgrid, 0, maxassetnodeindex, 0);
+	pv_fd = intp1d(s0, px, *it_vgrid, 0, maxassetnodeindex, 0);
 
 	cout << "npv_fd " << pv_fd << endl;
 
@@ -1088,15 +1088,15 @@ void EuropeanOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 
 		if (spot_idx == 0) {
 			delta = ((*riter_vgrid)[spot_idx + 1] - (*riter_vgrid)[spot_idx]) / (px[spot_idx + 1] - px[spot_idx]);
-			pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+			pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 		}
 		else if (spot_idx == maxassetnodeindex) {
 			delta = ((*riter_vgrid)[spot_idx] - (*riter_vgrid)[spot_idx - 1]) / (px[spot_idx] - px[spot_idx - 1]);
-			pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+			pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 		}
 		else {
 			delta = ((*riter_vgrid)[spot_idx + 1] - (*riter_vgrid)[spot_idx - 1]) / (px[spot_idx + 1] - px[spot_idx - 1]);
-			pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+			pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 		}
 
 		cash += pv - s_tmp*delta;
@@ -1116,13 +1116,13 @@ void EuropeanOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 
 			if (spot_idx == 0) {
 				delta_new = ((*riter_vgrid)[spot_idx + 1] - (*riter_vgrid)[spot_idx]) / (px[spot_idx + 1] - px[spot_idx]);
-				pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+				pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 			} else if (spot_idx == maxassetnodeindex) {
 				delta_new = ((*riter_vgrid)[spot_idx] - (*riter_vgrid)[spot_idx - 1]) / (px[spot_idx] - px[spot_idx - 1]);
-				pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+				pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 			}else {
 				delta_new = ((*riter_vgrid)[spot_idx + 1] - (*riter_vgrid)[spot_idx - 1]) / (px[spot_idx + 1] - px[spot_idx - 1]);
-				pv = inpt1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
+				pv = intp1d(s_tmp, px, *riter_vgrid, 0, maxassetnodeindex, 0);
 			}
 
 			cash *= std::exp(r_forward_p[t - vd] * dt);
@@ -1196,7 +1196,6 @@ double EuropeanOption::Calc_discrete(MarketParameters & paras)
 //MarketParameters : discrete dividend 2019.12.03
 {
 	signed int vd = paras.get_vdate();
-
 	double s0 = paras.get_spot();
 
 	paras.calcLV();
