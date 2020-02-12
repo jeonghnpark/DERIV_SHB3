@@ -20,8 +20,8 @@ public:
 	}
 
 	//discrete dividend
-	MarketParameters(signed int _vdate, double _spot, Vol _vol, Rate _r, Dividend _div)
-		:vdate(_vdate), spot(_spot), vol(_vol), r(_r), div(_div){
+	MarketParameters(signed int _vdate, double _spot, Vol _vol, Rate _r, Rate _q, Dividend _div)
+		:vdate(_vdate), spot(_spot), vol(_vol), r(_r), q(_q), div(_div){
 	}
 	//continuous dividend
 	MarketParameters(signed int _vdate, double _spot, Vol _vol, Rate _r, Rate _q)

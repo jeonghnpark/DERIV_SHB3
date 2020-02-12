@@ -41,6 +41,6 @@ protected:
 	double get_val(double spot, double* px, double* uold, double* vold, int KIFlag, int min, int max, int& init_i);
 
 private:
-	unsigned int getIndex(double target, double* px, int i_min, int i_max) const;
+	int getIndex(double target, double* px, int i_min, int i_max) const;
 	mutable int init_i = 0;
 };

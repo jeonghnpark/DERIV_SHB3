@@ -29,7 +29,7 @@ protected:
 	Payoff* ThePayoffPtr;
 	std::vector<double> result;
 private:
-	unsigned int getIndex(double target, double * px, int i_min, int i_max) const;
+	int getIndex(double target, double * px, int i_min, int i_max) const;
 	mutable int init_i = 0;
 
 private://**old interface, don't use it. I made it private for safety

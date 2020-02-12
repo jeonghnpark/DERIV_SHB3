@@ -11,29 +11,11 @@ double MarketParameters::getBSVol(double t, double k) const
 
 double MarketParameters::getTodayDivAmount(signed int n_t) const
 {
-	
 	return div.getLumpsum(n_t, n_t);
-
 }
 
 void MarketParameters::calcLV()
 {
-	//make div-curve from discreter divdend UNDER CONSTRUCTION !
-	//vector<double> div_rate;
-	//vector<double> tenor = {7/360.0, 14/360.0, 21/360.0, 30/360.0, 60/360.0,90/360.0,180/360.0,1.0, 2.0, 3.0};
-	//
-	//div_rate.push_back(div.getLumpsum(vdate, vdate + 7) / spot / tenor[0]);
-	//div_rate.push_back(div.getLumpsum(vdate, vdate + 14) / spot / tenor[1]);
-	//div_rate.push_back(div.getLumpsum(vdate, vdate + 21) / spot / tenor[2]);
-	//div_rate.push_back(div.getLumpsum(vdate, vdate + 30) / spot / tenor[3]);
-	//div_rate.push_back(div.getLumpsum(vdate, vdate + 60) / spot / tenor[4]);
-	//div_rate.push_back(div.getLumpsum(vdate, vdate + 90) / spot / tenor[5]);
-	//div_rate.push_back(div.getLumpsum(vdate, vdate + 180) / spot / tenor[6]);
-	//div_rate.push_back(div.getLumpsum(vdate, vdate + 360) / spot / tenor[7]);
-	//div_rate.push_back(div.getLumpsum(vdate, vdate + 720) / spot / tenor[8]);
-	//div_rate.push_back(div.getLumpsum(vdate, vdate + 1080) / spot / tenor[9]);
-	//Rate q(div_rate, tenor);
-
 	vol.calcLv(spot, r, q);
 }
 

@@ -31,6 +31,7 @@ enum FvsS{flat,surface};
 enum CalcMode{calc1,calc2};
 
 MarketParameters init_paras_file(const char* vol_csv, const char* rate_csv, const char* div_csv);
+MarketParameters init_paras_file(const char* vol_csv, const char* rate_csv, const char* div_csv, const char* div_discrete_csv);
 
 void test_american(double spot)
 {
@@ -804,100 +805,100 @@ MarketParam set_para()
 
 
 
-unsigned int getDelta(double target, vector<double>& old, unsigned int& init_i)
-{
-	if (target <= old.front())
-		return (init_i = 0);
-	if (target >= old.back())
-		return (init_i = old.size()-1);
-
-	if (old[init_i] <= target && target <old[init_i + 1]) {
-		if (target - old[init_i] <old[init_i + 1] - target) {
-			return init_i;
-		}
-		else {
-			return (init_i = init_i + 1);
-		}
-	}
-
-	unsigned int i = init_i;
-	while (1) {   //향후 이부분 개선 
-		i = i + 1;
-		if (i < old.size() - 1) {
-			if (old[i] <= target && target < old[i + 1]) {
-				if (target - old[i] < old[i + 1] - target) {
-					return (init_i = i);
-				}
-				else {
-					return (init_i = i + 1);
-				}
-			}
-		}
-
-		int j = init_i - (i - init_i);
-		if (j >= 0) {
-			if (old[j] <= target && target <old[j + 1]) {
-				if (target - old[j] <old[j + 1] - target) {
-					return (init_i = j);
-				}
-				else {
-					return (init_i = j + 1);
-				}
-			}
-		}
-	}
-
-	throw std::logic_error("find_index_spot2 - interpolaton fail :findnearestindex, vol strike");
-	return -1;
-
-}
-
-unsigned int getIndex(double target, double* px, int i_min, int i_max, unsigned int init_i)
-{
-	if (target <= px[0])
-		return (init_i = 0);
-	if (target >= px[i_max])
-		return (init_i = i_max);
-
-	if (px[init_i] <= target && target <px[init_i + 1]) {
-		if (target - px[init_i] <px[init_i + 1] - target) {
-			return init_i;
-		}
-		else {
-			return (init_i = init_i + 1);
-		}
-	}
-
-	int i = init_i;
-	while (1) {   //향후 이부분 개선 
-		i = i + 1;
-		if (i < i_max) {
-			if (px[i] <= target && target < px[i + 1]) {
-				if (target - px[i] < px[i + 1] - target) {
-					return (init_i = i);
-				}
-				else {
-					return (init_i = i + 1);
-				}
-			}
-		}
-
-		int j = init_i - (i - init_i);
-		if (j >= 0) {
-			if (px[j] <= target && target <px[j + 1]) {
-				if (target - px[j] < px[j + 1] - target) {
-					return (init_i = j);
-				}
-				else {
-					return (init_i = j + 1);
-				}
-			}
-		}
-	}
-
-	throw std::logic_error("find_index_spot2 - interpolaton fail :findnearestindex, vol strike");
-	return -1;
-}
+//int getDelta(double target, vector<double>& old, unsigned int& init_i)
+//{
+//	if (target <= old.front())
+//		return (init_i = 0);
+//	if (target >= old.back())
+//		return (init_i = old.size()-1);
+//
+//	if (old[init_i] <= target && target <old[init_i + 1]) {
+//		if (target - old[init_i] <old[init_i + 1] - target) {
+//			return init_i;
+//		}
+//		else {
+//			return (init_i = init_i + 1);
+//		}
+//	}
+//
+//	int i = init_i;
+//	while (1) {   //향후 이부분 개선 
+//		i = i + 1;
+//		if (i < old.size() - 1) {
+//			if (old[i] <= target && target < old[i + 1]) {
+//				if (target - old[i] < old[i + 1] - target) {
+//					return (init_i = i);
+//				}
+//				else {
+//					return (init_i = i + 1);
+//				}
+//			}
+//		}
+//
+//		int j = init_i - (i - init_i);
+//		if (j >= 0) {
+//			if (old[j] <= target && target <old[j + 1]) {
+//				if (target - old[j] <old[j + 1] - target) {
+//					return (init_i = j);
+//				}
+//				else {
+//					return (init_i = j + 1);
+//				}
+//			}
+//		}
+//	}
+//
+//	throw std::logic_error("find_index_spot2 - interpolaton fail :findnearestindex, vol strike");
+//	return -1;
+//
+//}
+//
+//unsigned int getIndex(double target, double* px, int i_min, int i_max, unsigned int init_i)
+//{
+//	if (target <= px[0])
+//		return (init_i = 0);
+//	if (target >= px[i_max])
+//		return (init_i = i_max);
+//
+//	if (px[init_i] <= target && target <px[init_i + 1]) {
+//		if (target - px[init_i] <px[init_i + 1] - target) {
+//			return init_i;
+//		}
+//		else {
+//			return (init_i = init_i + 1);
+//		}
+//	}
+//
+//	int i = init_i;
+//	while (1) {   //향후 이부분 개선 
+//		i = i + 1;
+//		if (i < i_max) {
+//			if (px[i] <= target && target < px[i + 1]) {
+//				if (target - px[i] < px[i + 1] - target) {
+//					return (init_i = i);
+//				}
+//				else {
+//					return (init_i = i + 1);
+//				}
+//			}
+//		}
+//
+//		int j = init_i - (i - init_i);
+//		if (j >= 0) {
+//			if (px[j] <= target && target <px[j + 1]) {
+//				if (target - px[j] < px[j + 1] - target) {
+//					return (init_i = j);
+//				}
+//				else {
+//					return (init_i = j + 1);
+//				}
+//			}
+//		}
+//	}
+//
+//	throw std::logic_error("find_index_spot2 - interpolaton fail :findnearestindex, vol strike");
+//	return -1;
+//}
 
 
 vector<double> get_a_path_from_csv(char* s)
@@ -917,6 +918,8 @@ vector<double> get_a_path_from_csv(char* s)
 void test_vanilla_iofile()
 {
 	MarketParameters paras_file = init_paras_file("vol20200129new.csv", "rate20200129new.csv", "div20200129new.csv");
+	//discrete dividend
+	MarketParameters paras_file_discrete = init_paras_file("vol20200129new.csv", "rate20200129new.csv", "div20200129new.csv", "divDiscrete20200129.csv");
 	
 	signed int exd6M = paras_file.get_vdate() + 180; //6month
 	double refprice = paras_file.get_spot();
@@ -938,6 +941,12 @@ void test_vanilla_iofile()
 	EurPut6M90.PrintResult();
 	paras_file.print();
 
+	EurPut6M90.Calc_discrete(paras_file_discrete);
+	cout << "\nEurPut6M90.Calc_discrete(paras_file_discrete)" << endl;
+	EurPut6M90.PrintResult();
+	paras_file.print();
+
+
 	//EurPut6M90.CalcMC(paras_file,80000);
 	//cout << "\nEurPut1YATM.CalcMC(paras_file,50000);" << endl;
 	//EurPut6M90.PrintResult();
@@ -957,8 +966,8 @@ void test_vanilla_final()
 	paras = set_paras();
 	paras_volup = set_paras();
 
-	unsigned int exd = paras.get_vdate() + 365; //1y vanilla
-	unsigned int exd6m = paras.get_vdate() + 180; //1y vanilla
+	signed int exd = paras.get_vdate() + 365; //1y vanilla
+	signed int exd6m = paras.get_vdate() + 180; //1y vanilla
 
 	double refprice = 297.22;
 	double putstrike = refprice;
@@ -973,9 +982,6 @@ void test_vanilla_final()
 	//EurPut1YATM.Calc(paras);
 	//cout << "\nEurPut1YATM.Calc(paras);" << endl;
 	//EurPut1YATM.PrintResult();
-
-
-
 
 	//EurPut1YATM.Calc_discrete(paras);
 	//cout << "\n	EurPut1YATM.Calc_discrete(paras);" << endl;
@@ -998,7 +1004,7 @@ void test_autocall_final_iofile()
 	MarketParameters paras_file = init_paras_file("vol20200129new.csv", "rate20200129new.csv", "div20200129new.csv");
 	MarketParameters paras_file_volup = init_paras_file("vol20200129new.csv", "rate20200129new.csv", "div20200129new.csv");
 	MarketParameters paras_20180828 = init_paras_file("vol20180828.csv", "rate20180828.csv", "div20180828.csv");
-
+	MarketParameters paras_file_div = init_paras_file("vol20200129new.csv", "rate20200129new.csv", "div20200129new.csv", "divDiscrete20200129.csv");
 
 	AutocallOption prot("autocall20200129protected.csv");
 	AutocallOption notprot("autocall20200129notprotected.csv");
@@ -1087,7 +1093,7 @@ void test_autocall_final()
 	cout << "\nAutoKOSPI.Calc(paras);" << endl;
 	AutoKOSPI.PrintResult();
 
-	AutoKOSPI.CalcMC(paras,50000);
+	AutoKOSPI.CalcMC(paras,10000);
 	cout << "\nAutoKOSPI.CalcMC(paras);" << endl;
 	AutoKOSPI.PrintResult();
 
@@ -1187,7 +1193,7 @@ MarketParameters init_paras_file(const char* vol_csv, const char* rate_csv, cons
 	getline(infile_qrate, line); //line5
 	strstr = stringstream(line);
 	getline(strstr, word, ',');
-	unsigned int vd = stoul(word);
+	signed int vd = stoul(word);
 	while (getline(strstr, word, ',')) {
 		qrate.push_back(stod(word)/100.0);
 	}
@@ -1196,6 +1202,122 @@ MarketParameters init_paras_file(const char* vol_csv, const char* rate_csv, cons
 
 	return MarketParameters(vd, spot, vol, r, q);
 	//return MarketParameters(vol,r,q);
+}
+
+MarketParameters init_paras_file(const char* vol_csv, const char* rate_csv, const char* div_csv, const char* div_discrete_csv)
+{
+	MarketParameters paras;
+
+	vector<double> vol_term;
+	vector<double> vol_strike;
+	vector<vector<double> > Ivol;
+	vector<double> rate;
+	vector<double> rate_term;
+	vector<double> qrate;
+	vector<double> qrate_term;
+	vector<signed int> exdate;
+	vector<double> amount;
+
+	ifstream infile(vol_csv); // for example
+	string line = "";
+	string word = "";
+	vector<vector<double> >rows;
+	getline(infile, line); //first vol line, strikes
+	stringstream strstr(line);
+
+	for (int i = 0; i<5; i++) //skip first 5 cells
+		getline(strstr, word, ',');
+	while (getline(strstr, word, ',')) {
+		vol_strike.push_back(stod(word));
+	}
+
+	getline(infile, line); //skip the second line
+
+	while (getline(infile, line)) {
+		stringstream strstr(line);
+		string word = "";
+
+		//cells(3,1), cells(4,1).... => vol_term
+		getline(strstr, word, ',');
+		vol_term.push_back(stod(word));
+
+		for (int i = 0; i<4; i++) //skip first 4 cells
+			getline(strstr, word, ',');
+
+		vector<double> avol;
+		while (getline(strstr, word, ',')) {
+			avol.push_back(stod(word) / 100.0);
+		}
+		Ivol.push_back(avol);
+	}
+
+	Vol vol(vol_term, vol_strike, Ivol);
+	infile.close();
+
+	ifstream infile_rate(rate_csv);
+	//line = ""; //not needed?
+	getline(infile_rate, line); //first line, rate term
+								//stringstream().swap(strstr);
+	strstr = stringstream(line);
+
+	//word = "";
+	getline(strstr, word, ','); //skip cells(1,1)
+	while (getline(strstr, word, ',')) {
+		rate_term.push_back(stod(word));
+	}
+	getline(infile_rate, line); //skip 2nd line
+	getline(infile_rate, line); //3rd line
+	strstr = stringstream(line);
+	getline(strstr, word, ','); //skip cells(3,1)
+	while (getline(strstr, word, ',')) {
+		rate.push_back(stod(word) / 100.0);
+	}
+	Rate r(rate, rate_term);
+	infile_rate.close();
+
+	//continuous dividend
+	ifstream infile_qrate(div_csv);
+	getline(infile_qrate, line); //skip first line
+	getline(infile_qrate, line); //skip 2nd line
+	getline(infile_qrate, line); //3rd line qrate_Term
+	strstr = stringstream(line);
+	getline(strstr, word, ','); //skip cells(3,1)
+	while (getline(strstr, word, ',')) {
+		qrate_term.push_back(stod(word));
+	}
+
+	getline(infile_qrate, line); //line4
+	strstr = stringstream(line);
+	getline(strstr, word, ',');
+	double spot = stod(word);
+	while (getline(strstr, word, ',')) {
+		//skip 
+	}
+
+	getline(infile_qrate, line); //line5
+	strstr = stringstream(line);
+	getline(strstr, word, ',');
+	signed int vd = stoul(word);
+	while (getline(strstr, word, ',')) {
+		qrate.push_back(stod(word) / 100.0);
+	}
+	Rate q(qrate, qrate_term);
+	infile_qrate.close();
+	
+	//discrete Dividend
+	infile= ifstream(div_discrete_csv);
+	while (getline(infile, line)) {
+		strstr = stringstream(line);
+		getline(strstr, word, ','); //col=1
+		exdate.push_back(stoul(word));
+		getline(strstr, word, ','); //col=2
+		amount.push_back(stod(word));
+	}
+	Dividend div(exdate, amount);
+	infile.close();
+
+	return MarketParameters(vd, spot, vol,r,q,div);
+	
 }
 int main()
 {

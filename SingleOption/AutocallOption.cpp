@@ -65,7 +65,7 @@ AutocallOption::AutocallOption(char * csvfile)
 	strstr = stringstream(line);
 	getline(strstr, word, ','); //cells(32,1)
 	getline(strstr, word, ','); //cells(32,2)
-	unsigned int vd = stoul(word);
+	signed int vd = stoul(word);
 	while (getline(strstr, word, ',')) {
 	}
 
@@ -1508,14 +1508,14 @@ void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 		s_tmp = s0;
 		tmpKIFlag = hitFlag;
 
-		unsigned int init_i = 0;
+		int init_i = 0;
 		double cash = 0.0;
 		double pv = 0.0;
 		double delta = 0.0;
 		double delta_new = 0.0;
 		double PL = 0.0;
 
-		unsigned int spot_idx = getIndex(s_tmp, px, 0, maxassetnodeindex);
+		int spot_idx = getIndex(s_tmp, px, 0, maxassetnodeindex);
 
 		if (spot_idx == 0) {
 			if (tmpKIFlag) {
@@ -1969,14 +1969,14 @@ void AutocallOption::Simulation2_1(MarketParameters & paras, EuropeanOption& eop
 		s_tmp = s0;
 		tmpKIFlag = hitFlag;
 
-		unsigned int init_i = 0;
+		int init_i = 0;
 		double cash = 0.0;
 		double pv = 0.0;
 		double delta = 0.0;
 		double delta_new = 0.0;
 		double PL = 0.0;
 
-		unsigned int spot_idx = getIndex(s_tmp, px, 0, maxassetnodeindex);
+		int spot_idx = getIndex(s_tmp, px, 0, maxassetnodeindex);
 
 		if (spot_idx == 0) {
 			if (tmpKIFlag) {
@@ -2498,14 +2498,14 @@ void AutocallOption::Simulation3(MarketParameters & paras, std::vector<double>& 
 		s_tmp = s0;
 		tmpKIFlag = hitFlag;
 
-		unsigned int init_i = 0;
+		int init_i = 0;
 		double cash = 0.0;
 		double pv = 0.0;
 		double delta = 0.0;
 		double delta_new = 0.0;
 		double PL = 0.0;
 
-		unsigned int spot_idx = getIndex(s_tmp, px, 0, maxassetnodeindex);
+		int spot_idx = getIndex(s_tmp, px, 0, maxassetnodeindex);
 
 		if (spot_idx == 0) {
 			if (tmpKIFlag) {
@@ -3288,7 +3288,7 @@ double AutocallOption::get_val(double target, double * px, double * uold, double
 	return -1;
 }
 
-unsigned int AutocallOption::getIndex(double target, double * px, int i_min, int i_max) const
+int AutocallOption::getIndex(double target, double * px, int i_min, int i_max) const
 {
 	if (target <= px[0])
 		return (init_i = 0);
