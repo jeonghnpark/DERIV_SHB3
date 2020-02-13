@@ -11,16 +11,18 @@ public:
 	AutocallOption(char* csvfile);
 	virtual ~AutocallOption();
 	
-	double Calc(MarketParameters& paras);//class GRID under construction...
+	double Calc(MarketParameters& paras);
+	double Calc_discrete(MarketParameters& paras);
 	double CalcMC(MarketParameters & paras, long nMC = 1000); //r,div optimized
+	double CalcMC_discrete(MarketParameters & paras, long nMC = 1000); //r,div optimized
 	double Simulation(MarketParameters& paras, long nMC);
 	void Simulation2(MarketParameters& paras, long nMC, bool db = false);
 	void Simulation2_1(MarketParameters & paras, EuropeanOption& eop, long numMC_, bool db);
 	void Simulation3(MarketParameters& paras, std::vector<double>& apath, bool db = false);
 	signed int GetExpiryd() const;
 	double GetRefPrice() const;
-	std::vector<double> GetResult() const;
 	int GetHitFlag() const { return hitflag; }
+	std::vector<double> GetResult() const;
 	void PrintResult() const;
 	void PrintSpec() const;
 

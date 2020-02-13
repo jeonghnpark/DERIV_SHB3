@@ -60,6 +60,7 @@
     <ClInclude Include="MarketParameters.h" />
     <ClInclude Include="Payoff.h" />
     <ClInclude Include="PayoffAutocallStd.h" />
+    <ClInclude Include="PayoffAutocallSwap.h" />
     <ClInclude Include="PayoffBarCUO.h" />
     <ClInclude Include="PayoffBarPDO.h" />
     <ClInclude Include="PayoffBarrier.h" />

@@ -1194,6 +1194,7 @@ void EuropeanOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 
 double EuropeanOption::Calc_discrete(MarketParameters & paras)
 //MarketParameters : discrete dividend
+//FDM 
 {
 	signed int vd = paras.get_vdate();
 	double s0 = paras.get_spot();
@@ -1212,7 +1213,6 @@ double EuropeanOption::Calc_discrete(MarketParameters & paras)
 	double *vold_down = new double[maxassetnodeindex + 1];
 
 	double *vold_next = new double[maxassetnodeindex + 1];  //reserve for theta
-
 	double *vnew = new double[maxassetnodeindex + 1];
 	double *vnew_up = new double[maxassetnodeindex + 1];
 	double *vnew_down = new double[maxassetnodeindex + 1];
@@ -1249,8 +1249,6 @@ double EuropeanOption::Calc_discrete(MarketParameters & paras)
 		tau_p[i] = (i) / 365.0;
 		r_forward_p[i] = paras.getForward(tau_p[i]);
 		r_dc_p[i] = paras.getIntpRate(tau_p[i]);
-		//q_forward_p[i] = paras.getDivForward(tau_p[i]);
-		//q_forward_p[i] = paras.getTodayDivAmount(tau_p[i]) / s0 / dt;  //caution: t instead of tau 
 	}
 
 	for (signed int t = expiry_date; t >= vd; t--) {
@@ -1259,8 +1257,6 @@ double EuropeanOption::Calc_discrete(MarketParameters & paras)
 	}
 
 	for (signed int t = expiry_date; t >= vd+1; t--) {
-		//q_forward_p[t-vd-1] = paras.getTodayDivAmount(t) / s0 / dt;  
-		
 		if (t == expiry_date) {  //b.c, expiry date
 			for (int i = 0; i <= maxassetnodeindex; i++) {
 				vold[i] = (*ThePayoffPtr)(px[i]);
@@ -1274,14 +1270,6 @@ double EuropeanOption::Calc_discrete(MarketParameters & paras)
 				vold_next[i] = vold[i];
 		}
 
-		//double q_forward=0.0;
-		/*if(t==360){
-		q_forward=2.2263/100/dt;
-		}*/
-
-		//if (q_forward > 0)
-		//	cout << "positive q at " << t << endl;
-
 		for (int i = 0; i <= maxassetnodeindex; i++) {
 			double short_vol = paras.lvol(tau_p[t - vd], px[i]);
 			double short_vol_up = paras.lvol_up(tau_p[t - vd], px[i]);
@@ -1293,7 +1281,7 @@ double EuropeanOption::Calc_discrete(MarketParameters & paras)
 
 			//CAUTION2: check calculation day t-1 is exdate or not(t is thd 1 day after cal day) 
 			//check when t=vd+1, t-vd-1==0
-			beta[i] = (r_forward_p[t - vd] - q_forward_p[t - vd - 1])*dt;
+			beta[i] = (r_forward_p[t - vd] - q_forward_p[t - vd - 1])*dt;//t-vd-1 => calculation day
 		}
 
 		trimatrix1d(A, B, C, alpha, beta, r_forward_p[t - vd], dt, px, dpx, 1, maxassetnodeindex - 1);
@@ -1308,9 +1296,7 @@ double EuropeanOption::Calc_discrete(MarketParameters & paras)
 			vold[i] = vnew[i];
 			vold_up[i] = vnew_up[i];
 			vold_down[i] = vnew_down[i];
-
 		}
-
 	}
 
 	double pv = intp1d(s0, px, vold, 1, maxassetnodeindex - 1);
@@ -1425,6 +1411,92 @@ double EuropeanOption::CalcMC(MarketParameters & paras, long numMc)
 			s_tmp = s_tmp*std::exp(drift + diff*ndist(gen));
 		}
 
+		mcvalues[i] = std::exp(-r_dc_p[expiryd - vd] * tau_p[expiryd - vd])*((*ThePayoffPtr)(s_tmp));
+	}//for(i=0..)
+
+	double npv = 0.0;
+	for (long i = 0; i<numMc; i++)
+		npv += mcvalues[i];
+
+	npv /= numMc;
+
+	result.resize(30, 0.0);
+	for (auto iter = result.begin(); iter != result.end(); iter++)
+		*iter = 0.0;
+	result[0] = npv;
+	result[5] = s0;
+
+	delete[] mcvalues;
+
+	delete[] tau_p;
+	delete[] r_forward_p;
+	delete[] r_dc_p;
+	delete[] q_forward_p;
+	delete[] is_obsDay;
+
+	return npv;
+}
+
+double EuropeanOption::CalcMC_discrete(MarketParameters & paras, long numMc)
+{
+	//paras, conti div
+	signed int vd = paras.get_vdate();
+	double s0 = paras.get_spot();
+	paras.calcLV();
+
+	signed int expiryd = GetExpiryd();
+
+	//Vol vol = para.get_vol();
+	//vol.calcLv(s0, R, Q);
+	//	std::vector<signed int> obs
+
+	std::mt19937 gen(130);
+	std::normal_distribution<>ndist(0, 1);
+
+	double* mcvalues = new double[numMc];
+
+	double s_tmp;
+	//	double s_avg;
+
+	int daydivide_ = 1;
+
+	double* tau_p = new double[expiryd - vd + 1];
+	double* r_forward_p = new double[expiryd - vd + 1];
+	double* r_dc_p = new double[expiryd - vd + 1];
+	double* q_forward_p = new double[expiryd - vd + 1];
+	bool* is_obsDay = new bool[expiryd - vd + 1];
+
+	double dt = 1 / 365.0;
+	for (signed int i = 0; i <= expiryd - vd; i++) {
+		tau_p[i] = (i) / 365.0;
+		r_forward_p[i] = paras.getForward(tau_p[i]);
+		r_dc_p[i] = paras.getIntpRate(tau_p[i]);
+		//q_forward_p[i] = paras.getDivForward(tau_p[i]);
+	}
+
+	for (signed int t = expiry_date; t >= vd; t--) {
+		//CAUTION: t instead of tau
+		q_forward_p[t - vd] = paras.getTodayDivAmount(t) / s0 / dt;
+	}
+
+	int *idxT = new signed int[expiryd - vd + 1];
+	for (int tfv = 0; tfv <= expiryd - vd; tfv++) {
+		idxT[tfv] = paras.find_index_term(tfv / 365.0);
+	}
+
+	for (long i = 0; i<numMc; i++)
+	{
+		s_tmp = s0;
+		//make stock price dailiy 
+		for (signed int t = vd + 1; t <= expiryd; t++) {
+			//double short_vol = paras.lvol(tau_p[t - vd], s_tmp);
+			//fast search algorithm
+			double short_vol = paras.get_Lvol_hybrid(idxT[t - vd], s_tmp);
+			//target day is t. so, check t==exdate 
+			double drift = (r_forward_p[t - vd] - q_forward_p[t - vd] - 0.5*short_vol*short_vol)*dt;
+			double diff = short_vol*std::sqrt(dt);
+			s_tmp = s_tmp*std::exp(drift + diff*ndist(gen));
+		}
 		mcvalues[i] = std::exp(-r_dc_p[expiryd - vd] * tau_p[expiryd - vd])*((*ThePayoffPtr)(s_tmp));
 	}//for(i=0..)
 

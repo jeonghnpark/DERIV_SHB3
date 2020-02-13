@@ -4,3 +4,4 @@ plus4
 EuropeanOption_lib
 EuropeanOption_MC_lib
 EuropeanOption_discrete_dividend_lib
+EuropeanOption_MC_discrete_dividend_lib

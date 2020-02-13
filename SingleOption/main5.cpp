@@ -941,16 +941,22 @@ void test_vanilla_iofile()
 	EurPut6M90.PrintResult();
 	paras_file.print();
 
+	//test fdm discrete dividend
 	EurPut6M90.Calc_discrete(paras_file_discrete);
 	cout << "\nEurPut6M90.Calc_discrete(paras_file_discrete)" << endl;
 	EurPut6M90.PrintResult();
 	paras_file.print();
 
+	//test mc continuous dividend
+	EurPut6M90.CalcMC(paras_file, 50000);
+	cout << "\nEurPut6M90.CalcMC(paras_file, 20000);" << endl;
+	EurPut6M90.PrintResult();
 
-	//EurPut6M90.CalcMC(paras_file,80000);
-	//cout << "\nEurPut1YATM.CalcMC(paras_file,50000);" << endl;
-	//EurPut6M90.PrintResult();
-
+	//test mc discrete dividend
+	EurPut6M90.CalcMC_discrete(paras_file_discrete,50000);
+	cout << "\nEurPut6M90.CalcMC_discrete(paras_file_discrete,20000);" << endl;
+	EurPut6M90.PrintResult();
+	paras_file.print();
 
 	//vector<double> apath;
 	//apath = get_a_path_from_csv("14th.csv");
@@ -1313,7 +1319,7 @@ MarketParameters init_paras_file(const char* vol_csv, const char* rate_csv, cons
 		getline(strstr, word, ','); //col=2
 		amount.push_back(stod(word));
 	}
-	Dividend div(exdate, amount);
+	Dividend div(amount,exdate);
 	infile.close();
 
 	return MarketParameters(vd, spot, vol,r,q,div);

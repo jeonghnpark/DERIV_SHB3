@@ -164,5 +164,8 @@
     <ClInclude Include="..\..\..\..\LIB\klib\EtcFunctions.h">
       <Filter>ext</Filter>
     </ClInclude>
+    <ClInclude Include="PayoffAutocallSwap.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

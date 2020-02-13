@@ -11,6 +11,7 @@ public:
 	double Calc(MarketParameters& para);
 	double Calc_discrete(MarketParameters& para);
 	double CalcMC(MarketParameters& paras, long numMc = 10);
+	double CalcMC_discrete(MarketParameters & paras, long numMc);
 	double CalcBS(MarketParameters& paras);
 
 	void Simulation2(MarketParameters& paras, long nMC, bool db = false);
