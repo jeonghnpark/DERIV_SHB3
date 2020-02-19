@@ -27,7 +27,8 @@ public:
 protected:
 	double refprice;
 	signed int expiry_date;
-	Payoff* ThePayoffPtr;
+	Payoff* ThePayoffPtr;//don't know specific type of payoff yet 
+	                     //This object determines the specific payoff in realtime with virtual constructor, clone() 
 	std::vector<double> result;
 private:
 	int getIndex(double target, double * px, int i_min, int i_max) const;

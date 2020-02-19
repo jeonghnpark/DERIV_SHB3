@@ -11,7 +11,7 @@ public:
 	AutocallOption(char* csvfile);
 	virtual ~AutocallOption();
 	
-	double Calc(MarketParameters& paras);
+	virtual double Calc(MarketParameters& paras);
 	double Calc_discrete(MarketParameters& paras);
 	double CalcMC(MarketParameters & paras, long nMC = 1000); //r,div optimized
 	double CalcMC_discrete(MarketParameters & paras, long nMC = 1000); //r,div optimized

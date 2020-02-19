@@ -77,8 +77,8 @@ AutocallOption::AutocallOption(char * csvfile)
 	while (getline(strstr, word, ',')) {
 	}
 
+	//getline(infile, line);
 	getline(infile, line); //line34
-	getline(infile, line); //line35
 	strstr = stringstream(line);
 	getline(strstr, word, ','); //skip first col
 	getline(strstr, word, ','); //second col
@@ -86,8 +86,8 @@ AutocallOption::AutocallOption(char * csvfile)
 	while (getline(strstr, word, ',')) {
 	}
 
-	getline(infile, line); //line36
-	getline(infile, line); //line37
+	//getline(infile, line); 
+	getline(infile, line); //line35
 	strstr = stringstream(line);
 	getline(strstr, word, ','); //skip first col
 	getline(strstr, word, ','); //second col
@@ -96,8 +96,8 @@ AutocallOption::AutocallOption(char * csvfile)
 	}
 
 
-	getline(infile, line); //line38
-	getline(infile, line); //line39
+	//getline(infile, line); 
+	getline(infile, line); //line36
 	strstr = stringstream(line);
 	getline(strstr, word, ','); //skip first col
 	getline(strstr, word, ','); //second col

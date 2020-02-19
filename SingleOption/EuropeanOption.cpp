@@ -1572,7 +1572,7 @@ signed int EuropeanOption::GetExpiryd() const
 EuropeanOption::EuropeanOption(double _refprice, signed int _expiryd,const Payoff& ThePayoff_)
 	:refprice(_refprice),expiry_date(_expiryd)
 {
-	ThePayoffPtr=ThePayoff_.clone();
+	ThePayoffPtr=ThePayoff_.clone(); //determine the specific type of payoff now
 	result=std::vector<double>(30);
 }
 

@@ -64,8 +64,8 @@ AutocallSwap::AutocallSwap(char * csvfile)
 	while (getline(strstr, word, ',')) {
 	}
 
+	//getline(infile, line);
 	getline(infile, line); //line34
-	getline(infile, line); //line35
 	strstr = stringstream(line);
 	getline(strstr, word, ','); //skip first col
 	getline(strstr, word, ','); //second col
@@ -73,8 +73,8 @@ AutocallSwap::AutocallSwap(char * csvfile)
 	while (getline(strstr, word, ',')) {
 	}
 
-	getline(infile, line); //line36
-	getline(infile, line); //line37
+	//getline(infile, line); 
+	getline(infile, line); //line35
 	strstr = stringstream(line);
 	getline(strstr, word, ','); //skip first col
 	getline(strstr, word, ','); //second col
@@ -83,8 +83,8 @@ AutocallSwap::AutocallSwap(char * csvfile)
 	}
 
 
-	getline(infile, line); //line38
-	getline(infile, line); //line39
+	//getline(infile, line); 
+	getline(infile, line); //line36
 	strstr = stringstream(line);
 	getline(strstr, word, ','); //skip first col
 	getline(strstr, word, ','); //second col
@@ -158,7 +158,50 @@ AutocallSwap::AutocallSwap(char * csvfile)
 		}
 	}
 
-	ThePayoffPtr = new PayoffAutocallSwap(nb_autocall, vdates, vstrikes, vcoupons, kibarrier, put_strike, dummycoupon, refprice);
-	infile.close();
+	vector<signed int> vffd; //vector of floating fixing dates
+	vffd.push_back(-1);
+	for (int i = 0; i < 20; i++) { //from 75th row to 94th row
+		getline(infile, line);
+		strstr = stringstream(line);
+		getline(strstr, word, ','); //skip first col
+		getline(strstr, word, ','); //second col
+		if (!word.empty()) {
+			if (stoul(word) > 0)
+				vffd.push_back(stoul(word));
+		}
+		while (getline(strstr, word, ',')) {
+		}
+	}
 
+	vector<signed int> vfpd; //vector of floating paying dates
+	vfpd.push_back(-1);
+	for (int i = 0; i < 20; i++) {//from 95th row to 114th row
+		getline(infile, line);
+		strstr = stringstream(line);
+		getline(strstr, word, ','); //skip first col
+		getline(strstr, word, ','); //second col
+		if (!word.empty()) {
+			if (stoul(word) > 0)
+				vfpd.push_back(stoul(word));
+		}
+		while (getline(strstr, word, ',')) {
+		}
+	}
+
+	ThePayoffPtr = new PayoffAutocallSwap(nb_autocall, vdates, vstrikes, vcoupons, kibarrier, put_strike, dummycoupon, refprice,vffd,vfpd);
+	infile.close();
+}
+
+double AutocallSwap::Calc(MarketParameters & paras)
+{
+	AutocallOption::Calc(paras);
+	return 0.0;
+}
+
+double AutocallSwap::Calc_floating_leg(MarketParam & paras) const
+{
+	signed int vd = paras.get_vdate();
+	//vector<signed int> autocall_date = ThePayoffPtr->GetAutocall_date();
+	//vector<signed int>
+	return 0.0;
 }

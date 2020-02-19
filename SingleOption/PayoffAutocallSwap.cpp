@@ -45,6 +45,11 @@ void PayoffAutocallSwap::updator(signed int td, double * vold, double * uold, do
 	}
 }
 
+vector<signed int> PayoffAutocallSwap::GetFloatingFixingDate() const
+{
+	return vector<signed int>(floating_fixing_date);
+}
+
 PayoffAutocallStd * PayoffAutocallSwap::clone() const
 {
 	return new PayoffAutocallSwap(*this);

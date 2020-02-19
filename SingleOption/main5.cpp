@@ -1008,19 +1008,19 @@ void test_vanilla_final()
 
 void test_autocall_final_iofile()
 {
-	MarketParameters paras_file = init_paras_file("vol20200129new.csv", "rate20200129new.csv", "div20200129new.csv");
-	MarketParameters paras_file_volup = init_paras_file("vol20200129new.csv", "rate20200129new.csv", "div20200129new.csv");
-	MarketParameters paras_20180828 = init_paras_file("vol20180828.csv", "rate20180828.csv", "div20180828.csv");
-	MarketParameters paras_file_div = init_paras_file("vol20200129new.csv", "rate20200129new.csv", "div20200129new.csv", "divDiscrete20200129.csv");
+	MarketParameters paras_file = init_paras_file("vol20200129NotProtectedNew.csv", "rate20200129NotProtectedNew.csv", "div20200129NotProtectedNew.csv");
+	//MarketParameters paras_file_volup = init_paras_file("vol20200129new.csv", "rate20200129new.csv", "div20200129new.csv");
+	//MarketParameters paras_20180828 = init_paras_file("vol20180828.csv", "rate20180828.csv", "div20180828.csv");
+	//MarketParameters paras_file_div = init_paras_file("vol20200129new.csv", "rate20200129new.csv", "div20200129new.csv", "divDiscrete20200129.csv");
 
-	AutocallOption prot("autocall20200129protected.csv");
-	AutocallOption notprot("autocall20200129notprotected.csv");
+	//AutocallOption prot("autocall20200129ProtectedNew.csv");
+	AutocallOption notprot("autocall20200129NotProtectedNew.csv");
 	//AutocallOption notprot20180828("autocall20180828.csv");
 
 
 	//paras_file_volup.reset_Ivol_up();
-	paras_file.print();
-	notprot.PrintSpec();
+	//paras_file.print();
+	//notprot.PrintSpec();
 	notprot.Calc(paras_file);
 	notprot.PrintResult();
 
@@ -1332,8 +1332,10 @@ MarketParameters init_paras_file(const char* vol_csv, const char* rate_csv, cons
 }
 void test_autocall_swap_final_iofile()
 {
-	MarketParameters paras_file = init_paras_file("vol20200129new.csv", "rate20200129new.csv", "div20200129new.csv");
-	AutocallSwap notprot_swap("autocall20200129notprotected.csv");
+	MarketParameters paras_file = init_paras_file("vol20200129NotProtectedNew.csv", "rate20200129NotProtectedNew.csv", "div20200129NotProtectedNew.csv");
+	AutocallSwap notprot_swap("autocall20200129NotProtectedNew.csv");
+	//MarketParameters paras_file = init_paras_file("vol20200129new.csv", "rate20200129new.csv", "div20200129new.csv");
+	//AutocallSwap notprot_swap("autocall20200129notprotected.csv");
 	notprot_swap.Calc(paras_file);
 	notprot_swap.PrintResult();
 	
@@ -1352,8 +1354,8 @@ int main()
 	//test_vanilla_iofile();
 	
 	//test_autocall_final();
-	test_autocall_final_iofile();
+	//test_autocall_final_iofile();
 
-	//test_autocall_swap_final_iofile();
+	test_autocall_swap_final_iofile();
 }
 

@@ -57,7 +57,8 @@ double Rate::getForward(double t) const
 		if(t < *(iter+1) && t>=*iter){
 			drdt = (*(iter_r+1) - *iter_r) / (*(iter+1) -*iter);
             result = ((t - *iter) * *(iter_r+1) + (*(iter+1) - t) * *iter_r) / (*(iter+1) - *iter);
-            result = result + t * drdt;
+            //result = result + t * drdt;
+			result = result + drdt * (t + 1 / 365); // d_t=1/365
 			return result;
 		}
 		iter_r++;
