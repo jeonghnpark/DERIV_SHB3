@@ -28,6 +28,7 @@
     <ClCompile Include="AmericanOption.cpp" />
     <ClCompile Include="AsianOption.cpp" />
     <ClCompile Include="AutocallOption.cpp" />
+    <ClCompile Include="AutocallSwap.cpp" />
     <ClCompile Include="BarrierOption.cpp" />
     <ClCompile Include="Dividend.cpp" />
     <ClCompile Include="EuropeanOption.cpp" />
@@ -35,6 +36,7 @@
     <ClCompile Include="MarketParam.cpp" />
     <ClCompile Include="MarketParameters.cpp" />
     <ClCompile Include="PayoffAutocallStd.cpp" />
+    <ClCompile Include="PayoffAutocallSwap.cpp" />
     <ClCompile Include="PayoffBarCUO.cpp" />
     <ClCompile Include="PayoffBarPDO.cpp" />
     <ClCompile Include="PayoffCall.cpp" />
@@ -53,6 +55,7 @@
     <ClInclude Include="AmericanOption.h" />
     <ClInclude Include="AsianOption.h" />
     <ClInclude Include="AutocallOption.h" />
+    <ClInclude Include="AutocallSwap.h" />
     <ClInclude Include="BarrierOption.h" />
     <ClInclude Include="Dividend.h" />
     <ClInclude Include="EuropeanOption.h" />

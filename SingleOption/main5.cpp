@@ -21,6 +21,7 @@
 #include "PayoffBarCUO.h"
 #include "BarrierOption.h"
 #include "AutocallOption.h"
+#include "AutocallSwap.h"
 #include "AsianOption.h"
 #include "Dividend.h"
 #include "j_fd.h"
@@ -1014,11 +1015,15 @@ void test_autocall_final_iofile()
 
 	AutocallOption prot("autocall20200129protected.csv");
 	AutocallOption notprot("autocall20200129notprotected.csv");
-	AutocallOption notprot20180828("autocall20180828.csv");
+	//AutocallOption notprot20180828("autocall20180828.csv");
 
 
-	paras_file_volup.reset_Ivol_up();
-	//paras_file.print();
+	//paras_file_volup.reset_Ivol_up();
+	paras_file.print();
+	notprot.PrintSpec();
+	notprot.Calc(paras_file);
+	notprot.PrintResult();
+
 	//cout << "volup\n";
 	//paras_file_volup.print();
 
@@ -1030,10 +1035,10 @@ void test_autocall_final_iofile()
 	//prtoected.PrintResult();
 
 	///ao.Simulation2(paras_file, 100, true);
-	vector<double> apath;
-	apath = get_a_path_from_csv("kith.csv");
+	//vector<double> apath;
+	//apath = get_a_path_from_csv("kith.csv");
 	//notprot20180828.Simulation3(paras_20180828, apath, true);
-	notprot20180828.Simulation2(paras_20180828, 5000, true);
+	//notprot20180828.Simulation2(paras_20180828, 5000, true);
 
 	//ao.Simulation3(paras_file_volup, apath, true);
 
@@ -1325,6 +1330,14 @@ MarketParameters init_paras_file(const char* vol_csv, const char* rate_csv, cons
 	return MarketParameters(vd, spot, vol,r,q,div);
 	
 }
+void test_autocall_swap_final_iofile()
+{
+	MarketParameters paras_file = init_paras_file("vol20200129new.csv", "rate20200129new.csv", "div20200129new.csv");
+	AutocallSwap notprot_swap("autocall20200129notprotected.csv");
+	notprot_swap.Calc(paras_file);
+	notprot_swap.PrintResult();
+	
+}
 int main()
 {
 	using clock = std::chrono::system_clock;
@@ -1336,9 +1349,11 @@ int main()
 	//MarketParameters p = set_file("volcsv.csv");;
 	
 	//test_vanilla_final();
-	test_vanilla_iofile();
+	//test_vanilla_iofile();
 	
 	//test_autocall_final();
-	//test_autocall_final_iofile();
+	test_autocall_final_iofile();
+
+	//test_autocall_swap_final_iofile();
 }
 

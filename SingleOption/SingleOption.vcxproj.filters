@@ -87,6 +87,12 @@
     <ClCompile Include="..\..\..\..\LIB\klib\EtcFunctions.cpp">
       <Filter>ext</Filter>
     </ClCompile>
+    <ClCompile Include="PayoffAutocallSwap.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="AutocallSwap.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AmericanOption.h">
@@ -165,6 +171,9 @@
       <Filter>ext</Filter>
     </ClInclude>
     <ClInclude Include="PayoffAutocallSwap.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="AutocallSwap.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
