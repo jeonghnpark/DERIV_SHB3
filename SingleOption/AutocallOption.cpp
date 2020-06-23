@@ -1121,7 +1121,7 @@ double AutocallOption::Calc_discrete(MarketParameters & paras)
 
 	return pv;
 }
-double AutocallOption::Simulation(MarketParameters & paras, long numMC_)
+double AutocallOption::Simulation(MarketParameters & paras, long numMC_=1)
 {
 	double s0 = paras.get_spot();
 	signed int vd = paras.get_vdate();
@@ -1516,6 +1516,10 @@ double AutocallOption::Simulation(MarketParameters & paras, long numMC_)
 
 void AutocallOption::Simulation2(MarketParameters & paras, long numMC_, bool db)
 {
+	//Dynamic hedge simulation 
+	//numMC_: number of sample paths
+	//db=true -> 모든 sample path의 시계열 민감도 파일 출력, numMC_ 1000이하 
+
 	double s0 = paras.get_spot();
 	signed int vd = paras.get_vdate();
 
@@ -2552,8 +2556,6 @@ void AutocallOption::Simulation3(MarketParameters & paras, std::vector<double>& 
 		uold_down[i] = uold[i];
 	}
 
-
-
 	/*save vold, uold in vector*/
 	vector<vector<double> > vgrid;
 	vector<vector<double> > ugrid;
@@ -2729,7 +2731,7 @@ void AutocallOption::Simulation3(MarketParameters & paras, std::vector<double>& 
 	ofstream fout_ts(fn.c_str());
 	fout_ts << "tau,s_tmp,cash,delta,pv,r,q,PL" << endl;
 
-	for (long i = 0; i == 0; i++)
+	for (long i = 0; i == 0; i++) //for single simulation i==0
 	{
 		vector<double> path;
 		vector<double> aPL;

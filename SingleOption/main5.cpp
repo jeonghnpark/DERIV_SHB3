@@ -1044,73 +1044,6 @@ void test_autocall_final_iofile()
 
 	//ao.Simulation2(paras_file, 10, true);
 }
-void test_autocall_final()
-{
-	MarketParameters paras;
-	MarketParameters paras_volup;
-	paras = set_paras();
-	paras_volup = set_paras();
-	
-	double refprice = 297.22;
-	double putstrike = refprice;
-	double putstrike90 = refprice*0.9;
-
-	int hitflag = 0;
-	signed int exd_3y = 44436; //3y 
-	int nb_autocall = 6;
-	signed int auto_date[7] = { -1,43524,43705,43889,44071,44255,44436 };
-	double auto_strike[7] = { -1,297.22,297.22,282.359,282.359,267.498,267.498 };
-	double auto_strike_hifive[7] = { -1,297.22,297.22,297.22,297.22,297.22,297.22 };
-	double auto_strike959085[7] = { -1,282.359,282.359,267.498,267.498,252.637,252.637 };
-	double auto_strike_shift[7] = { -1,297.22,297.22,230.3455,230.3455,230.3455,230.3455 };
-	double auto_coupon[7] = { -1, 0.0230,	0.0460,	0.0690,	0.0920,	0.1150,	0.1380 };
-	double auto_coupon32[7] = { -1, 0.0160,	0.0320,	0.0480,	0.0640,	0.0800,	0.0960 };
-	double auto_coupon28[7] = { -1, 0.0140,	0.0280,	0.0420,	0.0560,	0.0700,	0.0840 };
-
-	double auto_ki_barrier = refprice*0.6;
-	double auto_ki_barrier70 = refprice * 0.7;
-	double auto_ki_barrier80 = refprice * 0.8;
-
-	double auto_ki_barrier_shift = refprice*0.6;
-	double auto_dummy_coupon = auto_coupon[6];
-	double auto_dummy_coupon32 = auto_coupon32[6];
-
-	double auto_put_strike = refprice*1.0; // if put_strike=0, notional protected
-	double put_strike_notional_protect = refprice*0.0;
-
-	PayoffAutocallStd autoPayoff(nb_autocall, auto_date, auto_strike, auto_coupon, auto_ki_barrier, auto_put_strike, auto_dummy_coupon, refprice);
-	PayoffAutocallStd autoPayoff_shift(nb_autocall, auto_date, auto_strike_shift, auto_coupon, auto_ki_barrier, auto_put_strike, auto_dummy_coupon, refprice);
-	PayoffAutocallStd autoPayoff_KI_shift(nb_autocall, auto_date, auto_strike, auto_coupon, auto_ki_barrier_shift, auto_put_strike, auto_dummy_coupon, refprice);
-	PayoffAutocallStd autoPayoff959085(nb_autocall, auto_date, auto_strike959085, auto_coupon, auto_ki_barrier, auto_put_strike, auto_dummy_coupon, refprice);
-	PayoffAutocallStd autoPayoff_hifive(nb_autocall, auto_date, auto_strike_hifive, auto_coupon, auto_ki_barrier70, put_strike_notional_protect, auto_dummy_coupon, refprice);
-	PayoffAutocallStd autoPayoff_notional_protect(nb_autocall, auto_date, auto_strike_hifive, auto_coupon28, auto_ki_barrier80, put_strike_notional_protect, auto_coupon28[6], refprice);
-
-	AutocallOption AutoKOSPI(refprice, exd_3y, autoPayoff, hitflag);
-	AutocallOption AutoKOSPIMC(refprice, exd_3y, autoPayoff, hitflag);
-
-	AutocallOption AutoKOSPI_hit(refprice, exd_3y, autoPayoff, 1);
-	AutocallOption AutoKOSPI959085(refprice, exd_3y, autoPayoff959085, hitflag);
-	AutocallOption AutoKOSPI_hifive(refprice, exd_3y, autoPayoff_hifive, 0);
-	AutocallOption AutoKOSPI_hifive_hit(refprice, exd_3y, autoPayoff_hifive, 1);
-	AutocallOption AutoKOSPI_shift(refprice, exd_3y, autoPayoff_shift, hitflag);
-	AutocallOption AutoKOSPI_KI_shift(refprice, exd_3y, autoPayoff_KI_shift, hitflag);
-	AutocallOption AutoKOSPI_notional_protect(refprice, exd_3y, autoPayoff_notional_protect, hitflag);
-	AutocallOption AutoKOSPI_notional_protect_flatvol(refprice, exd_3y, autoPayoff_notional_protect, hitflag);
-	AutocallOption AutoKOSPI_mc(refprice, exd_3y, autoPayoff, hitflag);
-	AutocallOption AutoKOSPI_KI(refprice, exd_3y, autoPayoff, 1);
-	AutocallOption AutoKOSPI_mc_KI(refprice, exd_3y, autoPayoff, 1);
-
-	AutoKOSPI.Calc(paras);
-	cout << "\nAutoKOSPI.Calc(paras);" << endl;
-	AutoKOSPI.PrintResult();
-
-	AutoKOSPI.CalcMC(paras,10000);
-	cout << "\nAutoKOSPI.CalcMC(paras);" << endl;
-	AutoKOSPI.PrintResult();
-
-}
-
-
 
 MarketParameters init_paras_file(const char* vol_csv, const char* rate_csv, const char* div_csv)
 {
@@ -1131,19 +1064,19 @@ MarketParameters init_paras_file(const char* vol_csv, const char* rate_csv, cons
 	vector<vector<double> >rows;
 	getline(infile, line); //first vol line, strikes
 	stringstream strstr(line);
-	
-	for(int i=0;i<5;i++) //skip first 5 cells
-		getline(strstr,word,',');
+
+	for (int i = 0; i<5; i++) //skip first 5 cells
+		getline(strstr, word, ',');
 	while (getline(strstr, word, ',')) {
 		vol_strike.push_back(stod(word));
 	}
-	
+
 	getline(infile, line); //skip the second line
 
 	while (getline(infile, line)) {
 		stringstream strstr(line);
 		string word = "";
-		
+
 		//cells(3,1), cells(4,1).... => vol_term
 		getline(strstr, word, ',');
 		vol_term.push_back(stod(word));
@@ -1153,7 +1086,7 @@ MarketParameters init_paras_file(const char* vol_csv, const char* rate_csv, cons
 
 		vector<double> avol;
 		while (getline(strstr, word, ',')) {
-			avol.push_back(stod(word)/100.0);
+			avol.push_back(stod(word) / 100.0);
 		}
 		Ivol.push_back(avol);
 	}
@@ -1164,7 +1097,7 @@ MarketParameters init_paras_file(const char* vol_csv, const char* rate_csv, cons
 	ifstream infile_rate(rate_csv);
 	//line = ""; //not needed?
 	getline(infile_rate, line); //first line, rate term
-	//stringstream().swap(strstr);
+								//stringstream().swap(strstr);
 	strstr = stringstream(line);
 
 	//word = "";
@@ -1177,7 +1110,7 @@ MarketParameters init_paras_file(const char* vol_csv, const char* rate_csv, cons
 	strstr = stringstream(line);
 	getline(strstr, word, ','); //skip cells(3,1)
 	while (getline(strstr, word, ',')) {
-		rate.push_back(stod(word)/100.0);
+		rate.push_back(stod(word) / 100.0);
 	}
 	Rate r(rate, rate_term);
 	infile_rate.close();
@@ -1195,7 +1128,7 @@ MarketParameters init_paras_file(const char* vol_csv, const char* rate_csv, cons
 
 	getline(infile_qrate, line); //line4
 	strstr = stringstream(line);
-	getline(strstr, word, ','); 
+	getline(strstr, word, ',');
 	double spot = stod(word);
 	while (getline(strstr, word, ',')) {
 		//skip 
@@ -1206,7 +1139,7 @@ MarketParameters init_paras_file(const char* vol_csv, const char* rate_csv, cons
 	getline(strstr, word, ',');
 	signed int vd = stoul(word);
 	while (getline(strstr, word, ',')) {
-		qrate.push_back(stod(word)/100.0);
+		qrate.push_back(stod(word) / 100.0);
 	}
 	Rate q(qrate, qrate_term);
 	infile_qrate.close();
@@ -1314,9 +1247,9 @@ MarketParameters init_paras_file(const char* vol_csv, const char* rate_csv, cons
 	}
 	Rate q(qrate, qrate_term);
 	infile_qrate.close();
-	
+
 	//discrete Dividend
-	infile= ifstream(div_discrete_csv);
+	infile = ifstream(div_discrete_csv);
 	while (getline(infile, line)) {
 		strstr = stringstream(line);
 		getline(strstr, word, ','); //col=1
@@ -1324,12 +1257,80 @@ MarketParameters init_paras_file(const char* vol_csv, const char* rate_csv, cons
 		getline(strstr, word, ','); //col=2
 		amount.push_back(stod(word));
 	}
-	Dividend div(amount,exdate);
+	Dividend div(amount, exdate);
 	infile.close();
 
-	return MarketParameters(vd, spot, vol,r,q,div);
-	
+	return MarketParameters(vd, spot, vol, r, q, div);
+
 }
+
+void test_autocall_final()
+{
+	MarketParameters paras;
+	MarketParameters paras_volup;
+	paras = set_paras();
+	paras_volup = set_paras();
+	
+	double refprice = 297.22;
+	double putstrike = refprice;
+	double putstrike90 = refprice*0.9;
+
+	int hitflag = 0;
+	signed int exd_3y = 44436; //3y 
+	int nb_autocall = 6;
+	signed int auto_date[7] = { -1,43524,43705,43889,44071,44255,44436 };
+	double auto_strike[7] = { -1,297.22,297.22,282.359,282.359,267.498,267.498 };
+	double auto_strike_hifive[7] = { -1,297.22,297.22,297.22,297.22,297.22,297.22 };
+	double auto_strike959085[7] = { -1,282.359,282.359,267.498,267.498,252.637,252.637 };
+	double auto_strike_shift[7] = { -1,297.22,297.22,230.3455,230.3455,230.3455,230.3455 };
+	double auto_coupon[7] = { -1, 0.0230,	0.0460,	0.0690,	0.0920,	0.1150,	0.1380 };
+	double auto_coupon32[7] = { -1, 0.0160,	0.0320,	0.0480,	0.0640,	0.0800,	0.0960 };
+	double auto_coupon28[7] = { -1, 0.0140,	0.0280,	0.0420,	0.0560,	0.0700,	0.0840 };
+
+	double auto_ki_barrier = refprice*0.6;
+	double auto_ki_barrier70 = refprice * 0.7;
+	double auto_ki_barrier80 = refprice * 0.8;
+
+	double auto_ki_barrier_shift = refprice*0.6;
+	double auto_dummy_coupon = auto_coupon[6];
+	double auto_dummy_coupon32 = auto_coupon32[6];
+
+	double auto_put_strike = refprice*1.0; // if put_strike=0, notional protected
+	double put_strike_notional_protect = refprice*0.0;
+
+	PayoffAutocallStd autoPayoff(nb_autocall, auto_date, auto_strike, auto_coupon, auto_ki_barrier, auto_put_strike, auto_dummy_coupon, refprice);
+	PayoffAutocallStd autoPayoff_shift(nb_autocall, auto_date, auto_strike_shift, auto_coupon, auto_ki_barrier, auto_put_strike, auto_dummy_coupon, refprice);
+	PayoffAutocallStd autoPayoff_KI_shift(nb_autocall, auto_date, auto_strike, auto_coupon, auto_ki_barrier_shift, auto_put_strike, auto_dummy_coupon, refprice);
+	PayoffAutocallStd autoPayoff959085(nb_autocall, auto_date, auto_strike959085, auto_coupon, auto_ki_barrier, auto_put_strike, auto_dummy_coupon, refprice);
+	PayoffAutocallStd autoPayoff_hifive(nb_autocall, auto_date, auto_strike_hifive, auto_coupon, auto_ki_barrier70, put_strike_notional_protect, auto_dummy_coupon, refprice);
+	PayoffAutocallStd autoPayoff_notional_protect(nb_autocall, auto_date, auto_strike_hifive, auto_coupon28, auto_ki_barrier80, put_strike_notional_protect, auto_coupon28[6], refprice);
+
+	AutocallOption AutoKOSPI(refprice, exd_3y, autoPayoff, hitflag);
+	AutocallOption AutoKOSPIMC(refprice, exd_3y, autoPayoff, hitflag);
+
+	AutocallOption AutoKOSPI_hit(refprice, exd_3y, autoPayoff, 1);
+	AutocallOption AutoKOSPI959085(refprice, exd_3y, autoPayoff959085, hitflag);
+	AutocallOption AutoKOSPI_hifive(refprice, exd_3y, autoPayoff_hifive, 0);
+	AutocallOption AutoKOSPI_hifive_hit(refprice, exd_3y, autoPayoff_hifive, 1);
+	AutocallOption AutoKOSPI_shift(refprice, exd_3y, autoPayoff_shift, hitflag);
+	AutocallOption AutoKOSPI_KI_shift(refprice, exd_3y, autoPayoff_KI_shift, hitflag);
+	AutocallOption AutoKOSPI_notional_protect(refprice, exd_3y, autoPayoff_notional_protect, hitflag);
+	AutocallOption AutoKOSPI_notional_protect_flatvol(refprice, exd_3y, autoPayoff_notional_protect, hitflag);
+	AutocallOption AutoKOSPI_mc(refprice, exd_3y, autoPayoff, hitflag);
+	AutocallOption AutoKOSPI_KI(refprice, exd_3y, autoPayoff, 1);
+	AutocallOption AutoKOSPI_mc_KI(refprice, exd_3y, autoPayoff, 1);
+
+	AutoKOSPI.Calc(paras);
+	cout << "\nAutoKOSPI.Calc(paras);" << endl;
+	AutoKOSPI.PrintResult();
+
+	AutoKOSPI.CalcMC(paras,10000);
+	cout << "\nAutoKOSPI.CalcMC(paras);" << endl;
+	AutoKOSPI.PrintResult();
+
+}
+
+
 void test_autocall_swap_final_iofile()
 {
 	MarketParameters paras_file = init_paras_file("vol20200129NotProtectedNew.csv", "rate20200129NotProtectedNew.csv", "div20200129NotProtectedNew.csv");
@@ -1340,6 +1341,23 @@ void test_autocall_swap_final_iofile()
 	notprot_swap.PrintResult();
 	
 }
+void test_autocall_sim()
+{
+	MarketParameters paras_from_file = init_paras_file("vol20200129NotProtectedNew.csv", "rate20200129NotProtectedNew.csv", "div20200129NotProtectedNew.csv");
+	MarketParameters paras_from_file_flatvol = init_paras_file("vol20200129NotProtectedNew_flat.csv", "rate20200129NotProtectedNew.csv", "div20200129NotProtectedNew.csv");
+
+	AutocallOption notprot("autocall20200129NotProtectedNew.csv");
+	//paras_file_volup.reset_Ivol_up();
+	//paras_file.print();
+	//notprot.PrintSpec();
+	//notprot.Simulation2(paras_from_file,1000,true);
+	//notprot.PrintResult();
+	notprot.Simulation2(paras_from_file_flatvol, 1, true);
+
+
+}
+
+
 int main()
 {
 	using clock = std::chrono::system_clock;
@@ -1354,8 +1372,10 @@ int main()
 	//test_vanilla_iofile();
 	
 	//test_autocall_final();
-	//test_autocall_final_iofile();
+	test_autocall_final_iofile();
 
-	test_autocall_swap_final_iofile();
+	//test_autocall_swap_final_iofile();
+
+	//test_autocall_sim();
 }
 
