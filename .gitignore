@@ -10,6 +10,8 @@ SingleOption/old/
 *.userosscache
 *.sln.docstates
 *.zip
+*.csv
+*.xlsm
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
