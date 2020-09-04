@@ -8,4 +8,5 @@ public:
 	virtual double Calc(MarketParameters& paras);
 private:
 	double Calc_floating_leg(MarketParam& paras) const;
+	PayoffAutocallSwap* thePayoffPtr;
 };

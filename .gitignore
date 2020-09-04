@@ -337,3 +337,5 @@ Test_stl/csvfile.csv
 SingleOption/ts01071203.csv
 SingleOption/PL01071207.csv
 Test_stl/fileinput.txt
+*.csv
+*.pptx

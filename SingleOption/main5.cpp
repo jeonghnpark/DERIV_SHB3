@@ -1347,16 +1347,137 @@ void test_autocall_sim()
 	MarketParameters paras_from_file_flatvol = init_paras_file("vol20200129NotProtectedNew_flat.csv", "rate20200129NotProtectedNew.csv", "div20200129NotProtectedNew.csv");
 
 	AutocallOption notprot("autocall20200129NotProtectedNew.csv");
+	vector<double> apath = get_a_path_from_csv("hedge_in_flat_vol.csv");
+	vector<double> s_flat = get_a_path_from_csv("s-flat.csv");
+	vector<double> s_local = get_a_path_from_csv("s-local.csv");
+	vector<double> s_local_down = get_a_path_from_csv("s-local_down3.csv");
+	vector<double> s_local_down2 = get_a_path_from_csv("s-local_0821.csv");   //AUTOCALL in 2nd obs
+	vector<double> s_local_weak = get_a_path_from_csv("s-local_weak.csv");   //약세장
+	vector<double> s_local_ki = get_a_path_from_csv("s-local_ki.csv");   //만기상환
+	vector<double> s_flat_ki = get_a_path_from_csv("s-flat_ki.csv");   //만기상환
+	vector<double> s_flat_downward = get_a_path_from_csv("s-flat_downward.csv");   //
+	vector<double> s_local_downward = get_a_path_from_csv("s-local_downward.csv");   //
+	vector<double> s_flat_3rd = get_a_path_from_csv("s-flat_3rd.csv");   //
+	vector<double> s_local_3rd = get_a_path_from_csv("s-local_3rd.csv");   //
+
+
+
+
+
+
 	//paras_file_volup.reset_Ivol_up();
 	//paras_file.print();
 	//notprot.PrintSpec();
-	//notprot.Simulation2(paras_from_file,1000,true);
+	//notprot.Simulation2(paras_from_file,1000,false);
+	notprot.Simulation2_2(paras_from_file,paras_from_file_flatvol ,1000, false);
+
 	//notprot.PrintResult();
-	notprot.Simulation2(paras_from_file_flatvol, 1, true);
+	//notprot.Simulation2(paras_from_file_flatvol, 1, true);
+	//notprot.Simulation2(paras_from_file, 30, true);
+	//notprot.Simulation3(paras_from_file, s_local_3rd, 0.9 ,true);
+	//notprot.Simulation3(paras_from_file, s_local, true);
+
 
 
 }
 
+void gen_stock(int skip_period=0)
+{
+	MarketParameters paras_from_file = init_paras_file("vol20200129NotProtectedNew.csv", "rate20200129NotProtectedNew.csv", "div20200129NotProtectedNew.csv");
+	MarketParameters paras_from_file_flatvol = init_paras_file("vol20200129NotProtectedNew_flat.csv", "rate20200129NotProtectedNew.csv", "div20200129NotProtectedNew.csv");
+	double s0 = paras_from_file.get_spot();
+	vector<double> path_local;
+	vector<double> path_flat;
+	const int DAY1Y = 368;
+
+	paras_from_file.calcLV();
+	paras_from_file_flatvol.calcLV();
+
+	std::mt19937 gen(130);
+	std::normal_distribution<>ndist(0, 1);
+	
+
+	path_local.push_back(s0);
+	path_flat.push_back(s0);
+
+
+	double* tau_p = new double[DAY1Y *3];
+	double* r_forward_p = new double[DAY1Y * 3];
+	double* r_dc_p = new double[DAY1Y * 3];
+	double* q_forward_p = new double[DAY1Y * 3];
+
+	for (signed int i = 0; i < DAY1Y *3; i++) {
+		tau_p[i] = (i) / 365.0;
+		r_forward_p[i] = paras_from_file.getForward(tau_p[i]);
+		r_dc_p[i] = paras_from_file.getIntpRate(tau_p[i]);
+		q_forward_p[i] = paras_from_file.getDivForward(tau_p[i]);
+	}
+
+	double dt = 1 / 365.0;
+
+
+	int *idxT = new signed int[DAY1Y *3 + 1];
+	for (int tfv = 0; tfv < DAY1Y *3; tfv++) {
+		idxT[tfv] = paras_from_file.find_index_term(tfv / 365.0);
+	}
+
+
+	//skip some random number
+	for (int i = 0; i < skip_period; i++)
+		ndist(gen);
+
+	double s_local= s0;
+	double s_flat = s0;
+	for (signed int t = 0; t < DAY1Y *3; t++) {
+		double short_vol = paras_from_file.get_Lvol_hybrid(idxT[t], s_local);
+		double flat_vol= paras_from_file_flatvol.get_Lvol_hybrid(idxT[t], s_flat);
+		double drift = (r_forward_p[t] - q_forward_p[t] - 0.5*short_vol*short_vol)*dt;
+		double drift_flat= (r_forward_p[t] - q_forward_p[t] - 0.5*flat_vol*flat_vol)*dt;
+		double diff = short_vol*std::sqrt(dt);
+		double diff_flat = flat_vol*std::sqrt(dt);
+		double rd = ndist(gen);
+		s_local = s_local*std::exp(drift + diff*rd);
+		s_flat = s_flat*std::exp(drift_flat + diff_flat*rd);
+		path_local.push_back(s_local);
+		path_flat.push_back(s_flat);
+		if (t %180==0) {
+			cout << t << " " << flat_vol << "  " << short_vol << endl;
+			cout << t << " return " << s_flat / s0 - 1.0 << endl;
+		}
+	}
+
+
+	//write csv
+	
+	string fn2 = getFnameTimeStartingWith(string("StockGen"));
+	ofstream fout_ts(fn2.c_str());
+	//string fn2 = getFnameTimeStartingWith(string("StockGen"));
+	
+	ofstream fout_s_local("s-local_.csv");
+	ofstream fout_s_flat("s-flat_.csv");
+	//string fn2 = getFnameTimeStartingWith(string("StockGen"));
+	//ofstream fout_(fn2.c_str());
+
+	fout_ts << "t, s_local, s_flat" << endl;
+	for (signed int t = 0; t < DAY1Y * 3; t++) {
+		fout_ts <<t <<"," <<path_local[t] << "," << path_flat[t] << "," << endl;
+		fout_s_local << path_local[t]<<endl;
+		fout_s_flat << path_flat[t] << endl;
+	}
+
+
+
+	fout_ts.close();
+	fout_s_local.close();
+	fout_s_flat.close();
+
+	delete[] tau_p;
+	delete[] r_forward_p;
+	delete[] r_dc_p;
+	delete[] q_forward_p;
+	delete[] idxT;
+
+}
 
 int main()
 {
@@ -1372,10 +1493,17 @@ int main()
 	//test_vanilla_iofile();
 	
 	//test_autocall_final();
-	test_autocall_final_iofile();
+	//test_autocall_final_iofile();
 
 	//test_autocall_swap_final_iofile();
 
-	//test_autocall_sim();
+	test_autocall_sim();
+	//for (int i = 41; i < 60; i++) {
+	//	int skip = 30000;;
+	//	gen_stock(skip+i*1000);
+	//}
+
+//	gen_stock(30000+42*1000);
+
 }
 

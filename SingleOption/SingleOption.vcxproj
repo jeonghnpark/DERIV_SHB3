@@ -43,6 +43,7 @@
     <ClCompile Include="PayoffDigitalCall.cpp" />
     <ClCompile Include="PayoffPut.cpp" />
     <ClCompile Include="Rate.cpp" />
+    <ClCompile Include="testgit.cpp" />
     <ClCompile Include="volatility.cpp" />
   </ItemGroup>
   <ItemGroup>

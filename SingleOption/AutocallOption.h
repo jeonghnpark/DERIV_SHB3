@@ -18,7 +18,8 @@ public:
 	double Simulation(MarketParameters& paras, long nMC);
 	void Simulation2(MarketParameters& paras, long nMC, bool db = false);
 	void Simulation2_1(MarketParameters & paras, EuropeanOption& eop, long numMC_, bool db);
-	void Simulation3(MarketParameters& paras, std::vector<double>& apath, bool db = false);
+	void Simulation2_2(MarketParameters & paras_hedge, MarketParameters & paras_eval, long numMC_, bool db=false);
+	void Simulation3(MarketParameters& paras, std::vector<double>& apath, double sticky, bool db = false);
 	signed int GetExpiryd() const;
 	double GetRefPrice() const;
 	int GetHitFlag() const { return hitflag; }
