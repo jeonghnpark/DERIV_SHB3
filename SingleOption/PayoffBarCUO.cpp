@@ -1,6 +1,6 @@
 #include "PayoffBarCUO.h"
 #include <algorithm>
-
+#include <iostream>
 void PayoffBarCUO::updator(double* vold, double* px, int maxi) const
 {
 	for(int i=0;i<=maxi;i++){

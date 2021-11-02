@@ -2325,7 +2325,7 @@ void AutocallOption::Simulation2_2(MarketParameters & paras_hedge ,MarketParamet
 
 	string fn = getFnameTimeStartingWith(string("ts"));
 	ofstream fout_ts(fn.c_str());
-	fout_ts << "tau,s_tmp,cash,delta,pv,r_for,q,PL" << endl;
+	fout_ts << "tau,s_tmp,cash,delta,pv,r_for,q,PL,PL_flat" << endl;
 
 	for (long i = 0; i<numMC_; i++)
 	{
@@ -2405,7 +2405,7 @@ void AutocallOption::Simulation2_2(MarketParameters & paras_hedge ,MarketParamet
 		
 
 		if (db)
-			fout_ts << 0 << "," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
+			fout_ts << 0 << "," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL <<","<<PL_flat<< endl;
 
 		for (int k = 1; k <= nb_autocall; k++) {
 			for (signed int t = std::max(autocall_date[k - 1], vd) + 1; t <= autocall_date[k]; t++) {
@@ -2482,7 +2482,7 @@ void AutocallOption::Simulation2_2(MarketParameters & paras_hedge ,MarketParamet
 				aPL_flat.push_back(PL_flat);
 
 				if (db)
-					fout_ts << t - vd << "," << s_tmp << "," << cash << "," << delta << "," << pv << "," << r_forward_p[t - vd] << "," << q_forward_p[t - vd] << "," << PL << endl;
+					fout_ts << t - vd << "," << s_tmp << "," << cash << "," << delta << "," << pv << "," << r_forward_p[t - vd] << "," << q_forward_p[t - vd] << "," << PL <<","<<PL_flat<< endl;
 			}
 
 			//autocall payoff 
@@ -2505,7 +2505,7 @@ void AutocallOption::Simulation2_2(MarketParameters & paras_hedge ,MarketParamet
 				aPL_flat.back() = PL_flat;
 
 				if (db)
-					fout_ts << tmpKIFlag << "_" << k << "-th Autocalled i=" << i << "," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
+					fout_ts << tmpKIFlag << "_" << k << "-th Autocalled i=" << i << "," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << "," << PL_flat << endl;
 				break; //k loop
 			}
 
@@ -2524,7 +2524,7 @@ void AutocallOption::Simulation2_2(MarketParameters & paras_hedge ,MarketParamet
 					aPL_flat.back() = PL_flat;
 
 					if (db)
-						fout_ts << tmpKIFlag << "_" << k << "-th Autocalled i=" << i << "," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
+						fout_ts << tmpKIFlag << "_" << k << "-th Autocalled i=" << i << "," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << "," << PL_flat << endl;
 
 				}
 				else if (s_tmp >= kibarrier) {
@@ -2539,7 +2539,7 @@ void AutocallOption::Simulation2_2(MarketParameters & paras_hedge ,MarketParamet
 						aPL.back() = PL;
 						aPL_flat.back() = PL_flat;
 						if (db)
-							fout_ts << tmpKIFlag << "_" << k << "-th Autocalled i=" << i << "," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
+							fout_ts << tmpKIFlag << "_" << k << "-th Autocalled i=" << i << "," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL <<","<<PL_flat<< endl;
 
 					}
 					else if (tmpKIFlag == 0) {
@@ -2553,7 +2553,7 @@ void AutocallOption::Simulation2_2(MarketParameters & paras_hedge ,MarketParamet
 						aPL.back() = PL;
 						aPL_flat.back() = PL_flat;
 						if (db)
-							fout_ts << tmpKIFlag << "_" << k << "-th Autocalled i=" << i << "," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
+							fout_ts << tmpKIFlag << "_" << k << "-th Autocalled i=" << i << "," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << "," << PL_flat << endl;
 					}
 					else {
 						throw std::logic_error("unexpected KIFlag");
@@ -2570,7 +2570,7 @@ void AutocallOption::Simulation2_2(MarketParameters & paras_hedge ,MarketParamet
 					aPL.back() = PL;
 					aPL_flat.back() = PL_flat;
 					if (db)
-						fout_ts << tmpKIFlag << "_" << k << "-th Autocalled i=" << i << "," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << endl;
+						fout_ts << tmpKIFlag << "_" << k << "-th Autocalled i=" << i << "," << s_tmp << "," << cash << "," << delta << "," << pv << ",,," << PL << "," << PL_flat << endl;
 				}
 
 			} //if k

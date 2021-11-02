@@ -1,7 +1,6 @@
 #include "PayoffBarPDO.h"
-
 #include <algorithm>
-
+#include <iostream>
 void PayoffBarPDO::updator(double* vold, double* px, int maxi) const
 {
 	for (int i = 0; i <= maxi; i++) {

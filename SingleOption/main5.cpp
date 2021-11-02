@@ -1369,10 +1369,10 @@ void test_autocall_sim()
 	//paras_file.print();
 	//notprot.PrintSpec();
 	//notprot.Simulation2(paras_from_file,1000,false);
-	notprot.Simulation2_2(paras_from_file,paras_from_file_flatvol ,1000, false);
+	//notprot.Simulation2_2(paras_from_file,paras_from_file_flatvol ,18, true);
 
 	//notprot.PrintResult();
-	//notprot.Simulation2(paras_from_file_flatvol, 1, true);
+	notprot.Simulation2(paras_from_file_flatvol, 1000, false);
 	//notprot.Simulation2(paras_from_file, 30, true);
 	//notprot.Simulation3(paras_from_file, s_local_3rd, 0.9 ,true);
 	//notprot.Simulation3(paras_from_file, s_local, true);
@@ -1490,14 +1490,14 @@ int main()
 	//MarketParameters p = set_file("volcsv.csv");;
 	
 	//test_vanilla_final();
-	//test_vanilla_iofile();
+	test_vanilla_iofile();
 	
 	//test_autocall_final();
 	//test_autocall_final_iofile();
 
 	//test_autocall_swap_final_iofile();
 
-	test_autocall_sim();
+	//test_autocall_sim();
 	//for (int i = 41; i < 60; i++) {
 	//	int skip = 30000;;
 	//	gen_stock(skip+i*1000);
